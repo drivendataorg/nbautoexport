@@ -1,5 +1,7 @@
 # nbautoexport
 
+[![Build Status](https://dev.azure.com/drivendataco/nbautoexport/_apis/build/status/drivendataorg.nbautoexport?branchName=master)](https://dev.azure.com/drivendataco/nbautoexport/_build/latest?definitionId=1&branchName=master)
+
 > Making it easier to code review Jupyter notebooks, one script at a time.
 
 nbautoexport automatically exports Jupyter notebooks to various file formats (.py, .html, and more) on save.
