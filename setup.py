@@ -50,6 +50,7 @@ setup(
     entry_points={"console_scripts": ["nbautoexport=nbautoexport.nbautoexport:install"]},
     install_requires=requirements,
     long_description=readme + "\n\n" + history,
+    long_description_content_type="text/markdown",
     include_package_data=True,
     keywords="nbautoexport",
     name="nbautoexport",
