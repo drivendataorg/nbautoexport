@@ -104,7 +104,5 @@ sprint_one_notebooks
 
 # Credits
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
 - [Cookiecutter](https://github.com/audreyr/cookiecutter)
 - [`audreyr/cookiecutter-pypackage`](https://github.com/audreyr/cookiecutter-pypackage)

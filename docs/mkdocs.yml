@@ -5,4 +5,4 @@ theme:
   name: readthedocs
 
 nav:
-  - About: 'index.md'
+  - About: 'readme.md'
