@@ -127,7 +127,7 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
     sentinel_path = Path(directory) / SAVE_PROGRESS_INDICATOR_FILE
 
     if sentinel_path.exists() and (not overwrite):
-        logger.info(
+        logger.warning(
             f"""Detected existing autoexport configuration at {sentinel_path}. """
             """If you wish to overwrite, use the --overwrite flag."""
         )
