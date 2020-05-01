@@ -24,7 +24,7 @@ Under the hood, this command performs two steps: 1) edits `jupyter_notebook_conf
 
 ```json
 {
-  "export_format": ["script"],
+  "export_formats": ["script"],
   "organize_by": "notebook",
 }
 ```
@@ -67,18 +67,24 @@ Usage: nbautoexport [OPTIONS]
   upon save.
 
 Options:
-  -f, --export_format TEXT  File format(s) to save for each notebook. Options
-                            are 'script', 'html', 'markdown', and 'rst'.
-                            Default is 'script'.
-  -b, --organize_by TEXT    Whether to save exported file(s) in a folder per
-                            notebook or a folder per extension. Options are
-                            'notebook' or 'extension'. Default is notebook.
-  -d, --directory TEXT      Directory containing Jupyter notebooks to track.
-                            Default is notebooks.
-  --overwrite               Overwrite existing configuration, if one is
-                            detected.
-  -v, --verbose             Verbose mode
-  --help                    Show this message and exit.
+  -f, --export_format TEXT   File format(s) to save for each notebook. Options
+                             are 'script', 'html', 'markdown', and 'rst'.
+                             Multiple formats should be provided using
+                             multiple flags, e.g., '-f script -f html -f
+                             markdown'. Default is 'script'.
+
+  -b, --organize_by TEXT     Whether to save exported file(s) in a folder per
+                             notebook or a folder per extension. Options are
+                             'notebook' or 'extension'. Default is 'notebook'.
+
+  -d, --directory TEXT       Directory containing jupyter notebooks to track.
+                             Default is 'notebooks'.
+
+  -o, --overwrite            Overwrite existing configuration, if one is
+                             detected.
+
+  -v, --verbose              Verbose mode.
+  --help                     Show this message and exit.
 ```
 
 ## Example

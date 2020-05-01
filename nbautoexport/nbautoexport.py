@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+from typing import Sequence
 
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
@@ -66,7 +67,7 @@ def post_save(model, os_path, contents_manager):
                 save_settings = {}
 
         subfolder_type = save_settings.get("organize_by", "notebook")
-        export_formats = save_settings.get("export_format", ["script"])
+        export_formats = save_settings.get("export_formats", ["script"])
         converter = NbConvertApp()
 
         for export_format in export_formats:
@@ -120,7 +121,7 @@ except:
             logger.info("Detected existing autoexport post-save hook. No changes made.")
 
 
-def install_sentinel(export_format, organize_by, directory, overwrite):
+def install_sentinel(export_formats, organize_by, directory, overwrite):
     if not Path(directory).exists():
         raise FileNotFoundError
 
@@ -133,7 +134,7 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
         )
     else:
         config = {
-            "export_format": export_format,
+            "export_formats": export_formats,
             "organize_by": organize_by,
         }
 
@@ -147,11 +148,13 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
 @click.option(
     "--export_format",
     "-f",
+    "export_formats",
     multiple=True,
     default=["script"],
     help=(
-        """File format(s) to save for each notebook. Options are 'script', 'html', """
-        """'markdown', and 'rst'. Default is 'script'."""
+        """File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', """
+        """and 'rst'. Multiple formats should be provided using multiple flags, e.g., '-f """
+        """script-f html -f markdown'. Default is 'script'."""
     ),
 )
 @click.option(
@@ -160,7 +163,7 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
     default="notebook",
     help=(
         """Whether to save exported file(s) in a folder per notebook or a folder per extension. """
-        """Options are 'notebook' or 'extension'. Default is notebook."""
+        """Options are 'notebook' or 'extension'. Default is 'notebook'."""
     ),
 )
 @click.option(
@@ -176,7 +179,7 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
     "--verbose", "-v", is_flag=True, help="Verbose mode.",
 )
 def install(
-    export_format: str,
+    export_formats: Sequence[str],
     organize_by: str,
     directory: str,
     overwrite: bool = False,
@@ -189,7 +192,7 @@ def install(
 
     install_post_save_hook()
     try:
-        install_sentinel(export_format, organize_by, directory, overwrite)
+        install_sentinel(export_formats, organize_by, directory, overwrite)
     except FileNotFoundError:
         with click.get_current_context() as ctx:
             msg = (
