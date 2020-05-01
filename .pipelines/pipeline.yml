@@ -24,3 +24,4 @@ steps:
   - bash: make lint
     displayName: Code quality checks
   - bash: make test
+    displayName: Unit tests
