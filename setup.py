@@ -47,7 +47,7 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     description="Automatically export Jupyter notebooks to various file formats (.py, .html, and more) on save.",
-    entry_points={"console_scripts": ["nbautoexport=nbautoexport.cli:main"]},
+    entry_points={"console_scripts": ["nbautoexport=nbautoexport.nbautoexport:install"]},
     install_requires=requirements,
     long_description=readme + "\n\n" + history,
     include_package_data=True,
