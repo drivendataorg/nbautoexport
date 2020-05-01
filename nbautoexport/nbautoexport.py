@@ -146,8 +146,9 @@ def install_sentinel(export_formats, organize_by, directory, overwrite):
 
 @click.command("autoexport")
 @click.option(
-    "--export_formats",
+    "--export_format",
     "-f",
+    "export_formats",
     multiple=True,
     default=["script"],
     help=(

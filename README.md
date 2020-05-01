@@ -67,7 +67,7 @@ Usage: nbautoexport [OPTIONS]
   upon save.
 
 Options:
-  -f, --export_formats TEXT  File format(s) to save for each notebook. Options
+  -f, --export_format TEXT   File format(s) to save for each notebook. Options
                              are 'script', 'html', 'markdown', and 'rst'.
                              Multiple formats should be provided using
                              multiple flags, e.g., '-f script -f html -f
