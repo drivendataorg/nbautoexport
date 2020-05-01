@@ -1,22 +1,25 @@
+strategy:
+  matrix:
+    LinuxPython36:
+      pythonVersion: '3.6'
+      imageName: 'ubuntu-16.04'
+    MacPython36:
+       pythonVersion: '3.6'
+       imageName: 'macOS-10.14'
+    WinPython36:
+      pythonVersion: '3.6'
+      imageName: 'vs2017-win2016'
+  maxParallel: 1
+
 jobs:
   - job: 'Test'
     pool:
-      vmImage: 'ubuntu-16.04'
-    strategy:
-      matrix:
-        Python35:
-          python.version: '3.5'
-        Python36:
-          python.version: '3.6'
-        Python37:
-          python.version: '3.7'
-        Python38:
-          python.version: '3.8'
+      vmImage: '$(imageName)'
 
     steps:
       - task: UsePythonVersion@0
         inputs:
-          versionSpec: '$(python.version)'
+          versionSpec: '$(pythonVersion)'
       - bash: |
           pip install .
           pip install -r requirements-dev.txt
