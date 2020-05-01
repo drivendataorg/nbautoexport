@@ -3,6 +3,7 @@
 black>=19
 coverage>=4.5.4
 flake8>=3.7.8
+mkdocs>=1.1
 pip>=19.2.3
 pytest-runner>=5.1
 pytest>=4.6.5

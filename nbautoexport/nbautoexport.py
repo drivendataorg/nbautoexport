@@ -91,7 +91,7 @@ def get_jupyter_config_directory():
 
 
 def install_post_save_hook():
-    """Splices the post save hook into the global jupyter configuration file
+    """Splices the post save hook into the global Jupyter configuration file
     """
     command = """# >>> labslib.autoexport initialize >>>
 try:
@@ -105,9 +105,9 @@ except:
     config_path = (Path(config_dir) / "jupyter_notebook_config.py").expanduser().resolve()
 
     if config_path.exists():
-        logger.debug(f"Detected existing jupyter configuration at {config_path}")
+        logger.debug(f"Detected existing Jupyter configuration at {config_path}")
     else:
-        logger.debug(f"No existing jupyter configuration detected at {config_path}. Creating.")
+        logger.debug(f"No existing Jupyter configuration detected at {config_path}. Creating.")
         config_path.touch(exist_ok=True)
 
     with config_path.open("r+") as fp:
@@ -167,7 +167,7 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
     "--directory",
     "-d",
     default="notebooks",
-    help="Directory containing jupyter notebooks to track. Default is notebooks.",
+    help="Directory containing Jupyter notebooks to track. Default is notebooks.",
 )
 @click.option(
     "--overwrite", "-o", is_flag=True, help="Overwrite existing configuration, if one is detected."

@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build help
+.PHONY: clean clean-docs clean-pyc clean-test clean-build docs format install lint release release-test test help
 .DEFAULT_GOAL := help
 
 define PRINT_HELP_PYSCRIPT
@@ -12,10 +12,7 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
-help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
-
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+clean: clean-build clean-docs clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
 clean-build: ## remove build artifacts
 	rm -fr build/
@@ -23,6 +20,9 @@ clean-build: ## remove build artifacts
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
+
+clean-docs:
+	rm -fr docs/site
 
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
@@ -36,15 +36,26 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint: ## check style with flake8
-	black --check nbautoexport tests
-	flake8 nbautoexport tests
+dist: clean ## builds source and wheel package
+	python setup.py sdist
+	python setup.py bdist_wheel
+	ls -l dist
+
+docs:
+	cd docs && mkdocs build
 
 format:
 	black nbautoexport tests
 
-test: ## run tests quickly with the default Python
-	pytest -vv
+help:
+	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+
+install: clean ## install the package to the active Python's site-packages
+	python setup.py install
+
+lint: ## check style with flake8
+	black --check nbautoexport tests
+	flake8 nbautoexport tests
 
 release: dist ## package and upload a release
 	twine upload dist/*
@@ -52,10 +63,5 @@ release: dist ## package and upload a release
 release-test: dist
 	twine upload --repository pypitest dist/*
 
-dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+test: ## run tests quickly with the default Python
+	pytest -vv
