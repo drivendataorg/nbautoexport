@@ -9,21 +9,17 @@ strategy:
     WinPython36:
       pythonVersion: '3.6'
       imageName: 'vs2017-win2016'
-  maxParallel: 1
 
-jobs:
-  - job: 'Test'
-    pool:
-      vmImage: '$(imageName)'
+pool:
+  vmImage: '$(imageName)'
 
-    steps:
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: '$(pythonVersion)'
-      - bash: |
-          pip install .
-          pip install -r requirements-dev.txt
-        displayName: Install package and dev requirements
-      - bash: make lint
-        displayName: Code quality checks
-          
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(pythonVersion)'
+  - bash: |
+      pip install .
+      pip install -r requirements-dev.txt
+    displayName: Install package and dev requirements
+  - bash: make lint
+    displayName: Code quality checks
