@@ -24,7 +24,6 @@ Under the hood, this command performs two steps: 1) edits `jupyter_notebook_conf
 {
   "export_format": ["script"],
   "organize_by": "notebook",
-  "directory": "notebooks"
 }
 ```
 

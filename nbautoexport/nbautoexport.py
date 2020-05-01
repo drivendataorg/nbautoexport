@@ -135,7 +135,6 @@ def install_sentinel(export_format, organize_by, directory, overwrite):
         config = {
             "export_format": export_format,
             "organize_by": organize_by,
-            "directory": directory,
         }
 
         logger.info(f"Creating configuration file at {sentinel_path}")
