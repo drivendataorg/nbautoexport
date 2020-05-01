@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Tests for `nbautoexport` package."""
 
 import pytest
@@ -7,7 +5,6 @@ import pytest
 from click.testing import CliRunner
 
 from nbautoexport import nbautoexport
-from nbautoexport import cli
 
 
 @pytest.fixture
@@ -29,9 +26,6 @@ def test_content(response):
 def test_command_line_interface():
     """Test the CLI."""
     runner = CliRunner()
-    result = runner.invoke(cli.main)
-    assert result.exit_code == 0
-    assert 'nbautoexport.cli.main' in result.output
-    help_result = runner.invoke(cli.main, ['--help'])
+    help_result = runner.invoke(nbautoexport.install, ["--help"])
     assert help_result.exit_code == 0
-    assert '--help  Show this message and exit.' in help_result.output
+    assert "Exports Jupyter notebooks to various file formats" in help_result.output
