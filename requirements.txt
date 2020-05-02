@@ -1,3 +1,4 @@
 Click>=7.0
 click-log>=0.3.2
+jupyter-contrib-nbextensions>=0.5.1
 nbconvert>=5.6.1

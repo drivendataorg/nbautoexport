@@ -94,13 +94,13 @@ def get_jupyter_config_directory():
 def install_post_save_hook():
     """Splices the post save hook into the global Jupyter configuration file
     """
-    command = """# >>> labslib.autoexport initialize >>>
+    command = """# >>> nbautoexport initialize >>>
 try:
-    from labslib.autoexport import post_save
+    from nbautoexport import post_save
     c.FileContentsManager.post_save_hook = post_save
 except:
     pass
-# <<< labslib.autoexport initialize <<<"""
+# <<< nbautoexport initialize <<<"""
 
     config_dir = get_jupyter_config_directory()
     config_path = (Path(config_dir) / "jupyter_notebook_config.py").expanduser().resolve()
