@@ -154,7 +154,7 @@ def install_sentinel(
     sentinel_path = Path(directory) / SAVE_PROGRESS_INDICATOR_FILE
 
     if sentinel_path.exists() and (not overwrite):
-        logger.warning(
+        raise FileExistsError(
             f"""Detected existing autoexport configuration at {sentinel_path}. """
             """If you wish to overwrite, use the --overwrite flag."""
         )
@@ -209,12 +209,7 @@ def install(
         help="Overwrite existing configuration, if one is detected.",
     ),
     verbose: bool = typer.Option(
-        False,
-        "--verbose",
-        "-v",
-        is_flag=True,
-        show_default=True,
-        help="Verbose mode",
+        False, "--verbose", "-v", is_flag=True, show_default=True, help="Verbose mode"
     ),
 ):
     """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save."""
@@ -229,7 +224,11 @@ def install(
         )
         raise typer.Exit(code=1)
 
-    install_sentinel(export_formats, organize_by, directory, overwrite)
+    try:
+        install_sentinel(export_formats, organize_by, directory, overwrite)
+    except FileExistsError as msg:
+        typer.echo(msg)
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":

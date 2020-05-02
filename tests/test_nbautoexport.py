@@ -1,6 +1,5 @@
 """Tests for `nbautoexport` package."""
 
-import pytest
 from typer.testing import CliRunner
 import json
 
@@ -13,52 +12,67 @@ from nbautoexport.nbautoexport import (
 def test_cli():
     """Test the CLI."""
     runner = CliRunner()
-    help_result = runner.invoke(app, ["--help"])
-    assert help_result.exit_code == 0
-    assert "Exports Jupyter notebooks to various file formats" in help_result.output
+    result = runner.invoke(app, ["--help"])
+    assert result.exit_code == 0
+    assert "Exports Jupyter notebooks to various file formats" in result.output
 
 
 def test_invalid_export_format():
     runner = CliRunner()
-    help_result = runner.invoke(app, ["-f", "invalid-output-format"])
-    assert help_result.exit_code == 2
+    result = runner.invoke(app, ["-f", "invalid-output-format"])
+    assert result.exit_code == 2
     assert (
         "Error: Invalid value for '--export_format' / '-f': invalid choice: invalid-output-format"
-        in help_result.output
+        in result.output
     )
 
 
 def test_invalid_organize_by():
     runner = CliRunner()
-    help_result = runner.invoke(app, ["-b", "invalid-organize-by"])
-    assert help_result.exit_code == 2
+    result = runner.invoke(app, ["-b", "invalid-organize-by"])
+    assert result.exit_code == 2
     assert (
         "Invalid value for '--organize_by' / '-b': invalid choice: invalid-organize-by"
-        in help_result.output
+        in result.output
     )
 
 
-def test_warn_overwrite(tmp_path_factory):
-    directory = tmp_path_factory.mktemp("install_sentinel")
+def test_refuse_overwrite(tmp_path_factory):
+    directory = tmp_path_factory.mktemp("warn_overwrite")
     (directory / ".nbautoexport").touch()
     runner = CliRunner()
-    help_result = runner.invoke(app, ["-b", "invalid-organize-by"])
-    assert help_result.exit_code == 2
-    assert (
-        "Invalid value for '--organize_by' / '-b': invalid choice: invalid-organize-by"
-        in help_result.output
+    result = runner.invoke(app, ["-d", str(directory)])
+    assert result.exit_code == 1
+    assert "Detected existing autoexport configuration at" in result.output
+
+
+def test_force_overwrite(tmp_path_factory):
+    directory = tmp_path_factory.mktemp("warn_overwrite")
+    (directory / ".nbautoexport").touch()
+    runner = CliRunner()
+    result = runner.invoke(
+        app, ["-d", str(directory), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
+    assert result.exit_code == 0
+    with (directory / ".nbautoexport").open("r") as fp:
+        config = json.load(fp)
+
+    expected_config = {
+        "export_formats": ["script", "html"],
+        "organize_by": "notebook",
+    }
+    assert config == expected_config
 
 
 def test_install_sentinel(tmp_path_factory):
     directory = tmp_path_factory.mktemp("install_sentinel")
     export_formats = ["script", "html"]
-    install_sentinel(export_formats, organize_by="extension", directory=directory, overwrite=False)
+    install_sentinel(export_formats, organize_by="notebook", directory=directory, overwrite=False)
     with (directory / ".nbautoexport").open("r") as fp:
         config = json.load(fp)
 
     expected_config = {
         "export_formats": export_formats,
-        "organize_by": "extension",
+        "organize_by": "notebook",
     }
     assert config == expected_config
