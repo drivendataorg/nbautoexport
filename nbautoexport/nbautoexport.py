@@ -216,7 +216,6 @@ def install(
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
 
-    install_post_save_hook()
     if not Path(directory).exists():
         typer.echo(
             f"""{Path(directory).resolve()} does not exist. Either create this folder or """
@@ -229,6 +228,8 @@ def install(
     except FileExistsError as msg:
         typer.echo(msg)
         raise typer.Exit(code=1)
+
+    install_post_save_hook()
 
 
 if __name__ == "__main__":
