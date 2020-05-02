@@ -53,6 +53,8 @@ def test_force_overwrite(tmp_path_factory):
     result = runner.invoke(
         app, ["-d", str(directory), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
+    print(result.output)
+    print(result.exit_code)
     assert result.exit_code == 0
     with (directory / ".nbautoexport").open("r") as fp:
         config = json.load(fp)
