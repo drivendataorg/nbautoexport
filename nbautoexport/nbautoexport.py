@@ -1,19 +1,35 @@
-import click
-import click_log
+from enum import Enum
 import json
 import logging
 import os
 from pathlib import Path
 import re
 import subprocess
-from typing import Sequence
+import typer
+from typing import List
 
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
 
 
 logger = logging.getLogger(__name__)
-click_log.basic_config(logger)
+app = typer.Typer()
+
+
+class ExportFormat(str, Enum):
+    html = "html"
+    latex = "latex"
+    pdf = "pdf"
+    slides = "slides"
+    markdown = "markdown"
+    asciidoc = "asciidoc"
+    script = "script"
+    notebook = "notebook"
+
+
+class OrganizeBy(str, Enum):
+    notebook = "notebook"
+    extension = "extension"
 
 
 class CopyToSubfolderPostProcessor(PostProcessorBase):
@@ -85,7 +101,7 @@ def post_save(model, os_path, contents_manager):
             converter.convert_notebooks()
 
 
-def get_jupyter_config_directory():
+def get_jupyter_config_directory() -> str:
     output = subprocess.check_output(["jupyter", "--config-dir"])
     config_directory = output.strip(b"\n").decode("utf-8")
     return config_directory
@@ -121,7 +137,17 @@ except:
             logger.info("Detected existing autoexport post-save hook. No changes made.")
 
 
-def install_sentinel(export_formats, organize_by, directory, overwrite):
+def install_sentinel(
+    export_formats: List[ExportFormat], organize_by: OrganizeBy, directory: str, overwrite: bool
+):
+    """Writes the configuration file to a specified directory.
+
+    Args:
+        export_formats: A list of `nbconvert`-supported export formats to write on each save
+        organize_by: Whether to organize exported files by notebook filename or in folders by extension
+        directory: The directory containing the notebooks to monitor
+        overwrite: Overwrite an existing sentinel file if one exists
+    """
     if not Path(directory).exists():
         raise FileNotFoundError
 
@@ -144,63 +170,67 @@ def install_sentinel(export_formats, organize_by, directory, overwrite):
             json.dump(config, fp)
 
 
-@click.command("autoexport")
-@click.option(
-    "--export_format",
-    "-f",
-    "export_formats",
-    multiple=True,
-    default=["script"],
-    help=(
-        """File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', """
-        """and 'rst'. Multiple formats should be provided using multiple flags, e.g., '-f """
-        """script-f html -f markdown'. Default is 'script'."""
-    ),
-)
-@click.option(
-    "--organize_by",
-    "-b",
-    default="notebook",
-    help=(
-        """Whether to save exported file(s) in a folder per notebook or a folder per extension. """
-        """Options are 'notebook' or 'extension'. Default is 'notebook'."""
-    ),
-)
-@click.option(
-    "--directory",
-    "-d",
-    default="notebooks",
-    help="Directory containing Jupyter notebooks to track. Default is notebooks.",
-)
-@click.option(
-    "--overwrite", "-o", is_flag=True, help="Overwrite existing configuration, if one is detected."
-)
-@click.option(
-    "--verbose", "-v", is_flag=True, help="Verbose mode.",
-)
+@app.command()
 def install(
-    export_formats: Sequence[str],
-    organize_by: str,
-    directory: str,
-    overwrite: bool = False,
-    verbose: bool = False,
+    export_formats: List[ExportFormat] = typer.Option(
+        ["script"],
+        "--export_format",
+        "-f",
+        show_default=True,
+        help=(
+            """File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', """
+            """and 'rst'. Multiple formats should be provided using multiple flags, e.g., '-f """
+            """script-f html -f markdown'."""
+        ),
+    ),
+    organize_by: OrganizeBy = typer.Option(
+        "notebook",
+        "--organize_by",
+        "-b",
+        show_default=True,
+        help=(
+            """Whether to save exported file(s) in a folder per notebook or a folder per extension. """
+            """Options are 'notebook' or 'extension'."""
+        ),
+    ),
+    directory: str = typer.Option(
+        "notebooks",
+        "--directory",
+        "-d",
+        show_default=True,
+        help="Directory containing Jupyter notebooks to track.",
+    ),
+    overwrite: bool = typer.Option(
+        False,
+        "--overwrite",
+        "-o",
+        is_flag=True,
+        show_default=True,
+        help="Overwrite existing configuration, if one is detected.",
+    ),
+    verbose: bool = typer.Option(
+        False,
+        "--verbose",
+        "-v",
+        is_flag=True,
+        show_default=True,
+        help="Verbose mode",
+    ),
 ):
     """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save."""
-
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
 
     install_post_save_hook()
-    try:
-        install_sentinel(export_formats, organize_by, directory, overwrite)
-    except FileNotFoundError:
-        with click.get_current_context() as ctx:
-            msg = (
-                f"""{Path(directory).resolve()} does not exist. Either create this folder """
-                """or specify a different directory.\n\n"""
-            )
-            raise click.ClickException(msg + ctx.get_help())
+    if not Path(directory).exists():
+        typer.echo(
+            f"""{Path(directory).resolve()} does not exist. Either create this folder or """
+            """specify a different directory.\n\n"""
+        )
+        raise typer.Exit(code=1)
+
+    install_sentinel(export_formats, organize_by, directory, overwrite)
 
 
 if __name__ == "__main__":
-    install()
+    app()
