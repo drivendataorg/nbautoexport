@@ -38,7 +38,7 @@ def test_invalid_organize_by():
 
 
 def test_refuse_overwrite(tmp_path_factory):
-    directory = tmp_path_factory.mktemp("warn_overwrite")
+    directory = tmp_path_factory.mktemp("refuse_overwrite")
     (directory / ".nbautoexport").touch()
     runner = CliRunner()
     result = runner.invoke(app, ["-d", str(directory)])
@@ -47,7 +47,7 @@ def test_refuse_overwrite(tmp_path_factory):
 
 
 def test_force_overwrite(tmp_path_factory):
-    directory = tmp_path_factory.mktemp("warn_overwrite")
+    directory = tmp_path_factory.mktemp("force_overwrite")
     (directory / ".nbautoexport").touch()
     runner = CliRunner()
     result = runner.invoke(
