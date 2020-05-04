@@ -174,7 +174,7 @@ def install_sentinel(
 def install(
     export_formats: List[ExportFormat] = typer.Option(
         ["script"],
-        "--export_format",
+        "--export-format",
         "-f",
         show_default=True,
         help=(
@@ -185,7 +185,7 @@ def install(
     ),
     organize_by: OrganizeBy = typer.Option(
         "notebook",
-        "--organize_by",
+        "--organize-by",
         "-b",
         show_default=True,
         help=(
