@@ -21,6 +21,8 @@ steps:
       pip install .
       pip install -r requirements-dev.txt
     displayName: Install package and dev requirements
+  - bash: jupyter notebook --generate-config
+    displayName: Generate Jupyter notebook config
   - bash: make lint
     displayName: Code quality checks
   - bash: make test

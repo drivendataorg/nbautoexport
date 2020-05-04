@@ -14,13 +14,17 @@ pip install nbautoexport
 
 ## Simple usage
 
-We recommend setting this up at the beginning of a project. Simply run,
+Before installing, you must [initialize a `jupyter_notebook_config.py`](https://jupyter-notebook.readthedocs.io/en/stable/config.html) file with the following command:
 
 ```bash
-nbautoexport
+jupyter notebook --generate-config
 ```
 
-in the home folder of your project. Better yet, include this in your `make requirements` command to ensure reproducibility.
+To set up, run the following command from the root folder of your project:
+
+```bash
+nbautoexport [--directory/-d] [--export-format/-f] [--export-format/-f] [--organize-by/-b] [--overwrite/-o] [--verbose/-v]
+```
 
 Under the hood, this command performs two steps: 1) edits `jupyter_notebook_config.py` to add a post-save hook, and 2) creates a sentinel file `./notebooks/.nbautoexport`, a JSON file that contains the project-specific settings. Here is the default `.nbautoexport`:
 
