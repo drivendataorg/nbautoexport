@@ -4,9 +4,10 @@ import logging
 import os
 from pathlib import Path
 import re
-import subprocess
-import typer
 from typing import List
+
+from jupyter_core.paths import jupyter_config_dir
+import typer
 
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
@@ -101,12 +102,6 @@ def post_save(model, os_path, contents_manager):
             converter.convert_notebooks()
 
 
-def get_jupyter_config_directory() -> str:
-    output = subprocess.check_output(["jupyter", "--config-dir"])
-    config_directory = output.strip(b"\n").decode("utf-8")
-    return config_directory
-
-
 def install_post_save_hook():
     """Splices the post save hook into the global Jupyter configuration file
     """
@@ -118,7 +113,7 @@ except:
     pass
 # <<< nbautoexport initialize <<<"""
 
-    config_dir = get_jupyter_config_directory()
+    config_dir = jupyter_config_dir()
     config_path = (Path(config_dir) / "jupyter_notebook_config.py").expanduser().resolve()
 
     if config_path.exists():
