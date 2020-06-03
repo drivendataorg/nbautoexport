@@ -14,13 +14,17 @@ pip install nbautoexport
 
 ## Simple usage
 
-We recommend setting this up at the beginning of a project. Simply run,
+Before installing, you must [initialize a `jupyter_notebook_config.py`](https://jupyter-notebook.readthedocs.io/en/stable/config.html) file with the following command:
 
 ```bash
-nbautoexport
+jupyter notebook --generate-config
 ```
 
-in the home folder of your project. Better yet, include this in your `make requirements` command to ensure reproducibility.
+To set up, run the following command from the root folder of your project:
+
+```bash
+nbautoexport [--directory/-d] [--export-format/-f] [--export-format/-f] [--organize-by/-b] [--overwrite/-o] [--verbose/-v]
+```
 
 Under the hood, this command performs two steps: 1) edits `jupyter_notebook_config.py` to add a post-save hook, and 2) creates a sentinel file `./notebooks/.nbautoexport`, a JSON file that contains the project-specific settings. Here is the default `.nbautoexport`:
 
@@ -46,7 +50,7 @@ notebooks
 This default organization is handy for selecting the pair in git with just `*` at the end of the part that the tab completion matched. However, this can result in a large number of subfolders. You can put scripts in a single folder instead with
 
 ```bash
-nbautoexport --organize_by extension
+nbautoexport --organize-by extension
 ```
 
 ```
@@ -69,30 +73,41 @@ Usage: nbautoexport [OPTIONS]
   upon save.
 
 Options:
-  -f, --export_format TEXT   File format(s) to save for each notebook. Options
-                             are 'script', 'html', 'markdown', and 'rst'.
-                             Multiple formats should be provided using
-                             multiple flags, e.g., '-f script -f html -f
-                             markdown'. Default is 'script'.
+  -f, --export-format [html|latex|pdf|slides|markdown|asciidoc|script|notebook]
+                                  File format(s) to save for each notebook.
+                                  Options are 'script', 'html', 'markdown',
+                                  and 'rst'. Multiple formats should be
+                                  provided using multiple flags, e.g., '-f
+                                  script-f html -f markdown'.  [default:
+                                  script]
 
-  -b, --organize_by TEXT     Whether to save exported file(s) in a folder per
-                             notebook or a folder per extension. Options are
-                             'notebook' or 'extension'. Default is 'notebook'.
+  -b, --organize-by [notebook|extension]
+                                  Whether to save exported file(s) in a folder
+                                  per notebook or a folder per extension.
+                                  Options are 'notebook' or 'extension'.
+                                  [default: notebook]
 
-  -d, --directory TEXT       Directory containing jupyter notebooks to track.
-                             Default is 'notebooks'.
+  -d, --directory TEXT            Directory containing Jupyter notebooks to
+                                  track.  [default: notebooks]
 
-  -o, --overwrite            Overwrite existing configuration, if one is
-                             detected.
+  -o, --overwrite                 Overwrite existing configuration, if one is
+                                  detected.  [default: False]
 
-  -v, --verbose              Verbose mode.
-  --help                     Show this message and exit.
+  -v, --verbose                   Verbose mode  [default: False]
+  --install-completion [bash|zsh|fish|powershell|pwsh]
+                                  Install completion for the specified shell.
+  --show-completion [bash|zsh|fish|powershell|pwsh]
+                                  Show completion for the specified shell, to
+                                  copy it or customize the installation.
+
+  --help                          Show this message and exit.
+
 ```
 
 ## Example
 
 ```bash
-nbautoexport -f script -f html --organize_by extension --directory sprint_one_notebooks
+nbautoexport -f script -f html --organize-by extension --directory sprint_one_notebooks
 ```
 
 Upon save, this creates `.py` and `.html` versions of the Jupyter notebooks in `sprint_one_notebooks` folder and results in the following organization:
