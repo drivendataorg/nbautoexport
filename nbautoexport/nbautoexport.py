@@ -133,7 +133,7 @@ except:
 
 
 def install_sentinel(
-    export_formats: List[ExportFormat], organize_by: OrganizeBy, directory: str, overwrite: bool
+    export_formats: List[ExportFormat], organize_by: OrganizeBy, directory: Path, overwrite: bool
 ):
     """Writes the configuration file to a specified directory.
 
@@ -143,10 +143,7 @@ def install_sentinel(
         directory: The directory containing the notebooks to monitor
         overwrite: Overwrite an existing sentinel file if one exists
     """
-    if not Path(directory).exists():
-        raise FileNotFoundError
-
-    sentinel_path = Path(directory) / SAVE_PROGRESS_INDICATOR_FILE
+    sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
 
     if sentinel_path.exists() and (not overwrite):
         raise FileExistsError(
@@ -167,6 +164,9 @@ def install_sentinel(
 
 @app.command()
 def install(
+    directory: Path = typer.Argument(
+        "notebooks", exists=True, file_okay=False, dir_okay=True, writable=True
+    ),
     export_formats: List[ExportFormat] = typer.Option(
         ["script"],
         "--export-format",
@@ -188,13 +188,6 @@ def install(
             """Options are 'notebook' or 'extension'."""
         ),
     ),
-    directory: str = typer.Option(
-        "notebooks",
-        "--directory",
-        "-d",
-        show_default=True,
-        help="Directory containing Jupyter notebooks to track.",
-    ),
     overwrite: bool = typer.Option(
         False,
         "--overwrite",
@@ -207,16 +200,14 @@ def install(
         False, "--verbose", "-v", is_flag=True, show_default=True, help="Verbose mode"
     ),
 ):
-    """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save."""
+    """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save,
+    automatically.
+
+    This command creates a .nbautoexport configuration file in DIRECTORY. Defaults to
+    "./notebooks/"
+    """
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
-
-    if not Path(directory).exists():
-        typer.echo(
-            f"""{Path(directory).resolve()} does not exist. Either create this folder or """
-            """specify a different directory.\n\n"""
-        )
-        raise typer.Exit(code=1)
 
     try:
         install_sentinel(export_formats, organize_by, directory, overwrite)

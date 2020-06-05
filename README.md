@@ -23,7 +23,7 @@ jupyter notebook --generate-config
 To set up, run the following command from the root folder of your project:
 
 ```bash
-nbautoexport [--directory/-d] [--export-format/-f] [--export-format/-f] [--organize-by/-b] [--overwrite/-o] [--verbose/-v]
+nbautoexport [DIRECTORY] [--export-format/-f] [--export-format/-f] [--organize-by/-b] [--overwrite/-o] [--verbose/-v]
 ```
 
 Under the hood, this command performs two steps: 1) edits `jupyter_notebook_config.py` to add a post-save hook, and 2) creates a sentinel file `./notebooks/.nbautoexport`, a JSON file that contains the project-specific settings. Here is the default `.nbautoexport`:

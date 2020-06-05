@@ -41,7 +41,7 @@ def test_refuse_overwrite(tmp_path_factory):
     directory = tmp_path_factory.mktemp("refuse_overwrite")
     (directory / ".nbautoexport").touch()
     runner = CliRunner()
-    result = runner.invoke(app, ["-d", str(directory)])
+    result = runner.invoke(app, [str(directory)])
     assert result.exit_code == 1
     assert "Detected existing autoexport configuration at" in result.output
 
@@ -51,7 +51,7 @@ def test_force_overwrite(tmp_path_factory):
     (directory / ".nbautoexport").touch()
     runner = CliRunner()
     result = runner.invoke(
-        app, ["-d", str(directory), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
+        app, [str(directory), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
     print(result.output)
     print(result.exit_code)
