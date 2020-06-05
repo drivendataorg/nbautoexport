@@ -10,4 +10,5 @@ pytest>=4.6.5
 pytest-cov>=2.8.1
 Sphinx>=1.8.5
 twine>=1.14.0
+versioneer
 wheel>=0.33.6

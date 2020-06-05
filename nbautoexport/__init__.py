@@ -1,8 +1,7 @@
-"""Top-level package for nbautoexport."""
+from nbautoexport.nbautoexport import post_save
+from nbautoexport._version import get_versions
 
-__author__ = """DrivenData"""
-__email__ = "info@drivendata.org"
-__version__ = "0.1.1"
+__all__ = [post_save]
 
-
-from nbautoexport.nbautoexport import post_save  # noqa:F401
+__version__ = get_versions()["version"]
+del get_versions

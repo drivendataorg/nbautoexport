@@ -5,6 +5,8 @@
 from setuptools import setup, find_packages
 from pathlib import Path
 
+import versioneer
+
 
 def load_requirements(path: Path):
     requirements = []
@@ -59,6 +61,7 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/drivendataorg/nbautoexport",
-    version="0.1.1",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     zip_safe=False,
 )
