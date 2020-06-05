@@ -11,10 +11,11 @@ import typer
 
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
-
+from nbautoexport._version import get_versions
 
 logger = logging.getLogger(__name__)
 app = typer.Typer()
+__version__ = get_versions()["version"]
 
 
 class ExportFormat(str, Enum):
@@ -181,6 +182,12 @@ def install_sentinel(
             json.dump(config, fp)
 
 
+def version_callback(value: bool):
+    if value:
+        typer.echo(__version__)
+        raise typer.Exit()
+
+
 @app.command()
 def install(
     directory: Path = typer.Argument(
@@ -217,6 +224,9 @@ def install(
     ),
     verbose: bool = typer.Option(
         False, "--verbose", "-v", is_flag=True, show_default=True, help="Verbose mode"
+    ),
+    version: bool = typer.Option(
+        None, "--version", callback=version_callback, is_eager=True, help="Show version"
     ),
 ):
     """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save,
