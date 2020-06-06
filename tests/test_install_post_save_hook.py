@@ -61,6 +61,30 @@ def test_install_hook_no_config(tmp_path_factory, monkeypatch):
     assert config == nbautoexport.post_save_hook_initialize_block
 
 
+def test_install_hook_missing_config_dir(tmp_path_factory, monkeypatch):
+    directory = tmp_path_factory.mktemp("no_existing_missing_dir")
+    config_dir = directory / "not_yet_a_real_dir"
+
+    def mock_jupyter_config_dir():
+        return str(config_dir)
+
+    monkeypatch.setattr(nbautoexport, "jupyter_config_dir", mock_jupyter_config_dir)
+
+    config_path = config_dir / "jupyter_notebook_config.py"
+
+    assert not config_dir.exists()
+    assert not config_path.exists()
+
+    nbautoexport.install_post_save_hook()
+
+    assert config_dir.exists()
+    assert config_path.exists()
+
+    with config_path.open("r") as fp:
+        config = fp.read()
+    assert config == nbautoexport.post_save_hook_initialize_block
+
+
 def test_install_hook_existing_config_no_hook(tmp_path_factory, monkeypatch):
     directory = tmp_path_factory.mktemp("existing_no_hook")
 
