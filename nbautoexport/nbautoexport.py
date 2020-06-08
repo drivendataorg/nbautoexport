@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from pathlib import Path
+from pkg_resources import parse_version
 import re
 import textwrap
 from typing import List
@@ -173,7 +174,7 @@ def install_post_save_hook():
             existing_version = ""
             logger.debug("Existing post-save hook predates versioning.")
 
-        if existing_version < __version__:
+        if parse_version(existing_version) < parse_version(__version__):
             logger.info(f"Updating nbautoexport post-save hook with version {__version__}...")
             with config_path.open("w") as fp:
                 # Open as w replaces existing file. We're replacing entire config.

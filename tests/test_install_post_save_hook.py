@@ -1,7 +1,17 @@
+from pkg_resources import parse_version
+from pkg_resources.extern.packaging.version import Version
 import textwrap
 
 from nbautoexport import __version__
 import nbautoexport.nbautoexport as nbautoexport
+
+
+def test_parse_version():
+    """Test that current version is parsable by pkg_resources per PEP 440, so that it is properly
+    sortable when we compare against previously installed initialize blocks.
+    """
+    version = parse_version(__version__)
+    assert type(version) == Version
 
 
 def test_initialize_block_content():
