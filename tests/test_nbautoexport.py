@@ -37,26 +37,24 @@ def test_invalid_organize_by():
     )
 
 
-def test_refuse_overwrite(tmp_path_factory):
-    directory = tmp_path_factory.mktemp("refuse_overwrite")
-    (directory / ".nbautoexport").touch()
+def test_refuse_overwrite(tmp_path):
+    (tmp_path / ".nbautoexport").touch()
     runner = CliRunner()
-    result = runner.invoke(app, [str(directory)])
+    result = runner.invoke(app, [str(tmp_path)])
     assert result.exit_code == 1
     assert "Detected existing autoexport configuration at" in result.output
 
 
-def test_force_overwrite(tmp_path_factory):
-    directory = tmp_path_factory.mktemp("force_overwrite")
-    (directory / ".nbautoexport").touch()
+def test_force_overwrite(tmp_path):
+    (tmp_path / ".nbautoexport").touch()
     runner = CliRunner()
     result = runner.invoke(
-        app, [str(directory), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
+        app, [str(tmp_path), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
     print(result.output)
     print(result.exit_code)
     assert result.exit_code == 0
-    with (directory / ".nbautoexport").open("r") as fp:
+    with (tmp_path / ".nbautoexport").open("r") as fp:
         config = json.load(fp)
 
     expected_config = {
@@ -66,11 +64,10 @@ def test_force_overwrite(tmp_path_factory):
     assert config == expected_config
 
 
-def test_install_sentinel(tmp_path_factory):
-    directory = tmp_path_factory.mktemp("install_sentinel")
+def test_install_sentinel(tmp_path):
     export_formats = ["script", "html"]
-    install_sentinel(export_formats, organize_by="notebook", directory=directory, overwrite=False)
-    with (directory / ".nbautoexport").open("r") as fp:
+    install_sentinel(export_formats, organize_by="notebook", directory=tmp_path, overwrite=False)
+    with (tmp_path / ".nbautoexport").open("r") as fp:
         config = json.load(fp)
 
     expected_config = {
