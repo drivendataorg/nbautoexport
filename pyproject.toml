@@ -7,4 +7,5 @@ exclude = '''
     \.git
   | \.venv
 )/
+| nbautoexport/_version.py
 '''

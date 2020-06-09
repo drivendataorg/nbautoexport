@@ -3,6 +3,7 @@
 from typer.testing import CliRunner
 import json
 
+from nbautoexport import __version__
 from nbautoexport.nbautoexport import (
     app,
     install_sentinel,
@@ -15,6 +16,14 @@ def test_cli():
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "Exports Jupyter notebooks to various file formats" in result.output
+
+
+def test_version():
+    """Test the CLI."""
+    runner = CliRunner()
+    result = runner.invoke(app, ["--version"])
+    assert result.exit_code == 0
+    assert result.output.strip() == __version__
 
 
 def test_invalid_export_format():
