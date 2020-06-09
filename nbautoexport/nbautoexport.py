@@ -63,8 +63,17 @@ SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"
 
 
 def post_save(model, os_path, contents_manager):
-    """post-save hook for converting notebooks to .py scripts and html
-       in a separate folder with the same name
+    """Post-save hook for converting notebooks to other formats using Jupyter nbconvert and saving
+    in a subfolder.
+
+    The following arguments are standard for Jupyter post-save hooks. See [Jupyter Documentation](
+    https://jupyter-notebook.readthedocs.io/en/stable/extending/savehooks.html).
+
+    Args:
+        model (dict): the model representing the file. See [Jupyter documentation](
+        https://jupyter-notebook.readthedocs.io/en/stable/extending/contents.html#data-model).
+        os_path (str): the filesystem path to the file just written
+        contents_manager (FileContentsManager): FileContentsManager instance that hook is bound to
     """
     # only do this for notebooks
     if model["type"] != "notebook":
