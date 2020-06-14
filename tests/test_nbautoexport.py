@@ -1,13 +1,12 @@
 """Tests for `nbautoexport` package."""
 
-from typer.testing import CliRunner
 import json
 
+from nbconvert.exporters import get_export_names
+from typer.testing import CliRunner
+
 from nbautoexport import __version__
-from nbautoexport.nbautoexport import (
-    app,
-    install_sentinel,
-)
+from nbautoexport.nbautoexport import app, ExportFormat, install_sentinel
 
 
 def test_cli():
@@ -34,6 +33,14 @@ def test_invalid_export_format():
         "Error: Invalid value for '--export-format' / '-f': invalid choice: invalid-output-format"
         in result.output
     )
+
+
+def test_export_format_compatibility():
+    """Test that export formats are compatible with Jupyter nbautoconvert.
+    """
+    nbconvert_export_names = get_export_names()
+    for export_format in ExportFormat:
+        assert export_format.value in nbconvert_export_names
 
 
 def test_invalid_organize_by():
