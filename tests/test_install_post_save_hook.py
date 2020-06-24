@@ -2,7 +2,11 @@ from pkg_resources import parse_version
 from pkg_resources.extern.packaging.version import Version
 import textwrap
 
+from notebook.services.contents.filemanager import FileContentsManager
+from traitlets.config.loader import Config
+
 from nbautoexport import __version__
+import nbautoexport as nbautoexport_root
 import nbautoexport.nbautoexport as nbautoexport
 
 
@@ -196,3 +200,63 @@ def test_install_hook_replace_hook_older_version(tmp_path, monkeypatch):
     )
     assert "old_and_tired()" not in config
     assert f"version=[{__version__}]" in config
+
+
+def test_initialize_post_save_binding():
+    """Test that post_save hook can be successfully bound to a Jupyter config.
+    """
+    jupyter_config = Config(FileContentsManager=FileContentsManager())
+    nbautoexport.initialize_post_save_hook(jupyter_config)
+    assert isinstance(jupyter_config.FileContentsManager, FileContentsManager)
+    assert jupyter_config.FileContentsManager.post_save_hook is nbautoexport.post_save
+
+
+def test_initialize_post_save_execution(monkeypatch):
+    """Test that bound post_save hook with given signature can be successfully run.
+    """
+
+    jupyter_config = Config(FileContentsManager=FileContentsManager())
+
+    def mocked_post_save(model, os_path, contents_manager):
+        """Append a token to os_path to certify that function ran.
+        """
+        os_path.append("nbautoexport")
+
+    monkeypatch.setattr(nbautoexport_root, "post_save", mocked_post_save)
+
+    nbautoexport.initialize_post_save_hook(jupyter_config)
+
+    assert isinstance(jupyter_config.FileContentsManager, FileContentsManager)
+    assert callable(jupyter_config.FileContentsManager.post_save_hook)
+    os_path_list = []
+    jupyter_config.FileContentsManager.run_post_save_hook(model=None, os_path=os_path_list)
+    assert os_path_list == ["nbautoexport"]
+
+
+def test_initialize_post_save_existing(monkeypatch):
+    """Test that handling of existing post_save hook works properly.
+    """
+
+    jupyter_config = Config(FileContentsManager=FileContentsManager())
+
+    def old_post_save(model, os_path, contents_manager):
+        """Append a token to os_path to certify that function ran.
+        """
+        os_path.append("old_post_save")
+
+    jupyter_config.FileContentsManager.post_save_hook = old_post_save
+
+    def mocked_post_save(model, os_path, contents_manager):
+        """Append a token to os_path to certify that function ran.
+        """
+        os_path.append("nbautoexport")
+
+    monkeypatch.setattr(nbautoexport_root, "post_save", mocked_post_save)
+
+    nbautoexport.initialize_post_save_hook(jupyter_config)
+
+    assert isinstance(jupyter_config.FileContentsManager, FileContentsManager)
+    assert callable(jupyter_config.FileContentsManager.post_save_hook)
+    os_path_list = []
+    jupyter_config.FileContentsManager.run_post_save_hook(model=None, os_path=os_path_list)
+    assert os_path_list == ["old_post_save", "nbautoexport"]

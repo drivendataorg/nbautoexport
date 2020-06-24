@@ -1,4 +1,5 @@
 from enum import Enum
+from inspect import getsourcelines
 import json
 import logging
 import os
@@ -9,10 +10,11 @@ import textwrap
 from typing import List
 
 from jupyter_core.paths import jupyter_config_dir
-import typer
-
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
+from traitlets.config.loader import Config
+import typer
+
 from nbautoexport._version import get_versions
 
 logger = logging.getLogger(__name__)
@@ -114,26 +116,29 @@ def post_save(model, os_path, contents_manager):
             converter.convert_notebooks()
 
 
+def initialize_post_save_hook(c: Config):
+    # >>> nbautoexport initialize, version=[{version}] >>>
+    try:
+        from nbautoexport import post_save
+
+        if callable(c.FileContentsManager.post_save_hook):
+            old_post_save = c.FileContentsManager.post_save_hook
+
+            def _post_save(model, os_path, contents_manager):
+                old_post_save(model=model, os_path=os_path, contents_manager=contents_manager)
+                post_save(model=model, os_path=os_path, contents_manager=contents_manager)
+
+            c.FileContentsManager.post_save_hook = _post_save
+        else:
+            c.FileContentsManager.post_save_hook = post_save
+    except Exception:
+        pass
+    # <<< nbautoexport initialize <<<
+    pass  # need this line for above comment to be included in function source
+
+
 post_save_hook_initialize_block = textwrap.dedent(
-    f"""\
-        # >>> nbautoexport initialize, version=[{__version__}] >>>
-        try:
-            from nbautoexport import post_save
-
-            if callable(c.FileContentsManager.post_save_hook):
-                old_post_save = c.FileContentsManager.post_save_hook
-
-                def _post_save(model, os_path, contents_manager):
-                    old_post_save(model, os_path, contents_manager)
-                    post_save(model, os_path, contents_manager)
-
-                c.FileContentsManager.post_save_hook = _post_save
-            else:
-                c.FileContentsManager.post_save_hook = post_save
-        except:
-            pass
-        # <<< nbautoexport initialize <<<
-"""
+    "".join(getsourcelines(initialize_post_save_hook)[0][1:-1]).format(version=__version__)
 )
 
 block_regex = re.compile(
