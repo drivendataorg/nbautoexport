@@ -1,7 +1,4 @@
-from nbautoexport.nbautoexport import post_save
-from nbautoexport._version import get_versions
+from nbautoexport.convert import post_save
+from nbautoexport.utils import __version__
 
-__all__ = [post_save]
-
-__version__ = get_versions()["version"]
-del get_versions
+__all__ = [post_save, __version__]
