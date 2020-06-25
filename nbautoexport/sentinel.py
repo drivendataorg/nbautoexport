@@ -33,7 +33,7 @@ class OrganizeBy(str, Enum):
 class NbAutoexportConfig(BaseModel):
     export_formats: List[ExportFormat] = ["script"]
     organize_by: OrganizeBy = "extension"
-    autoclean: bool = False
+    clean: bool = False
 
 
 def install_sentinel(

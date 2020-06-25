@@ -158,7 +158,7 @@ def install(
             """Options are 'notebook' or 'extension'."""
         ),
     ),
-    autoclean: bool = typer.Option(
+    clean: bool = typer.Option(
         False,
         show_default=True,
         help="Whether to automatically delete files in subfolders that don't match configuration.",

@@ -15,12 +15,15 @@ from nbautoexport.sentinel import (
 
 
 class CopyToSubfolderPostProcessor(PostProcessorBase):
-    def __init__(self, subfolder=""):
+    def __init__(self, subfolder=None):
         self.subfolder = subfolder
         super(CopyToSubfolderPostProcessor, self).__init__()
 
     def postprocess(self, input: str):
         """ Save converted file to a separate directory. """
+        if self.subfolder is None:
+            return
+
         input = Path(input)
 
         new_dir = input.parent / self.subfolder
@@ -65,7 +68,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
         )
         export_notebook(os_path, config=config)
 
-        if config.autoclean:
+        if config.clean:
             to_remove = find_unwanted_outputs(cwd, config)
             for path in to_remove:
                 if path.is_dir():
