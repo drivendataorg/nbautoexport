@@ -28,7 +28,15 @@ def version_callback(value: bool):
 
 
 @app.callback()
-def main():
+def main(
+    version: bool = typer.Option(
+        None,
+        "--version",
+        callback=version_callback,
+        is_eager=True,
+        help="Show nbautoexport version.",
+    ),
+):
     """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save,
     automatically.
 
@@ -173,9 +181,6 @@ def install(
     ),
     verbose: bool = typer.Option(
         False, "--verbose", "-v", is_flag=True, show_default=True, help="Verbose mode"
-    ),
-    version: bool = typer.Option(
-        None, "--version", callback=version_callback, is_eager=True, help="Show version"
     ),
 ):
     """

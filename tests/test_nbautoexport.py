@@ -6,7 +6,8 @@ from nbconvert.exporters import get_export_names
 from typer.testing import CliRunner
 
 from nbautoexport import __version__
-from nbautoexport.nbautoexport import app, ExportFormat, install_sentinel
+from nbautoexport.nbautoexport import app
+from nbautoexport.sentinel import ExportFormat, install_sentinel, NbAutoexportConfig
 
 
 def test_cli():
@@ -27,7 +28,7 @@ def test_version():
 
 def test_invalid_export_format():
     runner = CliRunner()
-    result = runner.invoke(app, ["-f", "invalid-output-format"])
+    result = runner.invoke(app, ["install", "-f", "invalid-output-format"])
     assert result.exit_code == 2
     assert (
         "Error: Invalid value for '--export-format' / '-f': invalid choice: invalid-output-format"
@@ -45,7 +46,7 @@ def test_export_format_compatibility():
 
 def test_invalid_organize_by():
     runner = CliRunner()
-    result = runner.invoke(app, ["-b", "invalid-organize-by"])
+    result = runner.invoke(app, ["install", "-b", "invalid-organize-by"])
     assert result.exit_code == 2
     assert (
         "Invalid value for '--organize-by' / '-b': invalid choice: invalid-organize-by"
@@ -56,7 +57,7 @@ def test_invalid_organize_by():
 def test_refuse_overwrite(tmp_path):
     (tmp_path / ".nbautoexport").touch()
     runner = CliRunner()
-    result = runner.invoke(app, [str(tmp_path)])
+    result = runner.invoke(app, ["install", str(tmp_path)])
     assert result.exit_code == 1
     assert "Detected existing autoexport configuration at" in result.output
 
@@ -65,7 +66,7 @@ def test_force_overwrite(tmp_path):
     (tmp_path / ".nbautoexport").touch()
     runner = CliRunner()
     result = runner.invoke(
-        app, [str(tmp_path), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
+        app, ["install", str(tmp_path), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
     print(result.output)
     print(result.exit_code)
@@ -73,10 +74,7 @@ def test_force_overwrite(tmp_path):
     with (tmp_path / ".nbautoexport").open("r") as fp:
         config = json.load(fp)
 
-    expected_config = {
-        "export_formats": ["script", "html"],
-        "organize_by": "notebook",
-    }
+    expected_config = NbAutoexportConfig(export_formats=["script", "html"], organize_by="notebook")
     assert config == expected_config
 
 
@@ -86,8 +84,5 @@ def test_install_sentinel(tmp_path):
     with (tmp_path / ".nbautoexport").open("r") as fp:
         config = json.load(fp)
 
-    expected_config = {
-        "export_formats": export_formats,
-        "organize_by": "notebook",
-    }
+    expected_config = NbAutoexportConfig(export_formats=export_formats, organize_by="notebook")
     assert config == expected_config

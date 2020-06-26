@@ -3,7 +3,8 @@ from pathlib import Path
 import shutil
 import sys
 
-from nbautoexport.nbautoexport import post_save, SAVE_PROGRESS_INDICATOR_FILE
+from nbautoexport.convert import post_save
+from nbautoexport.sentinel import SAVE_PROGRESS_INDICATOR_FILE
 
 NOTEBOOK_FILE = Path(__file__).parent / "assets" / "the_notebook.ipynb"
 

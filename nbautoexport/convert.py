@@ -27,7 +27,7 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
         input = Path(input)
 
         new_dir = input.parent / self.subfolder
-        new_dir.mkdir(new_dir, exist_ok=True)
+        new_dir.mkdir(exist_ok=True)
         new_path = new_dir / input.name
 
         with input.open("r") as f:
@@ -81,14 +81,14 @@ def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
     converter = NbConvertApp()
 
     for export_format in config.export_formats:
-        if config.subfolder_type == "notebook":
+        if config.organize_by == "notebook":
             subfolder = notebook_path.stem
 
-        elif config.subfolder_type == "extension":
-            subfolder = export_format
+        elif config.organize_by == "extension":
+            subfolder = export_format.value
 
         converter.postprocessor = CopyToSubfolderPostProcessor(subfolder=subfolder)
-        converter.export_format = export_format
+        converter.export_format = export_format.value
         converter.initialize()
-        converter.notebooks = [notebook_path]
+        converter.notebooks = [str(notebook_path)]
         converter.convert_notebooks()
