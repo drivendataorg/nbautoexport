@@ -1,14 +1,12 @@
 import os
 from pathlib import Path
 import re
-import shutil
 
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
 from notebook.services.contents.filemanager import FileContentsManager
 
 from nbautoexport.sentinel import (
-    find_unwanted_outputs,
     NbAutoexportConfig,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
@@ -69,12 +67,19 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
         export_notebook(os_path, config=config)
 
         if config.clean:
-            to_remove = find_unwanted_outputs(cwd, config)
+            # Remove files that are not notebooks or expected files
+            notebook_paths = cwd.glob("*.ipynb")
+            expected_exports = [cwd / export for export in config.expected_exports(notebook_paths)]
+            subfiles = (f for f in cwd.rglob("*") if f.is_file())
+            to_remove = set(subfiles).difference(notebook_paths).difference(expected_exports)
             for path in to_remove:
-                if path.is_dir():
-                    shutil.rmtree(path)
-                else:
-                    os.remove(path)
+                os.remove(path)
+
+            # Remove empty subdirectories
+            subfolders = (d for d in cwd.iterdir() if d.is_dir())
+            for subfolder in subfolders:
+                if not any(subfolder.iterdir()):
+                    subfolder.rmdir()
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):

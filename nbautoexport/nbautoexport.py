@@ -1,7 +1,6 @@
 import logging
 import os
 from pathlib import Path
-import shutil
 from typing import List
 
 import typer
@@ -10,7 +9,6 @@ from nbautoexport.jupyter_config import install_post_save_hook
 from nbautoexport.convert import export_notebook
 from nbautoexport.sentinel import (
     ExportFormat,
-    find_unwanted_outputs,
     install_sentinel,
     NbAutoexportConfig,
     OrganizeBy,
@@ -49,32 +47,51 @@ def main(
 def clean(
     directory: Path = typer.Argument(
         ..., exists=True, file_okay=False, dir_okay=True, writable=True
-    )
+    ),
+    yes: bool = typer.Option(
+        False, "--yes", "-y", help="Assume 'yes' answer to confirmation prompt to delete files."
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show files that would be removed, without actually removing."
+    ),
 ):
-    """Remove subfolders/files not matching .nbautoconvert configuration.
+    """Remove subfolders/files not matching .nbautoconvert configuration and existing notebooks.
     """
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
     config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
 
-    to_remove = find_unwanted_outputs(directory, config)
+    # Remove files that are not notebooks or expected files
+    notebook_paths = sorted(directory.glob("*.ipynb"))
+    expected_exports = [directory / export for export in config.expected_exports(notebook_paths)]
+    subfiles = (f for f in directory.glob("**/*") if f.is_file())
+    checkpoints = (f for f in directory.glob(".ipynb_checkpoints/*") if f.is_file())
+    to_remove = (
+        set(subfiles)
+        .difference(notebook_paths)
+        .difference(expected_exports)
+        .difference(checkpoints)
+        .difference([sentinel_path])
+    )
 
     typer.echo("Removing following files:")
-    for path in to_remove:
-        typer.echo("  " + path)
-        if path.is_dir():
-            for subpath in path.iterdir():
-                typer.echo("  " + subpath)
+    for path in sorted(to_remove):
+        typer.echo(f"  {path}")
 
-    delete = typer.confirm("Are you sure you want to delete these files?")
-    if not delete:
-        typer.echo("Not deleting")
-        raise typer.Abort()
+    if dry_run:
+        typer.echo("Dry run completed. Exiting...")
+        typer.Exit()
+
+    if not yes:
+        typer.confirm("Are you sure you want to delete these files?", abort=True)
 
     for path in to_remove:
-        if path.is_dir():
-            shutil.rmtree(path)
-        else:
-            os.remove(path)
+        os.remove(path)
+
+    # Remove empty subdirectories
+    subfolders = (d for d in directory.iterdir() if d.is_dir())
+    for subfolder in subfolders:
+        if not any(subfolder.iterdir()):
+            subfolder.rmdir()
     typer.echo("Files deleted.")
 
 
@@ -196,7 +213,3 @@ def install(
         raise typer.Exit(code=1)
 
     install_post_save_hook()
-
-
-if __name__ == "__main__":
-    app()
