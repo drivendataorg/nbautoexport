@@ -1,5 +1,6 @@
 from nbconvert.exporters import get_export_names
 
+from nbautoexport.clean import get_extension
 from nbautoexport.sentinel import ExportFormat
 
 
@@ -13,13 +14,7 @@ def test_export_format_compatibility():
 
 def test_export_format_extensions(notebook_asset):
     for level in ExportFormat:
-        extension = ExportFormat.get_extension(level)
-        assert isinstance(extension, str)
-        assert extension.startswith(".")
-        assert len(extension) > 1
-
-    for level in ExportFormat:
-        extension = ExportFormat.get_extension(level, notebook_asset)
+        extension = get_extension(notebook_asset, level)
         assert isinstance(extension, str)
         assert extension.startswith(".")
         assert len(extension) > 1

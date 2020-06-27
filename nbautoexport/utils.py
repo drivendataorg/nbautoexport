@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-import json
 import logging
 from pathlib import Path
 import sys
@@ -26,7 +25,7 @@ class JupyterNotebook(BaseModel):
         if "nbconvert_exporter" in lang_info:
             return get_exporter(lang_info.nbconvert_exporter)().file_extension
         if "name" in lang_info and lang_info.name in get_export_names():
-            exporter = get_exporter(lang_info.name)().file_extension
+            return get_exporter(lang_info.name)().file_extension
         return lang_info.get("file_extension", ".txt")
 
     @property

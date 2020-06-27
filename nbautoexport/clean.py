@@ -1,5 +1,8 @@
 from typing import Iterable, List
 from pathlib import Path
+
+from nbconvert.exporters import get_exporter
+
 from nbautoexport.utils import find_notebooks, JupyterNotebook
 from nbautoexport.sentinel import (
     ExportFormat,
@@ -16,6 +19,27 @@ FORMATS_WITH_IMAGE_DIR = [
 ]
 
 
+def get_extension(notebook: JupyterNotebook, export_format: str) -> str:
+    """Given a notebook and export format, return expected export file extension.
+
+    Args:
+        notebook (JupyterNotebook): notebook to determine extension for
+        export_format (str): export format name
+
+    Returns:
+        str: file extension, e.g., '.py'
+    """
+    # Script format needs notebook to determine appropriate language's extension
+    if ExportFormat(export_format) == ExportFormat.script:
+        return notebook.get_script_extension()
+
+    exporter = get_exporter(ExportFormat(export_format).value)
+
+    if ExportFormat(export_format) == ExportFormat.notebook:
+        return f".nbconvert{exporter().file_extension}"
+    return exporter().file_extension
+
+
 def notebook_exports_generator(
     notebook: JupyterNotebook, export_format: ExportFormat, organize_by: OrganizeBy
 ) -> Iterable[Path]:
@@ -24,7 +48,7 @@ def notebook_exports_generator(
     elif organize_by == OrganizeBy.extension:
         subfolder = notebook.path.parent / export_format.value
     yield subfolder
-    yield subfolder / f"{notebook.name}{ExportFormat.get_extension(export_format, notebook)}"
+    yield subfolder / f"{notebook.name}{get_extension(notebook,export_format)}"
     if export_format in FORMATS_WITH_IMAGE_DIR:
         image_dir = subfolder / f"{notebook.name}_files"
         if image_dir.exists():

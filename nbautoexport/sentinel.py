@@ -1,11 +1,10 @@
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 from pydantic import BaseModel
 
-from nbautoexport.utils import JupyterNotebook, logger
-from nbconvert.exporters import get_exporter
+from nbautoexport.utils import logger
 
 
 SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"
@@ -23,18 +22,6 @@ class ExportFormat(str, Enum):
     rst = "rst"
     script = "script"
     slides = "slides"
-
-    @classmethod
-    def get_extension(cls, value: str, notebook: Optional[JupyterNotebook] = None) -> str:
-        # Script format needs notebook to determine appropriate language's extension
-        if cls(value) == cls.script and notebook is not None:
-            return notebook.get_script_extension()
-
-        exporter = get_exporter(cls(value).value)
-
-        if cls(value) == cls.notebook:
-            return f".nbconvert{exporter().file_extension}"
-        return exporter().file_extension
 
     @classmethod
     def has_value(cls, value: str) -> bool:

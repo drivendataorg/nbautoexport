@@ -3,7 +3,7 @@ import shutil
 
 import pytest
 
-from nbautoexport.clean import FORMATS_WITH_IMAGE_DIR
+from nbautoexport.clean import FORMATS_WITH_IMAGE_DIR, get_extension
 from nbautoexport.export import export_notebook, post_save
 from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
 from nbautoexport.utils import JupyterNotebook
@@ -32,7 +32,7 @@ def test_export_notebook_by_extension(notebooks_dir, organize_by):
             subfolder = notebooks_dir / fmt.value
         elif organize_by == "notebook":
             subfolder = notebooks_dir / notebook.name
-        extension = ExportFormat.get_extension(fmt, notebook)
+        extension = get_extension(notebook, fmt)
 
         expected_exports.add(subfolder)  # subfolder
         expected_exports.add(subfolder / f"{notebook.name}{extension}")  # export file

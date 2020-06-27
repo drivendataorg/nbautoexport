@@ -3,7 +3,7 @@ import shutil
 import pytest
 from typer.testing import CliRunner
 
-from nbautoexport.clean import get_expected_exports
+from nbautoexport.clean import get_expected_exports, get_extension
 from nbautoexport.nbautoexport import app
 from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
 from nbautoexport.utils import JupyterNotebook
@@ -26,13 +26,13 @@ def notebooks_dir(tmp_path, notebook_asset):
         nb_subfolder = tmp_path / nb.name
         nb_subfolder.mkdir()
         for fmt in export_formats:
-            (nb_subfolder / f"{nb.name}{ExportFormat.get_extension(fmt, nb)}").touch()
+            (nb_subfolder / f"{nb.name}{get_extension(nb, fmt)}").touch()
 
         # organize_by extension
         for fmt in export_formats:
             format_subfolder = tmp_path / fmt.value
             format_subfolder.mkdir(exist_ok=True)
-            (format_subfolder / f"{nb.name}{ExportFormat.get_extension(fmt, nb)}").touch()
+            (format_subfolder / f"{nb.name}{get_extension(nb, fmt)}").touch()
 
         # add latex image dir
         (nb_subfolder / f"{nb.name}_files").mkdir()
