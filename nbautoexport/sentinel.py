@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 from pydantic import BaseModel
 
@@ -14,18 +14,23 @@ DEFAULT_ORGANIZE_BY = "extension"
 
 
 class ExportFormat(str, Enum):
+    asciidoc = "asciidoc"
     html = "html"
     latex = "latex"
-    pdf = "pdf"
-    slides = "slides"
     markdown = "markdown"
-    asciidoc = "asciidoc"
-    script = "script"
     notebook = "notebook"
+    pdf = "pdf"
+    rst = "rst"
+    script = "script"
+    slides = "slides"
 
     @classmethod
-    def get_extension(cls, value: str) -> str:
+    def get_extension(cls, value: str, language: Optional[str] = None) -> str:
+        if cls(value) == cls.script and language == "python":
+            return PythonExporter().file_extension
         exporter = get_exporter(cls(value).value)
+        if cls(value) == cls.notebook:
+            return f".nbconvert{exporter().file_extension}"
         return exporter().file_extension
 
     @staticmethod

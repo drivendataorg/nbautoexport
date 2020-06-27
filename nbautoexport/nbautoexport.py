@@ -1,7 +1,6 @@
 import logging
 import os
 from pathlib import Path
-import sys
 from typing import List
 
 import typer
@@ -129,7 +128,6 @@ def convert(
     INPUT is the path to a notebook to be converted, or a directory containing notebooks to be
     converted.
     """
-    sys.argv = [sys.argv[0]]
     config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
     if input.is_dir():
         for notebook_path in input.glob("*.ipynb"):
@@ -149,7 +147,6 @@ def export(
 
     A .nbautoconvert configuration file is required to be in the same directory as the notebook(s).
     """
-    sys.argv = [sys.argv[0]]
     if input.is_dir():
         sentinel_path = input / SAVE_PROGRESS_INDICATOR_FILE
         notebook_paths = input.glob("*.ipynb")

@@ -261,3 +261,15 @@ def test_initialize_post_save_existing(monkeypatch):
     os_path_list = []
     jupyter_config_obj.FileContentsManager.run_post_save_hook(model=None, os_path=os_path_list)
     assert os_path_list == ["old_post_save", "nbautoexport"]
+
+
+def test_initialize_post_save_import_error_caught(monkeypatch):
+    """Test that bound post_save hook with given signature can be successfully run.
+    """
+
+    jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
+
+    monkeypatch.delattr(nbautoexport_root, "post_save")
+
+    # Expect: ImportError: cannot import name 'post_save' from 'nbautoexport'
+    jupyter_config.initialize_post_save_hook(jupyter_config_obj)

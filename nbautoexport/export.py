@@ -11,6 +11,7 @@ from nbautoexport.sentinel import (
     NbAutoexportConfig,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
+from nbautoexport.utils import cleared_argv
 
 
 class CopyToSubfolderPostProcessor(PostProcessorBase):
@@ -92,19 +93,20 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
-    converter = NbConvertApp()
+    with cleared_argv():
+        converter = NbConvertApp()
 
-    for export_format in config.export_formats:
-        if config.organize_by == "notebook":
-            subfolder = notebook_path.stem
+        for export_format in config.export_formats:
+            if config.organize_by == "notebook":
+                subfolder = notebook_path.stem
 
-        elif config.organize_by == "extension":
-            subfolder = export_format.value
+            elif config.organize_by == "extension":
+                subfolder = export_format.value
 
-        converter.postprocessor = CopyToSubfolderPostProcessor(
-            subfolder=subfolder, export_format=export_format
-        )
-        converter.export_format = export_format.value
-        converter.initialize()
-        converter.notebooks = [str(notebook_path)]
-        converter.convert_notebooks()
+            converter.postprocessor = CopyToSubfolderPostProcessor(
+                subfolder=subfolder, export_format=export_format
+            )
+            converter.export_format = export_format.value
+            converter.initialize()
+            converter.notebooks = [str(notebook_path)]
+            converter.convert_notebooks()
