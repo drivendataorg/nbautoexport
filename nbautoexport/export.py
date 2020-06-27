@@ -7,18 +7,20 @@ from nbconvert.postprocessors.base import PostProcessorBase
 from notebook.services.contents.filemanager import FileContentsManager
 
 from nbautoexport.sentinel import (
+    ExportFormat,
     NbAutoexportConfig,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
 
 
 class CopyToSubfolderPostProcessor(PostProcessorBase):
-    def __init__(self, subfolder=None):
+    def __init__(self, subfolder: str, export_format: ExportFormat):
         self.subfolder = subfolder
+        self.export_format = export_format
         super(CopyToSubfolderPostProcessor, self).__init__()
 
     def postprocess(self, input: str):
-        """ Save converted file to a separate directory. """
+        """ Save converted file to a separate directory, removing cell numbers."""
         if self.subfolder is None:
             return
 
@@ -28,11 +30,21 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
         new_dir.mkdir(exist_ok=True)
         new_path = new_dir / input.name
 
+        if self.export_format == ExportFormat.pdf:
+            # Can't read pdf file as unicode, skip rest of postprocessing and just copy
+            input.replace(new_path)
+            return
+
+        # Rewrite converted file to new path, removing cell numbers
         with input.open("r") as f:
             text = f.read()
-
         with new_path.open("w") as f:
             f.write(re.sub(r"\n#\sIn\[(([0-9]+)|(\s))\]:\n{2}", "", text))
+
+        # For markdown files, we also need to move the assets directory, for stuff like images
+        if self.export_format == ExportFormat.markdown:
+            assets_dir = input.parent / f"{input.stem}_files"
+            assets_dir.replace(new_dir / f"{input.stem}_files")
 
         os.remove(input)
 
@@ -68,11 +80,8 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
 
         if config.clean:
             # Remove files that are not notebooks or expected files
-            notebook_paths = cwd.glob("*.ipynb")
-            expected_exports = [cwd / export for export in config.expected_exports(notebook_paths)]
-            subfiles = (f for f in cwd.rglob("*") if f.is_file())
-            to_remove = set(subfiles).difference(notebook_paths).difference(expected_exports)
-            for path in to_remove:
+            files_to_clean = config.files_to_clean(cwd)
+            for path in files_to_clean:
                 os.remove(path)
 
             # Remove empty subdirectories
@@ -92,7 +101,9 @@ def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
         elif config.organize_by == "extension":
             subfolder = export_format.value
 
-        converter.postprocessor = CopyToSubfolderPostProcessor(subfolder=subfolder)
+        converter.postprocessor = CopyToSubfolderPostProcessor(
+            subfolder=subfolder, export_format=export_format
+        )
         converter.export_format = export_format.value
         converter.initialize()
         converter.notebooks = [str(notebook_path)]

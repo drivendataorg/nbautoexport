@@ -7,7 +7,10 @@ from pydantic import BaseModel
 from nbautoexport.utils import logger
 from nbconvert.exporters import get_exporter, PythonExporter
 
+
 SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"
+DEFAULT_EXPORT_FORMATS = ["script"]
+DEFAULT_ORGANIZE_BY = "extension"
 
 
 class ExportFormat(str, Enum):
@@ -40,11 +43,20 @@ class OrganizeBy(str, Enum):
 
 
 class NbAutoexportConfig(BaseModel):
-    export_formats: List[ExportFormat] = [ExportFormat.script]
-    organize_by: OrganizeBy = OrganizeBy.extension
+    export_formats: List[ExportFormat] = [ExportFormat(fmt) for fmt in DEFAULT_EXPORT_FORMATS]
+    organize_by: OrganizeBy = OrganizeBy(DEFAULT_ORGANIZE_BY)
     clean: bool = False
 
     def expected_exports(self, notebook_paths: Iterable[Path]) -> List[Path]:
+        """Given paths to a set of notebook files, return list of paths of files that nbautoexport
+        would be expected to export to given this configuration.
+
+        Args:
+            notebook_paths (Iterable[Path]): iterable of notebook file paths
+
+        Returns:
+            List[Path]: list of expected nbautoexport output files, relative to notebook files
+        """
         notebook_names: List[str] = [notebook.stem for notebook in notebook_paths]
         if self.organize_by == OrganizeBy.notebook:
             export_paths = [
@@ -74,6 +86,32 @@ class NbAutoexportConfig(BaseModel):
                     for extension in ExportFormat.get_script_extensions()
                 ]
         return sorted(export_paths)
+
+    def files_to_clean(self, directory: Path) -> List[Path]:
+        """Given path to a notebooks directory watched by nbautoexport, find all files that are not
+        expected exports by current nbautoexport configuration and existing notebooks, or other
+        expected Jupyter or nbautoexport files.
+
+        Args:
+            directory (Path): notebooks directory to find files to clean up
+
+        Returns:
+            List[Path]: list of files to clean up
+        """
+        notebook_paths = list(directory.glob("*.ipynb"))
+        expected_exports = [directory / export for export in self.expected_exports(notebook_paths)]
+        subfiles = (f for f in directory.glob("**/*") if f.is_file())
+        checkpoints = (f for f in directory.glob(".ipynb_checkpoints/*") if f.is_file())
+        sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
+
+        to_clean = (
+            set(subfiles)
+            .difference(notebook_paths)
+            .difference(expected_exports)
+            .difference(checkpoints)
+            .difference([sentinel_path])
+        )
+        return sorted(to_clean)
 
 
 def install_sentinel(

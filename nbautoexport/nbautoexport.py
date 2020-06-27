@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+import sys
 from typing import List
 
 import typer
@@ -8,6 +9,8 @@ import typer
 from nbautoexport.jupyter_config import install_post_save_hook
 from nbautoexport.export import export_notebook
 from nbautoexport.sentinel import (
+    DEFAULT_EXPORT_FORMATS,
+    DEFAULT_ORGANIZE_BY,
     ExportFormat,
     install_sentinel,
     NbAutoexportConfig,
@@ -17,6 +20,12 @@ from nbautoexport.sentinel import (
 from nbautoexport.utils import __version__
 
 app = typer.Typer()
+
+
+def validate_sentinel_path(path: Path):
+    if not path.exists():
+        typer.echo(f"Error: Missing expected nbautoexport config file [{path.resolve()}].")
+        raise typer.Exit(code=1)
 
 
 def version_callback(value: bool):
@@ -58,48 +67,43 @@ def clean(
     """Remove subfolders/files not matching .nbautoconvert configuration and existing notebooks.
     """
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
+    validate_sentinel_path(sentinel_path)
+
     config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
 
-    # Remove files that are not notebooks or expected files
-    notebook_paths = sorted(directory.glob("*.ipynb"))
-    expected_exports = [directory / export for export in config.expected_exports(notebook_paths)]
-    subfiles = (f for f in directory.glob("**/*") if f.is_file())
-    checkpoints = (f for f in directory.glob(".ipynb_checkpoints/*") if f.is_file())
-    to_remove = (
-        set(subfiles)
-        .difference(notebook_paths)
-        .difference(expected_exports)
-        .difference(checkpoints)
-        .difference([sentinel_path])
-    )
+    files_to_clean = config.files_to_clean(directory)
 
-    typer.echo("Removing following files:")
-    for path in sorted(to_remove):
+    typer.echo("Identified following files to clean up:")
+    for path in sorted(files_to_clean):
         typer.echo(f"  {path}")
 
     if dry_run:
-        typer.echo("Dry run completed. Exiting...")
-        typer.Exit()
+        typer.echo("Dry run completed. Exiting.")
+        raise typer.Exit(code=0)
 
     if not yes:
         typer.confirm("Are you sure you want to delete these files?", abort=True)
 
-    for path in to_remove:
+    typer.echo("Removing identified files...")
+    for path in files_to_clean:
         os.remove(path)
 
     # Remove empty subdirectories
+    typer.echo("Removing empty subdirectories...")
     subfolders = (d for d in directory.iterdir() if d.is_dir())
     for subfolder in subfolders:
         if not any(subfolder.iterdir()):
+            typer.echo(f"  {subfolder}")
             subfolder.rmdir()
-    typer.echo("Files deleted.")
+
+    typer.echo("Cleaning complete.")
 
 
 @app.command()
 def convert(
     input: Path = typer.Argument(..., exists=True, file_okay=True, dir_okay=True, writable=True),
     export_formats: List[ExportFormat] = typer.Option(
-        ["script"],
+        DEFAULT_EXPORT_FORMATS,
         "--export-format",
         "-f",
         show_default=True,
@@ -110,7 +114,7 @@ def convert(
         ),
     ),
     organize_by: OrganizeBy = typer.Option(
-        "extension",
+        DEFAULT_ORGANIZE_BY,
         "--organize-by",
         "-b",
         show_default=True,
@@ -125,19 +129,18 @@ def convert(
     INPUT is the path to a notebook to be converted, or a directory containing notebooks to be
     converted.
     """
+    sys.argv = [sys.argv[0]]
     config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
     if input.is_dir():
         for notebook_path in input.glob("*.ipynb"):
             export_notebook(notebook_path, config=config)
     else:
-        export_notebook(notebook_path, config=config)
+        export_notebook(input, config=config)
 
 
 @app.command()
 def export(
-    input: Path = typer.Argument(
-        "extension", exists=True, file_okay=True, dir_okay=True, writable=True
-    )
+    input: Path = typer.Argument(..., exists=True, file_okay=True, dir_okay=True, writable=True)
 ):
     """Convert notebook(s) using existing configuration file.
 
@@ -146,13 +149,16 @@ def export(
 
     A .nbautoconvert configuration file is required to be in the same directory as the notebook(s).
     """
+    sys.argv = [sys.argv[0]]
     if input.is_dir():
         sentinel_path = input / SAVE_PROGRESS_INDICATOR_FILE
-        config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
-        for notebook_path in input.glob("*.ipynb"):
-            export_notebook(notebook_path, config=config)
+        notebook_paths = input.glob("*.ipynb")
     else:
         sentinel_path = input.parent / SAVE_PROGRESS_INDICATOR_FILE
+        notebook_paths = [input]
+
+    validate_sentinel_path(sentinel_path)
+    for notebook_path in notebook_paths:
         config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
         export_notebook(notebook_path, config=config)
 
@@ -163,7 +169,7 @@ def install(
         "extension", exists=True, file_okay=False, dir_okay=True, writable=True
     ),
     export_formats: List[ExportFormat] = typer.Option(
-        ["script"],
+        DEFAULT_EXPORT_FORMATS,
         "--export-format",
         "-f",
         show_default=True,
@@ -174,7 +180,7 @@ def install(
         ),
     ),
     organize_by: OrganizeBy = typer.Option(
-        "notebook",
+        DEFAULT_ORGANIZE_BY,
         "--organize-by",
         "-b",
         show_default=True,
