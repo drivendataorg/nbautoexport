@@ -1,12 +1,12 @@
 import logging
-import os
 from pathlib import Path
 from typing import List
 
 import typer
 
-from nbautoexport.jupyter_config import install_post_save_hook
+from nbautoexport.clean import find_files_to_clean
 from nbautoexport.export import export_notebook
+from nbautoexport.jupyter_config import install_post_save_hook
 from nbautoexport.sentinel import (
     DEFAULT_EXPORT_FORMATS,
     DEFAULT_ORGANIZE_BY,
@@ -70,7 +70,7 @@ def clean(
 
     config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
 
-    files_to_clean = config.files_to_clean(directory)
+    files_to_clean = find_files_to_clean(directory, config)
 
     typer.echo("Identified following files to clean up:")
     for path in sorted(files_to_clean):
@@ -85,12 +85,17 @@ def clean(
 
     typer.echo("Removing identified files...")
     for path in files_to_clean:
-        os.remove(path)
+        if path.is_file():
+            path.unlink()
 
     # Remove empty subdirectories
     typer.echo("Removing empty subdirectories...")
     subfolders = (d for d in directory.iterdir() if d.is_dir())
     for subfolder in subfolders:
+        for subsubfolder in subfolder.iterdir():
+            if subsubfolder.is_dir() and not any(subsubfolder.iterdir()):
+                typer.echo(f"  {subsubfolder}")
+                subsubfolder.rmdir()
         if not any(subfolder.iterdir()):
             typer.echo(f"  {subfolder}")
             subfolder.rmdir()

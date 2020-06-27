@@ -11,16 +11,15 @@ def test_export_format_compatibility():
         assert export_format.value in nbconvert_export_names
 
 
-def test_export_format_extensions():
+def test_export_format_extensions(notebook_asset):
     for level in ExportFormat:
         extension = ExportFormat.get_extension(level)
         assert isinstance(extension, str)
         assert extension.startswith(".")
         assert len(extension) > 1
 
-    script_extensions = ExportFormat.get_script_extensions()
-    assert len(script_extensions) > 0
-    for extension in script_extensions:
+    for level in ExportFormat:
+        extension = ExportFormat.get_extension(level, notebook_asset)
         assert isinstance(extension, str)
         assert extension.startswith(".")
         assert len(extension) > 1

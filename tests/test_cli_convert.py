@@ -1,23 +1,23 @@
-from pathlib import Path
 import shutil
 
 import pytest
 from typer.testing import CliRunner
 
+from nbautoexport.clean import get_expected_exports
 from nbautoexport.nbautoexport import app
-from nbautoexport.sentinel import ExportFormat
+from nbautoexport.sentinel import NbAutoexportConfig
+from nbautoexport.utils import find_notebooks
 
-NOTEBOOK_FILE = Path(__file__).parent / "assets" / "the_notebook.ipynb"
 
 EXPECTED_NOTEBOOKS = [f"the_notebook_{n}" for n in range(3)]
 EXPECTED_FORMATS = ["script", "html"]
 
 
 @pytest.fixture()
-def notebooks_dir(tmp_path):
+def notebooks_dir(tmp_path, notebook_asset):
     notebooks = EXPECTED_NOTEBOOKS
     for nb in notebooks:
-        shutil.copy(NOTEBOOK_FILE, tmp_path / f"{nb}.ipynb")
+        shutil.copy(notebook_asset.path, tmp_path / f"{nb}.ipynb")
     return tmp_path
 
 
@@ -29,15 +29,19 @@ def test_convert_dir_organize_by_extension(notebooks_dir):
     result = CliRunner().invoke(app, cmd_list)
     assert result.exit_code == 0
 
-    expected_notebooks = {notebooks_dir / f"{nb}.ipynb" for nb in EXPECTED_NOTEBOOKS}
-    expected_export_dirs = {notebooks_dir / fmt for fmt in EXPECTED_FORMATS}
-    expected_export_files = {
-        notebooks_dir / fmt / f"{nb}{ExportFormat.get_extension(fmt, language='python')}"
-        for nb in EXPECTED_NOTEBOOKS
-        for fmt in EXPECTED_FORMATS
-    }
+    expected_notebooks = find_notebooks(notebooks_dir)
+    assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
 
-    all_expected = expected_notebooks | expected_export_dirs | expected_export_files
+    expected_notebook_files = {nb.path for nb in expected_notebooks}
+    expected_exports = set(
+        get_expected_exports(
+            expected_notebooks,
+            NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by="extension"),
+        )
+    )
+
+    all_expected = expected_notebook_files | expected_exports
+
     assert set(notebooks_dir.glob("**/*")) == all_expected
 
 
@@ -49,55 +53,62 @@ def test_convert_dir_organize_by_notebook(notebooks_dir):
     result = CliRunner().invoke(app, cmd_list)
     assert result.exit_code == 0
 
-    expected_notebooks = {notebooks_dir / f"{nb}.ipynb" for nb in EXPECTED_NOTEBOOKS}
-    expected_export_dirs = {notebooks_dir / nb for nb in EXPECTED_NOTEBOOKS}
-    expected_export_files = {
-        notebooks_dir / nb / f"{nb}{ExportFormat.get_extension(fmt, language='python')}"
-        for nb in EXPECTED_NOTEBOOKS
-        for fmt in EXPECTED_FORMATS
-    }
+    expected_notebooks = find_notebooks(notebooks_dir)
+    assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
 
-    all_expected = expected_notebooks | expected_export_dirs | expected_export_files
+    expected_notebook_files = {nb.path for nb in expected_notebooks}
+    expected_exports = set(
+        get_expected_exports(
+            expected_notebooks,
+            NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by="notebook"),
+        )
+    )
+
+    all_expected = expected_notebook_files | expected_exports
     assert set(notebooks_dir.glob("**/*")) == all_expected
 
 
 def test_convert_single_organize_by_extension(notebooks_dir):
-    nb = EXPECTED_NOTEBOOKS[0]
-    cmd_list = ["convert", str(notebooks_dir / f"{nb}.ipynb"), "-b", "extension"]
+    expected_notebooks = find_notebooks(notebooks_dir)
+    nb = expected_notebooks[0]
+
+    cmd_list = ["convert", str(notebooks_dir / f"{nb.name}.ipynb"), "-b", "extension"]
     for fmt in EXPECTED_FORMATS:
         cmd_list.append("-f")
         cmd_list.append(fmt)
     result = CliRunner().invoke(app, cmd_list)
     assert result.exit_code == 0
 
-    expected_notebooks = {notebooks_dir / f"{nb_}.ipynb" for nb_ in EXPECTED_NOTEBOOKS}
-    expected_export_dirs = {notebooks_dir / fmt for fmt in EXPECTED_FORMATS}
-    expected_export_files = {
-        notebooks_dir / fmt / f"{nb}{ExportFormat.get_extension(fmt, language='python')}"
-        for fmt in EXPECTED_FORMATS
-    }
+    expected_notebook_files = {nb_.path for nb_ in expected_notebooks}
+    expected_exports = set(
+        get_expected_exports(
+            [nb], NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by="extension"),
+        )
+    )
 
-    all_expected = expected_notebooks | expected_export_dirs | expected_export_files
+    all_expected = expected_notebook_files | expected_exports
     assert set(notebooks_dir.glob("**/*")) == all_expected
 
 
 def test_convert_single_organize_by_notebook(notebooks_dir):
-    nb = EXPECTED_NOTEBOOKS[0]
-    cmd_list = ["convert", str(notebooks_dir / f"{nb}.ipynb"), "-b", "notebook"]
+    expected_notebooks = find_notebooks(notebooks_dir)
+    nb = expected_notebooks[0]
+
+    cmd_list = ["convert", str(notebooks_dir / f"{nb.name}.ipynb"), "-b", "notebook"]
     for fmt in EXPECTED_FORMATS:
         cmd_list.append("-f")
         cmd_list.append(fmt)
     result = CliRunner().invoke(app, cmd_list)
     assert result.exit_code == 0
 
-    expected_notebooks = {notebooks_dir / f"{nb_}.ipynb" for nb_ in EXPECTED_NOTEBOOKS}
-    expected_export_dirs = {notebooks_dir / nb}
-    expected_export_files = {
-        notebooks_dir / nb / f"{nb}{ExportFormat.get_extension(fmt, language='python')}"
-        for fmt in EXPECTED_FORMATS
-    }
+    expected_notebook_files = {nb_.path for nb_ in expected_notebooks}
+    expected_exports = set(
+        get_expected_exports(
+            [nb], NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by="notebook"),
+        )
+    )
 
-    all_expected = expected_notebooks | expected_export_dirs | expected_export_files
+    all_expected = expected_notebook_files | expected_exports
     assert set(notebooks_dir.glob("**/*")) == all_expected
 
 

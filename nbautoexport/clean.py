@@ -1,0 +1,82 @@
+from typing import Iterable, List
+from pathlib import Path
+from nbautoexport.utils import find_notebooks, JupyterNotebook
+from nbautoexport.sentinel import (
+    ExportFormat,
+    NbAutoexportConfig,
+    OrganizeBy,
+    SAVE_PROGRESS_INDICATOR_FILE,
+)
+
+FORMATS_WITH_IMAGE_DIR = [
+    ExportFormat.asciidoc,
+    ExportFormat.latex,
+    ExportFormat.markdown,
+    ExportFormat.rst,
+]
+
+
+def notebook_exports_generator(
+    notebook: JupyterNotebook, export_format: ExportFormat, organize_by: OrganizeBy
+) -> Iterable[Path]:
+    if organize_by == OrganizeBy.notebook:
+        subfolder = notebook.path.parent / notebook.name
+    elif organize_by == OrganizeBy.extension:
+        subfolder = notebook.path.parent / export_format.value
+    yield subfolder
+    yield subfolder / f"{notebook.name}{ExportFormat.get_extension(export_format, notebook)}"
+    if export_format in FORMATS_WITH_IMAGE_DIR:
+        image_dir = subfolder / f"{notebook.name}_files"
+        if image_dir.exists():
+            yield image_dir
+            yield from image_dir.iterdir()
+
+
+def get_expected_exports(
+    notebooks: Iterable[JupyterNotebook], config: NbAutoexportConfig
+) -> List[Path]:
+    """Given an iterable of Jupyter notebooks, return list of paths of files that nbautoexport
+    would be expected to export to given this configuration.
+
+    Args:
+        notebooks (Iterable[JupyterNotebooks]): iterable of notebooks
+
+    Returns:
+        List[Path]: list of expected nbautoexport output files, relative to notebook files
+    """
+
+    export_paths = set()
+    for notebook in notebooks:
+        for export_format in config.export_formats:
+            export_paths.update(
+                notebook_exports_generator(notebook, export_format, config.organize_by)
+            )
+    return sorted(export_paths)
+
+
+def find_files_to_clean(directory: Path, config: NbAutoexportConfig) -> List[Path]:
+    """Given path to a notebooks directory watched by nbautoexport, find all files that are not
+    expected exports by current nbautoexport configuration and existing notebooks, or other
+    expected Jupyter or nbautoexport files.
+
+    Args:
+        directory (Path): notebooks directory to find files to clean up
+
+    Returns:
+        List[Path]: list of files to clean up
+    """
+    notebooks = find_notebooks(directory)
+    expected_exports = [directory / export for export in get_expected_exports(notebooks, config)]
+    checkpoints = (f for f in directory.glob(".ipynb_checkpoints/*") if f.is_file())
+    sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
+
+    subfiles = (f for f in directory.glob("**/*") if f.is_file())
+
+    to_clean = (
+        set(subfiles)
+        .difference(nb.path for nb in notebooks)
+        .difference(expected_exports)
+        .difference(checkpoints)
+        .difference([sentinel_path])
+    )
+    return sorted(to_clean)

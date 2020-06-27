@@ -1,54 +1,49 @@
 import json
-from pathlib import Path
 import shutil
 
 import pytest
 
+from nbautoexport.clean import FORMATS_WITH_IMAGE_DIR
 from nbautoexport.export import export_notebook, post_save
 from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
-
-NOTEBOOK_FILE = Path(__file__).parent / "assets" / "the_notebook.ipynb"
+from nbautoexport.utils import JupyterNotebook
 
 
 @pytest.fixture()
-def notebooks_dir(tmp_path):
-    shutil.copy(NOTEBOOK_FILE, tmp_path / "the_notebook.ipynb")
+def notebooks_dir(tmp_path, notebook_asset):
+    shutil.copy(notebook_asset.path, tmp_path / "the_notebook.ipynb")
     return tmp_path
 
 
-def test_export_notebook_by_extension(notebooks_dir):
-    notebook_path = notebooks_dir / "the_notebook.ipynb"
+@pytest.mark.parametrize("organize_by", ["extension", "notebook"])
+def test_export_notebook_by_extension(notebooks_dir, organize_by):
+    """Test that export notebook works. Explicitly write out expected files, because tests for
+    get_expected_exports will compare against export_notebook.
+    """
+    notebook = JupyterNotebook.from_file(notebooks_dir / "the_notebook.ipynb")
     config = NbAutoexportConfig(
-        export_formats=[fmt for fmt in ExportFormat], organize_by="extension"
+        export_formats=[fmt for fmt in ExportFormat], organize_by=organize_by
     )
-    export_notebook(notebook_path, config)
+    export_notebook(notebook.path, config)
 
-    expected_export_dirs = {notebooks_dir / fmt.value for fmt in ExportFormat}
-    expected_export_files = {
-        notebooks_dir
-        / fmt.value
-        / f"{notebook_path.stem}{ExportFormat.get_extension(fmt, language='python')}"
-        for fmt in ExportFormat
-    }
-    all_expected = {notebook_path} | expected_export_dirs | expected_export_files
-    assert all_expected.issubset(set(notebooks_dir.glob("**/*")))
+    expected_exports = set()
+    for fmt in ExportFormat:
+        if organize_by == "extension":
+            subfolder = notebooks_dir / fmt.value
+        elif organize_by == "notebook":
+            subfolder = notebooks_dir / notebook.name
+        extension = ExportFormat.get_extension(fmt, notebook)
 
+        expected_exports.add(subfolder)  # subfolder
+        expected_exports.add(subfolder / f"{notebook.name}{extension}")  # export file
 
-def test_export_notebook_by_notebook(notebooks_dir):
-    notebook_path = notebooks_dir / "the_notebook.ipynb"
-    config = NbAutoexportConfig(
-        export_formats=[fmt for fmt in ExportFormat], organize_by="notebook"
-    )
-    export_notebook(notebook_path, config)
+        if fmt in FORMATS_WITH_IMAGE_DIR:
+            image_subfolder = subfolder / f"{notebook.name}_files"
 
-    expected_export_dirs = {notebooks_dir / notebook_path.stem}
-    expected_export_files = {
-        notebooks_dir
-        / notebook_path.stem
-        / f"{notebook_path.stem}{ExportFormat.get_extension(fmt, language='python')}"
-        for fmt in ExportFormat
-    }
-    all_expected = {notebook_path} | expected_export_dirs | expected_export_files
+            expected_exports.add(image_subfolder)  # image subdir
+            expected_exports.add(image_subfolder / f"{notebook.name}_1_1.png")  # image file
+
+    all_expected = {notebook.path} | expected_exports
     assert all_expected.issubset(set(notebooks_dir.glob("**/*")))
 
 

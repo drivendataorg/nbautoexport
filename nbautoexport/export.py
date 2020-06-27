@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import re
 
@@ -6,6 +5,7 @@ from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
 from notebook.services.contents.filemanager import FileContentsManager
 
+from nbautoexport.clean import find_files_to_clean, FORMATS_WITH_IMAGE_DIR
 from nbautoexport.sentinel import (
     ExportFormat,
     NbAutoexportConfig,
@@ -43,11 +43,16 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
             f.write(re.sub(r"\n#\sIn\[(([0-9]+)|(\s))\]:\n{2}", "", text))
 
         # For some formats, we also need to move the assets directory, for stuff like images
-        if self.export_format in [ExportFormat.asciidoc, ExportFormat.markdown, ExportFormat.rst]:
+        if self.export_format in FORMATS_WITH_IMAGE_DIR:
             assets_dir = input.parent / f"{input.stem}_files"
-            assets_dir.replace(new_dir / f"{input.stem}_files")
+            if assets_dir.exists() and assets_dir.is_dir():
+                new_assets_dir = new_dir / f"{input.stem}_files"
+                new_assets_dir.mkdir(exist_ok=True)
+                for asset in assets_dir.iterdir():
+                    asset.rename(new_assets_dir / asset.name)
+                assets_dir.rmdir()
 
-        os.remove(input)
+        input.unlink()
 
 
 def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
@@ -81,9 +86,9 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
 
         if config.clean:
             # Remove files that are not notebooks or expected files
-            files_to_clean = config.files_to_clean(cwd)
+            files_to_clean = find_files_to_clean(cwd, config)
             for path in files_to_clean:
-                os.remove(path)
+                path.unlink()
 
             # Remove empty subdirectories
             subfolders = (d for d in cwd.iterdir() if d.is_dir())
@@ -99,7 +104,6 @@ def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
         for export_format in config.export_formats:
             if config.organize_by == "notebook":
                 subfolder = notebook_path.stem
-
             elif config.organize_by == "extension":
                 subfolder = export_format.value
 
