@@ -8,7 +8,7 @@ from traitlets.config.loader import Config
 from nbautoexport import __version__
 import nbautoexport as nbautoexport_root
 import nbautoexport.nbautoexport as nbautoexport
-from nbautoexport import convert, jupyter_config
+from nbautoexport import export, jupyter_config
 
 
 def test_parse_version():
@@ -209,7 +209,7 @@ def test_initialize_post_save_binding():
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
     jupyter_config.initialize_post_save_hook(jupyter_config_obj)
     assert isinstance(jupyter_config_obj.FileContentsManager, FileContentsManager)
-    assert jupyter_config_obj.FileContentsManager.post_save_hook is convert.post_save
+    assert jupyter_config_obj.FileContentsManager.post_save_hook is export.post_save
 
 
 def test_initialize_post_save_execution(monkeypatch):

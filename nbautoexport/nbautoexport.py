@@ -6,7 +6,7 @@ from typing import List
 import typer
 
 from nbautoexport.jupyter_config import install_post_save_hook
-from nbautoexport.convert import export_notebook
+from nbautoexport.export import export_notebook
 from nbautoexport.sentinel import (
     ExportFormat,
     install_sentinel,
