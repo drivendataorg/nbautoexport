@@ -42,8 +42,8 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
         with new_path.open("w") as f:
             f.write(re.sub(r"\n#\sIn\[(([0-9]+)|(\s))\]:\n{2}", "", text))
 
-        # For markdown files, we also need to move the assets directory, for stuff like images
-        if self.export_format == ExportFormat.markdown:
+        # For some formats, we also need to move the assets directory, for stuff like images
+        if self.export_format in [ExportFormat.asciidoc, ExportFormat.markdown, ExportFormat.rst]:
             assets_dir = input.parent / f"{input.stem}_files"
             assets_dir.replace(new_dir / f"{input.stem}_files")
 
