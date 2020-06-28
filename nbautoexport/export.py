@@ -98,6 +98,12 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
+    """Export a given notebook file given configuration.
+
+    Args:
+        notebook_path (Path): path to notebook to export with nbconvert
+        config (NbAutoexportConfig): configuration
+    """
     with cleared_argv():
         converter = NbConvertApp()
 

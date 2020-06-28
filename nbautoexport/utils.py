@@ -2,6 +2,7 @@ from contextlib import contextmanager
 import logging
 from pathlib import Path
 import sys
+from typing import List
 from warnings import warn
 
 from pydantic import BaseModel
@@ -39,7 +40,15 @@ class JupyterNotebook(BaseModel):
         return cls(path=path, metadata=notebook.metadata)
 
 
-def find_notebooks(directory: Path):
+def find_notebooks(directory: Path) -> List[JupyterNotebook]:
+    """Finds Jupyter notebooks in a directory. Not recursive.
+
+    Args:
+        directory (Path): directory to search for notebook files
+
+    Returns:
+        List[JupyterNotebook]: notebooks found
+    """
     notebooks = []
     for subfile in directory.iterdir():
         if subfile.is_file() and subfile.name:

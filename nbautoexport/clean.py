@@ -19,7 +19,7 @@ FORMATS_WITH_IMAGE_DIR = [
 ]
 
 
-def get_extension(notebook: JupyterNotebook, export_format: str) -> str:
+def get_extension(notebook: JupyterNotebook, export_format: ExportFormat) -> str:
     """Given a notebook and export format, return expected export file extension.
 
     Args:
@@ -43,12 +43,22 @@ def get_extension(notebook: JupyterNotebook, export_format: str) -> str:
 def notebook_exports_generator(
     notebook: JupyterNotebook, export_format: ExportFormat, organize_by: OrganizeBy
 ) -> Iterable[Path]:
+    """[summary]
+
+    Args:
+        notebook (JupyterNotebook): notebook to get export paths for
+        export_format (ExportFormat): export format
+        organize_by (OrganizeBy): type of subfolder approach
+
+    Returns:
+        Iterable[Path]: expected export paths given notebook and configuration options
+    """
     if organize_by == OrganizeBy.notebook:
         subfolder = notebook.path.parent / notebook.name
     elif organize_by == OrganizeBy.extension:
         subfolder = notebook.path.parent / export_format.value
     yield subfolder
-    yield subfolder / f"{notebook.name}{get_extension(notebook,export_format)}"
+    yield subfolder / f"{notebook.name}{get_extension(notebook, export_format)}"
     if export_format in FORMATS_WITH_IMAGE_DIR:
         image_dir = subfolder / f"{notebook.name}_files"
         if image_dir.exists():

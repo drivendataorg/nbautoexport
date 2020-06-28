@@ -8,6 +8,7 @@ from nbautoexport.clean import find_files_to_clean
 from nbautoexport.export import export_notebook
 from nbautoexport.jupyter_config import install_post_save_hook
 from nbautoexport.sentinel import (
+    DEFAULT_CLEAN,
     DEFAULT_EXPORT_FORMATS,
     DEFAULT_ORGANIZE_BY,
     ExportFormat,
@@ -54,7 +55,7 @@ def main(
 @app.command()
 def clean(
     directory: Path = typer.Argument(
-        ..., exists=True, file_okay=False, dir_okay=True, writable=True
+        ..., exists=True, file_okay=False, dir_okay=True, writable=True, help="Directory to clean."
     ),
     yes: bool = typer.Option(
         False, "--yes", "-y", help="Assume 'yes' answer to confirmation prompt to delete files."
@@ -105,7 +106,14 @@ def clean(
 
 @app.command()
 def convert(
-    input: Path = typer.Argument(..., exists=True, file_okay=True, dir_okay=True, writable=True),
+    input: Path = typer.Argument(
+        ...,
+        exists=True,
+        file_okay=True,
+        dir_okay=True,
+        writable=True,
+        help="Path to notebook file or directory of notebook files to convert.",
+    ),
     export_formats: List[ExportFormat] = typer.Option(
         DEFAULT_EXPORT_FORMATS,
         "--export-format",
@@ -129,9 +137,6 @@ def convert(
     ),
 ):
     """Convert notebook(s) using specified configuration options.
-
-    INPUT is the path to a notebook to be converted, or a directory containing notebooks to be
-    converted.
     """
     config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
     if input.is_dir():
@@ -143,12 +148,16 @@ def convert(
 
 @app.command()
 def export(
-    input: Path = typer.Argument(..., exists=True, file_okay=True, dir_okay=True, writable=True)
+    input: Path = typer.Argument(
+        ...,
+        exists=True,
+        file_okay=True,
+        dir_okay=True,
+        writable=True,
+        help="Path to notebook file or directory of notebook files to export.",
+    )
 ):
     """Convert notebook(s) using existing configuration file.
-
-    INPUT is the path to a notebook to be converted, or a directory containing notebooks to be
-    converted.
 
     A .nbautoconvert configuration file is required to be in the same directory as the notebook(s).
     """
@@ -168,7 +177,12 @@ def export(
 @app.command()
 def install(
     directory: Path = typer.Argument(
-        "extension", exists=True, file_okay=False, dir_okay=True, writable=True
+        "notebooks",
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
+        help="Path to directory of notebook files to watch with nbautoexport.",
     ),
     export_formats: List[ExportFormat] = typer.Option(
         DEFAULT_EXPORT_FORMATS,
@@ -176,9 +190,9 @@ def install(
         "-f",
         show_default=True,
         help=(
-            """File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', """
-            """and 'rst'. Multiple formats should be provided using multiple flags, e.g., '-f """
-            """script-f html -f markdown'."""
+            "File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', "
+            + "and 'rst'. Multiple formats should be provided using multiple flags, e.g., "
+            + "'-f script -f html -f markdown'."
         ),
     ),
     organize_by: OrganizeBy = typer.Option(
@@ -187,14 +201,16 @@ def install(
         "-b",
         show_default=True,
         help=(
-            """Whether to save exported file(s) in a folder per notebook or a folder per extension. """
-            """Options are 'notebook' or 'extension'."""
+            "Whether to save exported file(s) in a folder per notebook or a folder per extension. "
+            + "Options are 'notebook' or 'extension'."
+            ""
         ),
     ),
     clean: bool = typer.Option(
-        False,
+        DEFAULT_CLEAN,
         show_default=True,
-        help="Whether to automatically delete files in subfolders that don't match configuration.",
+        help="Whether to automatically delete files that don't match expected exports given "
+        + "notebooks and configuration.",
     ),
     overwrite: bool = typer.Option(
         False,
