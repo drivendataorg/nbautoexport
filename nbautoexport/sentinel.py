@@ -9,7 +9,7 @@ from nbautoexport.utils import logger
 
 SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"
 DEFAULT_EXPORT_FORMATS = ["script"]
-DEFAULT_ORGANIZE_BY = "extension"
+DEFAULT_ORGANIZE_BY = "notebook"
 DEFAULT_CLEAN = False
 
 
