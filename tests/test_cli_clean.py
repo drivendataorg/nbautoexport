@@ -1,3 +1,5 @@
+from itertools import product
+from pathlib import Path
 import shutil
 
 import pytest
@@ -6,7 +8,7 @@ from typer.testing import CliRunner
 from nbautoexport.clean import get_expected_exports, get_extension
 from nbautoexport.nbautoexport import app
 from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
-from nbautoexport.utils import JupyterNotebook
+from nbautoexport.utils import JupyterNotebook, working_directory
 
 EXPECTED_NOTEBOOKS = [f"the_notebook_{n}" for n in range(3)]
 UNEXPECTED_NOTEBOOK = "a_walk_to_remember"
@@ -45,10 +47,12 @@ def notebooks_dir(tmp_path, notebook_asset):
     return tmp_path
 
 
-@pytest.mark.parametrize("need_confirmation", [True, False])
-def test_clean_organize_by_extension(notebooks_dir, need_confirmation):
+@pytest.mark.parametrize(
+    "need_confirmation, organize_by", product([True, False], ["extension", "notebook"])
+)
+def test_clean(notebooks_dir, need_confirmation, organize_by):
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by="extension")
+    config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
     with sentinel_path.open("w") as fp:
         fp.write(config.json())
 
@@ -67,26 +71,54 @@ def test_clean_organize_by_extension(notebooks_dir, need_confirmation):
     assert set(notebooks_dir.glob("**/*")) == all_expected
 
 
-@pytest.mark.parametrize("need_confirmation", [True, False])
-def test_clean_organize_by_notebook(notebooks_dir, need_confirmation):
-    sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by="notebook")
-    with sentinel_path.open("w") as fp:
-        fp.write(config.json())
+@pytest.mark.parametrize("organize_by", ["extension", "notebook"])
+def test_clean_relative(notebooks_dir, organize_by):
+    """ Test that cleaning works relative to current working directory.
+    """
+    with working_directory(notebooks_dir):
+        sentinel_path = Path(SAVE_PROGRESS_INDICATOR_FILE)
+        config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
+        with sentinel_path.open("w") as fp:
+            fp.write(config.json())
 
-    if need_confirmation:
-        result = CliRunner().invoke(app, ["clean", str(notebooks_dir)], input="y")
-    else:
-        result = CliRunner().invoke(app, ["clean", str(notebooks_dir), "--yes"])
-    assert result.exit_code == 0
+        result = CliRunner().invoke(app, ["clean", "."], input="y")
+        assert result.exit_code == 0
 
-    expected_notebooks = [
-        JupyterNotebook.from_file(notebooks_dir / f"{nb}.ipynb") for nb in EXPECTED_NOTEBOOKS
-    ]
-    expected_exports = set(get_expected_exports(expected_notebooks, config))
+        expected_notebooks = [
+            JupyterNotebook.from_file(f"{nb}.ipynb") for nb in EXPECTED_NOTEBOOKS
+        ]
+        expected_exports = set(get_expected_exports(expected_notebooks, config))
 
-    all_expected = {nb.path for nb in expected_notebooks} | expected_exports | {sentinel_path}
-    assert set(notebooks_dir.glob("**/*")) == all_expected
+        all_expected = {nb.path for nb in expected_notebooks} | expected_exports | {sentinel_path}
+        assert set(Path().glob("**/*")) == all_expected
+
+
+@pytest.mark.parametrize("organize_by", ["extension", "notebook"])
+def test_clean_relative_subdirectory(notebooks_dir, organize_by):
+    """ Test that cleaning works for subdirectory relative to current working directory.
+    """
+    with working_directory(notebooks_dir):
+        # Set up subdirectory
+        subdir = Path("subdir")
+        subdir.mkdir()
+        for subfile in Path().iterdir():
+            shutil.move(str(subfile), str(subdir))
+
+        sentinel_path = subdir / SAVE_PROGRESS_INDICATOR_FILE
+        config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
+        with sentinel_path.open("w") as fp:
+            fp.write(config.json())
+
+        result = CliRunner().invoke(app, ["clean", "subdir"], input="y")
+        assert result.exit_code == 0
+
+        expected_notebooks = [
+            JupyterNotebook.from_file(subdir / f"{nb}.ipynb") for nb in EXPECTED_NOTEBOOKS
+        ]
+        expected_exports = set(get_expected_exports(expected_notebooks, config))
+
+        all_expected = {nb.path for nb in expected_notebooks} | expected_exports | {sentinel_path}
+        assert set(subdir.glob("**/*")) == all_expected
 
 
 def test_clean_abort(notebooks_dir):

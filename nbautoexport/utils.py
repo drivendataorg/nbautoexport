@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import logging
+import os
 from pathlib import Path
 import sys
 from typing import List
@@ -76,3 +77,14 @@ def cleared_argv():
         yield
     finally:
         sys.argv = prev_argv
+
+
+@contextmanager
+def working_directory(directory: Path):
+    """Changes working directory and returns to previous on exit."""
+    prev_cwd = Path.cwd()
+    os.chdir(directory)
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)

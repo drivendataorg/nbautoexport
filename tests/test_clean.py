@@ -29,10 +29,7 @@ def test_notebook_exports_generator(notebooks_dir, export_format, organize_by):
     config = NbAutoexportConfig(export_formats=[export_format], organize_by=organize_by)
     export_notebook(notebook.path, config)
 
-    predicted_exports = {
-        notebooks_dir / export
-        for export in notebook_exports_generator(notebook, export_format, organize_by)
-    }
+    predicted_exports = set(notebook_exports_generator(notebook, export_format, organize_by))
 
     actual_exports = set(notebooks_dir.glob("**/*")).difference(notebook_files)
     assert predicted_exports == actual_exports

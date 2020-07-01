@@ -99,8 +99,8 @@ def find_files_to_clean(directory: Path, config: NbAutoexportConfig) -> List[Pat
     Returns:
         List[Path]: list of files to clean up
     """
-    notebooks = find_notebooks(directory)
-    expected_exports = [directory / export for export in get_expected_exports(notebooks, config)]
+    notebooks: List[JupyterNotebook] = find_notebooks(directory)
+    expected_exports: List[Path] = get_expected_exports(notebooks, config)
     checkpoints = (f for f in directory.glob(".ipynb_checkpoints/*") if f.is_file())
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
 
