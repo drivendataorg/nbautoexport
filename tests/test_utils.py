@@ -1,8 +1,9 @@
+from pathlib import Path
 import sys
 
 import pytest
 
-from nbautoexport.utils import cleared_argv, find_notebooks
+from nbautoexport.utils import cleared_argv, find_notebooks, working_directory
 
 
 def test_get_script_extensions(notebook_asset, monkeypatch):
@@ -65,3 +66,11 @@ def test_cleared_argv_with_error(monkeypatch):
             raise Exception
 
     assert sys.argv == mocked_argv
+
+
+def test_working_directory(tmp_path):
+    cwd = Path.cwd()
+    assert cwd != tmp_path
+    with working_directory(tmp_path):
+        assert Path.cwd() == tmp_path
+    assert Path.cwd() == cwd
