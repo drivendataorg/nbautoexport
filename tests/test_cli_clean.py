@@ -70,6 +70,11 @@ def test_clean(notebooks_dir, need_confirmation, organize_by):
     all_expected = {nb.path for nb in expected_notebooks} | expected_exports | {sentinel_path}
     assert set(notebooks_dir.glob("**/*")) == all_expected
 
+    # Run clean again, there should be nothing to do
+    result_rerun = CliRunner().invoke(app, ["clean", str(notebooks_dir)])
+    assert result_rerun.exit_code == 0
+    assert result_rerun.stdout.strip().endswith("No files identified for cleaning. Exiting.")
+
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
 def test_clean_relative(notebooks_dir, organize_by):
@@ -91,6 +96,11 @@ def test_clean_relative(notebooks_dir, organize_by):
 
         all_expected = {nb.path for nb in expected_notebooks} | expected_exports | {sentinel_path}
         assert set(Path().glob("**/*")) == all_expected
+
+        # Run clean again, there should be nothing to do
+        result_rerun = CliRunner().invoke(app, ["clean", "."])
+        assert result_rerun.exit_code == 0
+        assert result_rerun.stdout.strip().endswith("No files identified for cleaning. Exiting.")
 
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
@@ -119,6 +129,11 @@ def test_clean_relative_subdirectory(notebooks_dir, organize_by):
 
         all_expected = {nb.path for nb in expected_notebooks} | expected_exports | {sentinel_path}
         assert set(subdir.glob("**/*")) == all_expected
+
+        # Run clean again, there should be nothing to do
+        result_rerun = CliRunner().invoke(app, ["clean", "subdir"])
+        assert result_rerun.exit_code == 0
+        assert result_rerun.stdout.strip().endswith("No files identified for cleaning. Exiting.")
 
 
 def test_clean_abort(notebooks_dir):

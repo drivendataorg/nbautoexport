@@ -219,6 +219,21 @@ def test_clean_relative_subdirectory(notebooks_dir, input_type, organize_by):
         assert set(subdir.glob("**/*")) == all_expected
 
 
+def test_export_dir_no_notebooks_error(tmp_path):
+    assert len(list(tmp_path.iterdir())) == 0
+    result = CliRunner().invoke(app, ["export", str(tmp_path)])
+    assert result.exit_code == 1
+    assert result.stdout.startswith("No notebooks found in directory")
+
+
+def test_export_notebook_doesnt_exist_error(tmp_path):
+    nonexistent_notebook = tmp_path / "anne_hughes_diary.ipynb"
+    assert not nonexistent_notebook.exists()
+    result = CliRunner().invoke(app, ["export", str(nonexistent_notebook)])
+    assert result.exit_code == 2
+    assert "does not exist" in result.stdout
+
+
 def test_export_no_input_error():
     result = CliRunner().invoke(app, ["export"])
 

@@ -73,6 +73,10 @@ def clean(
 
     files_to_clean = find_files_to_clean(directory, config)
 
+    if len(files_to_clean) == 0:
+        typer.echo("No files identified for cleaning. Exiting.")
+        raise typer.Exit(code=0)
+
     typer.echo("Identified following files to clean up:")
     for path in sorted(files_to_clean):
         typer.echo(f"  {path}")
@@ -151,6 +155,11 @@ def export(
     if input.is_dir():
         sentinel_path = input / SAVE_PROGRESS_INDICATOR_FILE
         notebook_paths = [nb.path for nb in find_notebooks(input)]
+
+        if len(notebook_paths) == 0:
+            typer.echo(f"No notebooks found in directory [{input}]. Exiting.")
+            raise typer.Exit(code=1)
+
     else:
         sentinel_path = input.parent / SAVE_PROGRESS_INDICATOR_FILE
         notebook_paths = [input]
