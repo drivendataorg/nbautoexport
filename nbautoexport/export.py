@@ -49,7 +49,7 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
                 new_assets_dir = new_dir / f"{input.stem}_files"
                 new_assets_dir.mkdir(exist_ok=True)
                 for asset in assets_dir.iterdir():
-                    asset.rename(new_assets_dir / asset.name)
+                    asset.replace(new_assets_dir / asset.name)
                 assets_dir.rmdir()
 
         input.unlink()
