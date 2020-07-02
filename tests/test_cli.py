@@ -40,7 +40,10 @@ def test_main_python_m():
 
 def test_version_python_m():
     result = subprocess.run(
-        ["python", "-m", "nbautoexport", "--version"], capture_output=True, text=True
+        ["python", "-m", "nbautoexport", "--version"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
     )
     assert result.returncode == 0
     assert result.stdout.strip() == __version__
