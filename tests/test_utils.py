@@ -1,9 +1,12 @@
+import json
 from pathlib import Path
+import shutil
 import sys
 
 import pytest
 
-from nbautoexport.utils import cleared_argv, find_notebooks, working_directory
+from nbautoexport.sentinel import NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
+from nbautoexport.utils import JupyterNotebook, cleared_argv, find_notebooks, working_directory
 
 
 def test_get_script_extensions(notebook_asset, monkeypatch):
@@ -29,6 +32,32 @@ def test_get_script_extensions(notebook_asset, monkeypatch):
     # metadata.language_info is missing, fall back to ".txt"
     monkeypatch.delitem(notebook_asset.metadata, "language_info")
     assert notebook_asset.get_script_extension() == ".txt"
+
+
+def test_find_notebooks(tmp_path, notebook_asset):
+    shutil.copy(notebook_asset.path, tmp_path / "the_notebook_0.ipynb")
+    shutil.copy(notebook_asset.path, tmp_path / "the_notebook_1.ipynb")
+    expected_notebooks = [
+        JupyterNotebook.from_file(tmp_path / "the_notebook_0.ipynb"),
+        JupyterNotebook.from_file(tmp_path / "the_notebook_1.ipynb"),
+    ]
+
+    # Non-notebook files
+    (tmp_path / "the_journal.txt").touch()
+    with (tmp_path / "the_log.json").open("w") as fp:
+        json.dump(
+            {
+                "LOG ENTRY: SOL 61": "How come Aquaman can control whales?",
+                "LOG ENTRY: SOL 381": "That makes me a pirate! A space pirate!",
+            },
+            fp,
+        )
+    with (tmp_path / SAVE_PROGRESS_INDICATOR_FILE).open("w") as fp:
+        fp.write(NbAutoexportConfig().json())
+
+    found_notebooks = find_notebooks(tmp_path)
+
+    assert set(found_notebooks) == set(expected_notebooks)
 
 
 def test_find_notebooks_warning(tmp_path):

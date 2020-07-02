@@ -40,6 +40,9 @@ class JupyterNotebook(BaseModel):
         nbformat.validate(notebook)
         return cls(path=path, metadata=notebook.metadata)
 
+    def __hash__(self):
+        return hash(self.json())
+
 
 def find_notebooks(directory: Path) -> List[JupyterNotebook]:
     """Finds Jupyter notebooks in a directory. Not recursive.

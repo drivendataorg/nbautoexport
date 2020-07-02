@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import typer
 
@@ -17,7 +17,7 @@ from nbautoexport.sentinel import (
     OrganizeBy,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
-from nbautoexport.utils import __version__
+from nbautoexport.utils import __version__, find_notebooks
 
 app = typer.Typer()
 
@@ -105,48 +105,6 @@ def clean(
 
 
 @app.command()
-def convert(
-    input: Path = typer.Argument(
-        ...,
-        exists=True,
-        file_okay=True,
-        dir_okay=True,
-        writable=True,
-        help="Path to notebook file or directory of notebook files to convert.",
-    ),
-    export_formats: List[ExportFormat] = typer.Option(
-        DEFAULT_EXPORT_FORMATS,
-        "--export-format",
-        "-f",
-        show_default=True,
-        help=(
-            """File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', """
-            """and 'rst'. Multiple formats should be provided using multiple flags, e.g., '-f """
-            """script-f html -f markdown'."""
-        ),
-    ),
-    organize_by: OrganizeBy = typer.Option(
-        DEFAULT_ORGANIZE_BY,
-        "--organize-by",
-        "-b",
-        show_default=True,
-        help=(
-            """Whether to save exported file(s) in a folder per notebook or a folder per extension. """
-            """Options are 'notebook' or 'extension'."""
-        ),
-    ),
-):
-    """Convert notebook(s) using specified configuration options.
-    """
-    config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
-    if input.is_dir():
-        for notebook_path in input.glob("*.ipynb"):
-            export_notebook(notebook_path, config=config)
-    else:
-        export_notebook(input, config=config)
-
-
-@app.command()
 def export(
     input: Path = typer.Argument(
         ...,
@@ -155,22 +113,71 @@ def export(
         dir_okay=True,
         writable=True,
         help="Path to notebook file or directory of notebook files to export.",
-    )
+    ),
+    export_formats: Optional[List[ExportFormat]] = typer.Option(
+        None,
+        "--export-format",
+        "-f",
+        show_default=True,
+        help=(
+            "File format(s) to save for each notebook. Multiple formats should be provided using "
+            "multiple flags, e.g., '-f script -f html -f markdown'. Provided values will override "
+            "existing .nbautoexport config files. If neither provided, defaults to "
+            f"{DEFAULT_EXPORT_FORMATS}."
+        ),
+    ),
+    organize_by: Optional[OrganizeBy] = typer.Option(
+        None,
+        "--organize-by",
+        "-b",
+        show_default=True,
+        help=(
+            "Whether to save exported file(s) in a subfolder per notebook or per export format. "
+            "Provided values will override existing .nbautoexport config files. If neither "
+            f"provided, defaults to '{DEFAULT_ORGANIZE_BY}'."
+        ),
+    ),
 ):
-    """Convert notebook(s) using existing configuration file.
+    """Manually export notebook or directory of notebooks.
 
-    A .nbautoconvert configuration file is required to be in the same directory as the notebook(s).
+    An .nbautoexport configuration file in same directory as notebook(s) will be used if it
+    exists. Configuration options specified by command-line options will override configuration
+    file. If no existing configuration option exists and no values are provided, default values
+    will be used.
+
+    The export command will not do cleaning, regardless of the 'clean' setting in an .nbautoexport
+    configuration file.
     """
     if input.is_dir():
         sentinel_path = input / SAVE_PROGRESS_INDICATOR_FILE
-        notebook_paths = input.glob("*.ipynb")
+        notebook_paths = [nb.path for nb in find_notebooks(input)]
     else:
         sentinel_path = input.parent / SAVE_PROGRESS_INDICATOR_FILE
         notebook_paths = [input]
 
-    validate_sentinel_path(sentinel_path)
-    for notebook_path in notebook_paths:
+    # Configuration: input options override existing sentinel file
+    if sentinel_path.exists():
+        typer.echo(f"Reading existing configuration file from {sentinel_path} ...")
         config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
+
+        # Overrides
+        if len(export_formats) > 0:
+            typer.echo(f"Overriding config with specified export formats: {export_formats}")
+            config.export_formats = export_formats
+        if organize_by is not None:
+            typer.echo(f"Overriding config with specified organization strategy: {export_formats}")
+            config.organize_by = organize_by
+    else:
+        typer.echo("No configuration found. Using command options as configuration ...")
+        if len(export_formats) == 0:
+            typer.echo(f"No export formats specified. Using default: {DEFAULT_EXPORT_FORMATS}")
+            export_formats = DEFAULT_EXPORT_FORMATS
+        if organize_by is None:
+            typer.echo(f"No organize-by specified. Using default: {DEFAULT_ORGANIZE_BY}")
+            organize_by = DEFAULT_ORGANIZE_BY
+        config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
+
+    for notebook_path in notebook_paths:
         export_notebook(notebook_path, config=config)
 
 
@@ -190,9 +197,8 @@ def install(
         "-f",
         show_default=True,
         help=(
-            "File format(s) to save for each notebook. Options are 'script', 'html', 'markdown', "
-            + "and 'rst'. Multiple formats should be provided using multiple flags, e.g., "
-            + "'-f script -f html -f markdown'."
+            "File format(s) to save for each notebook. Multiple formats should be provided using "
+            "multiple flags, e.g., '-f script -f html -f markdown'."
         ),
     ),
     organize_by: OrganizeBy = typer.Option(
@@ -201,9 +207,7 @@ def install(
         "-b",
         show_default=True,
         help=(
-            "Whether to save exported file(s) in a folder per notebook or a folder per extension. "
-            + "Options are 'notebook' or 'extension'."
-            ""
+            "Whether to save exported file(s) in a subfolder per notebook or per export format. "
         ),
     ),
     clean: bool = typer.Option(
