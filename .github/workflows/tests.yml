@@ -34,12 +34,7 @@ jobs:
         python --version
         python -m pip install --upgrade pip
         python -m pip install -r requirements-dev.txt
-        conda install pandoc tectonic
-        mkdir bin
-        ln -s $(which tectonic) bin/xelatex
-        echo "::add-path::$(pwd)/bin"
-      # pandoc is for markdown-based export formats.
-      # tectonic is a TeX distribution. a LaTeX engine is needed for pdf export format.
+        conda install pandoc
 
     - name: Lint package
       shell: bash -l {0}

@@ -7,8 +7,9 @@ from nbautoexport.export import export_notebook
 from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, OrganizeBy
 from nbautoexport.utils import find_notebooks
 
+EXPORT_FORMATS_TO_TEST = [fmt for fmt in ExportFormat if fmt != ExportFormat.pdf]
+
 EXPECTED_NOTEBOOKS = [f"the_notebook_{n}" for n in range(3)]
-EXPECTED_FORMATS = ["script", "html"]
 
 
 @pytest.fixture()
@@ -19,7 +20,9 @@ def notebooks_dir(tmp_path, notebook_asset):
     return tmp_path
 
 
-@pytest.mark.parametrize("export_format, organize_by", itertools.product(ExportFormat, OrganizeBy))
+@pytest.mark.parametrize(
+    "export_format, organize_by", itertools.product(EXPORT_FORMATS_TO_TEST, OrganizeBy)
+)
 def test_notebook_exports_generator(notebooks_dir, export_format, organize_by):
     """Test that notebook_exports_generator matches what export_notebook produces.
     """

@@ -9,6 +9,9 @@ from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRES
 from nbautoexport.utils import JupyterNotebook
 
 
+EXPORT_FORMATS_TO_TEST = [fmt for fmt in ExportFormat if fmt != ExportFormat.pdf]
+
+
 @pytest.fixture()
 def notebooks_dir(tmp_path, notebook_asset):
     shutil.copy(notebook_asset.path, tmp_path / "the_notebook.ipynb")
@@ -16,14 +19,12 @@ def notebooks_dir(tmp_path, notebook_asset):
 
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
-def test_export_notebook_by_extension(notebooks_dir, organize_by):
+def test_export_notebook(notebooks_dir, organize_by):
     """Test that export notebook works. Explicitly write out expected files, because tests for
     get_expected_exports will compare against export_notebook.
     """
     notebook = JupyterNotebook.from_file(notebooks_dir / "the_notebook.ipynb")
-    config = NbAutoexportConfig(
-        export_formats=[fmt for fmt in ExportFormat], organize_by=organize_by
-    )
+    config = NbAutoexportConfig(export_formats=EXPORT_FORMATS_TO_TEST, organize_by=organize_by)
     export_notebook(notebook.path, config)
 
     expected_exports = set()
