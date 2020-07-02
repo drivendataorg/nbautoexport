@@ -28,7 +28,7 @@ def test_export_notebook(notebooks_dir, organize_by):
     export_notebook(notebook.path, config)
 
     expected_exports = set()
-    for fmt in ExportFormat:
+    for fmt in EXPORT_FORMATS_TO_TEST:
         if organize_by == "extension":
             subfolder = notebooks_dir / fmt.value
         elif organize_by == "notebook":

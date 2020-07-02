@@ -31,7 +31,12 @@ def test_version():
 
 
 def test_main_python_m():
-    result = subprocess.run(["python", "-m", "nbautoexport"], capture_output=True, text=True)
+    result = subprocess.run(
+        ["python", "-m", "nbautoexport"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
     assert result.returncode == 0
     assert "Exports Jupyter notebooks to various file formats" in result.stdout
     assert result.stdout.startswith("Usage: python -m nbautoexport")
@@ -43,7 +48,7 @@ def test_version_python_m():
         ["python", "-m", "nbautoexport", "--version"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        universal_newlines=True,
     )
     assert result.returncode == 0
     assert result.stdout.strip() == __version__
