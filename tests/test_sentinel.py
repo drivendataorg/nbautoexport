@@ -1,7 +1,9 @@
+import json
+
 from nbconvert.exporters import get_export_names
 
 from nbautoexport.clean import get_extension
-from nbautoexport.sentinel import ExportFormat
+from nbautoexport.sentinel import ExportFormat, install_sentinel, NbAutoexportConfig
 
 
 def test_export_format_compatibility():
@@ -25,3 +27,13 @@ def test_export_format_has_value():
         assert ExportFormat.has_value(level.value)
 
     assert not ExportFormat.has_value("paper")
+
+
+def test_install_sentinel(tmp_path):
+    export_formats = ["script", "html"]
+    install_sentinel(export_formats, organize_by="notebook", directory=tmp_path, overwrite=False)
+    with (tmp_path / ".nbautoexport").open("r") as fp:
+        config = json.load(fp)
+
+    expected_config = NbAutoexportConfig(export_formats=export_formats, organize_by="notebook")
+    assert config == expected_config
