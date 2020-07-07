@@ -6,7 +6,53 @@ from typer.testing import CliRunner
 
 from nbautoexport import jupyter_config, nbautoexport
 from nbautoexport.nbautoexport import app
-from nbautoexport.sentinel import NbAutoexportConfig
+from nbautoexport.sentinel import (
+    DEFAULT_CLEAN,
+    DEFAULT_EXPORT_FORMATS,
+    DEFAULT_ORGANIZE_BY,
+    NbAutoexportConfig,
+    SAVE_PROGRESS_INDICATOR_FILE,
+)
+
+
+def test_configure_defaults(tmp_path):
+    result = CliRunner().invoke(app, ["configure", str(tmp_path)])
+    assert result.exit_code == 0
+
+    config = NbAutoexportConfig.parse_file(
+        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE, content_type="application/json"
+    )
+
+    expected_config = NbAutoexportConfig()
+    assert config == expected_config
+
+
+def test_configure_specified(tmp_path):
+    export_formats = ["script", "html"]
+    organize_by = "extension"
+    clean = True
+    assert export_formats != DEFAULT_EXPORT_FORMATS
+    assert organize_by != DEFAULT_ORGANIZE_BY
+    assert clean != DEFAULT_CLEAN
+
+    cmd_list = ["configure", str(tmp_path)]
+    for fmt in export_formats:
+        cmd_list.extend(["-f", fmt])
+    cmd_list.extend(["-b", organize_by])
+    if clean:
+        cmd_list.append("--clean")
+
+    result = CliRunner().invoke(app, cmd_list)
+    assert result.exit_code == 0
+
+    config = NbAutoexportConfig.parse_file(
+        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE, content_type="application/json"
+    )
+
+    expected_config = NbAutoexportConfig(
+        export_formats=export_formats, organize_by=organize_by, clean=clean
+    )
+    assert config == expected_config
 
 
 def test_invalid_export_format():
@@ -43,8 +89,6 @@ def test_force_overwrite(tmp_path):
     result = runner.invoke(
         app, ["configure", str(tmp_path), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
-    print(result.output)
-    print(result.exit_code)
     assert result.exit_code == 0
     with (tmp_path / ".nbautoexport").open("r") as fp:
         config = json.load(fp)

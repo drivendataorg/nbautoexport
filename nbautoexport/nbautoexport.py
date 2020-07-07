@@ -290,13 +290,11 @@ def configure(
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
 
+    config = NbAutoexportConfig(
+        export_formats=export_formats, organize_by=organize_by, clean=clean
+    )
     try:
-        install_sentinel(
-            directory=directory,
-            export_formats=export_formats,
-            organize_by=organize_by,
-            overwrite=overwrite,
-        )
+        install_sentinel(directory=directory, config=config, overwrite=overwrite)
     except FileExistsError as msg:
         typer.echo(msg)
         raise typer.Exit(code=1)
