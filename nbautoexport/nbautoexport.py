@@ -2,11 +2,13 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
+from jupyter_core.paths import jupyter_config_dir
+from pkg_resources import parse_version
 import typer
 
 from nbautoexport.clean import find_files_to_clean
 from nbautoexport.export import export_notebook
-from nbautoexport.jupyter_config import install_post_save_hook
+from nbautoexport.jupyter_config import block_regex, install_post_save_hook, version_regex
 from nbautoexport.sentinel import (
     DEFAULT_CLEAN,
     DEFAULT_EXPORT_FORMATS,
@@ -293,3 +295,30 @@ def configure(
     except FileExistsError as msg:
         typer.echo(msg)
         raise typer.Exit(code=1)
+
+    # Check for installation in Jupyter config
+    installed = False
+    jupyter_config_file = (
+        (Path(jupyter_config_dir()) / "jupyter_notebook_config.py").expanduser().resolve()
+    )
+    if jupyter_config_file.exists():
+        with jupyter_config_file.open("r") as fp:
+            jupyter_config_text = fp.read()
+        if block_regex.search(jupyter_config_text):
+            installed = True
+            version_match = version_regex.search(jupyter_config_text)
+            if version_match:
+                existing_version = version_match.group()
+            else:
+                existing_version = ""
+
+            if parse_version(existing_version) < parse_version(__version__):
+                typer.echo(
+                    "Warning: nbautoexport initialize is an older version. "
+                    "Please run 'install' command to update."
+                )
+    if not installed:
+        typer.echo(
+            "Warning: nbautoexport is not properly installed with Jupyter. "
+            "Please run 'install' command."
+        )
