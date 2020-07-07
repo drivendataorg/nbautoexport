@@ -47,11 +47,11 @@ def main(
     """Automatically export Jupyter notebooks to various file formats (.py, .html, and more) upon
     save.
 
-    To set up, first use the `install` command to register nbautoexport with Jupyter. If you
+    To set up, first use the 'install' command to register nbautoexport with Jupyter. If you
     already have a Jupyter server running, you will need to restart it.
 
-    Next, you will need to use the `configure` command to create a .nbautoexport configuration file
-    in the same directory as the notebooks you want to automatically export.
+    Next, you will need to use the 'configure' command to create a .nbautoexport configuration file
+    in the same directory as the notebooks you want to have export automatically.
 
     Once nbautoexport is installed with the first step, exporting will run automatically when
     saving a notebook in Jupyter for any notebook where there is a .nbautoexport configuration file
@@ -214,7 +214,8 @@ def install(
     )
 ):
     """Register nbautoexport post-save hook with Jupyter. Note that if you already have a Jupyter
-    server running, you will need to restart in order for it to take effect.
+    server running, you will need to restart in order for it to take effect. This is a one-time
+    installation.
 
     This works by adding an initialization block in your Jupyter config file that will register
     nbautoexport's post-save function. If an nbautoexport initialization block already exists and
@@ -271,7 +272,12 @@ def configure(
     ),
 ):
     """
-    Create a .nbautoexport configuration file in DIRECTORY.
+    Create a .nbautoexport configuration file in a directory. If nbautoexport has been installed
+    with the 'install' command, then Jupyter will automatically export any notebooks on save that
+    are in the same directory as the .nbautoexport file.
+
+    An .nbautoexport configuration file only applies to that directory, nonrecursively. You must
+    independently configure other directories containing notebooks.
     """
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
