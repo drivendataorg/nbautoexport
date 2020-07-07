@@ -223,6 +223,12 @@ def install(
     """
     install_post_save_hook(config_file=config_file)
 
+    typer.echo("nbautoexport post-save hook successfully installed with Jupyter.")
+    typer.echo(
+        "If a Jupyter server is already running, you will need to restart it for nbautoexport "
+        "to work."
+    )
+
 
 @app.command()
 def configure(
