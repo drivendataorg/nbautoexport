@@ -44,10 +44,18 @@ def main(
         help="Show nbautoexport version.",
     ),
 ):
-    """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save,
-    automatically.
+    """Automatically export Jupyter notebooks to various file formats (.py, .html, and more) upon
+    save.
 
-    Use the install command to configure a notebooks directory to be watched.
+    To set up, first use the `install` command to register nbautoexport with Jupyter. If you
+    already have a Jupyter server running, you will need to restart it.
+
+    Next, you will need to use the `configure` command to create a .nbautoexport configuration file
+    in the same directory as the notebooks you want to automatically export.
+
+    Once nbautoexport is installed with the first step, exporting will run automatically when
+    saving a notebook in Jupyter for any notebook where there is a .nbautoexport configuration file
+    in the same directory.
     """
     pass
 
@@ -192,13 +200,38 @@ def export(
 
 @app.command()
 def install(
+    config_file: Optional[Path] = typer.Option(
+        None,
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        help=(
+            "Path to config file. If not specified (default), will determine appropriate path "
+            "used by Jupyter. You should only specify this option if you use a nonstandard config "
+            "file path that you explicitly pass to Jupyter with the --config option at startup."
+        ),
+    )
+):
+    """Register nbautoexport post-save hook with Jupyter. Note that if you already have a Jupyter
+    server running, you will need to restart in order for it to take effect.
+
+    This works by adding an initialization block in your Jupyter config file that will register
+    nbautoexport's post-save function. If an nbautoexport initialization block already exists and
+    is from an older version of nbautoexport, this command will replace it with an updated version.
+    """
+    install_post_save_hook(config_file=config_file)
+
+
+@app.command()
+def configure(
     directory: Path = typer.Argument(
         "notebooks",
         exists=True,
         file_okay=False,
         dir_okay=True,
         writable=True,
-        help="Path to directory of notebook files to watch with nbautoexport.",
+        help="Path to directory of notebook files to configure with nbautoexport.",
     ),
     export_formats: List[ExportFormat] = typer.Option(
         DEFAULT_EXPORT_FORMATS,
@@ -238,7 +271,7 @@ def install(
     ),
 ):
     """
-    Create a .nbautoexport configuration file in DIRECTORY. Defaults to "./notebooks/"
+    Create a .nbautoexport configuration file in DIRECTORY.
     """
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
@@ -248,5 +281,3 @@ def install(
     except FileExistsError as msg:
         typer.echo(msg)
         raise typer.Exit(code=1)
-
-    install_post_save_hook()

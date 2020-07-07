@@ -3,6 +3,7 @@ from pathlib import Path
 from pkg_resources import parse_version
 import re
 import textwrap
+from typing import Optional
 
 from jupyter_core.paths import jupyter_config_dir
 from traitlets.config.loader import Config
@@ -42,24 +43,27 @@ block_regex = re.compile(
 version_regex = re.compile(r"(?<=# >>> nbautoexport initialize, version=\[).*(?=\] >>>)")
 
 
-def install_post_save_hook():
+def install_post_save_hook(config_file: Optional[Path] = None):
     """Splices the post save hook into the global Jupyter configuration file
     """
-    config_dir = jupyter_config_dir()
-    config_path = (Path(config_dir) / "jupyter_notebook_config.py").expanduser().resolve()
+    if config_file is None:
+        config_dir = jupyter_config_dir()
+        config_file = Path(config_dir) / "jupyter_notebook_config.py"
 
-    if not config_path.exists():
-        logger.debug(f"No existing Jupyter configuration detected at {config_path}. Creating...")
-        config_path.parent.mkdir(exist_ok=True, parents=True)
-        with config_path.open("w") as fp:
+    config_file = config_file.expanduser().resolve()
+
+    if not config_file.exists():
+        logger.debug(f"No existing Jupyter configuration detected at {config_file}. Creating...")
+        config_file.parent.mkdir(exist_ok=True, parents=True)
+        with config_file.open("w") as fp:
             fp.write(post_save_hook_initialize_block)
         logger.info("nbautoexport post-save hook installed.")
         return
 
     # If config exists, check for existing nbautoexport initialize block and install as appropriate
-    logger.debug(f"Detected existing Jupyter configuration at {config_path}")
+    logger.debug(f"Detected existing Jupyter configuration at {config_file}")
 
-    with config_path.open("r") as fp:
+    with config_file.open("r") as fp:
         config = fp.read()
 
     if block_regex.search(config):
@@ -75,7 +79,7 @@ def install_post_save_hook():
 
         if parse_version(existing_version) < parse_version(__version__):
             logger.info(f"Updating nbautoexport post-save hook with version {__version__}...")
-            with config_path.open("w") as fp:
+            with config_file.open("w") as fp:
                 # Open as w replaces existing file. We're replacing entire config.
                 fp.write(block_regex.sub(post_save_hook_initialize_block, config))
         else:
@@ -83,7 +87,7 @@ def install_post_save_hook():
             return
     else:
         logger.info("Installing post-save hook.")
-        with config_path.open("a") as fp:
+        with config_file.open("a") as fp:
             # Open as a just appends. We append block at the end of existing file.
             fp.write("\n" + post_save_hook_initialize_block)
 
