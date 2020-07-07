@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from jupyter_core.paths import jupyter_config_dir
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 import typer
 
 from nbautoexport.clean import find_files_to_clean
