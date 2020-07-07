@@ -3,7 +3,12 @@ import json
 from nbconvert.exporters import get_export_names
 
 from nbautoexport.clean import get_extension
-from nbautoexport.sentinel import ExportFormat, install_sentinel, NbAutoexportConfig
+from nbautoexport.sentinel import (
+    ExportFormat,
+    install_sentinel,
+    NbAutoexportConfig,
+    SAVE_PROGRESS_INDICATOR_FILE,
+)
 
 
 def test_export_format_compatibility():
@@ -31,9 +36,12 @@ def test_export_format_has_value():
 
 def test_install_sentinel(tmp_path):
     export_formats = ["script", "html"]
-    install_sentinel(export_formats, organize_by="notebook", directory=tmp_path, overwrite=False)
-    with (tmp_path / ".nbautoexport").open("r") as fp:
-        config = json.load(fp)
+    install_sentinel(
+        directory=tmp_path, export_formats=export_formats, organize_by="notebook", overwrite=False
+    )
+    config = NbAutoexportConfig.parse_file(
+        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE, content_type="application/json"
+    )
 
     expected_config = NbAutoexportConfig(export_formats=export_formats, organize_by="notebook")
     assert config == expected_config

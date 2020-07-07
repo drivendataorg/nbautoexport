@@ -291,7 +291,12 @@ def configure(
         logging.basicConfig(level=logging.DEBUG)
 
     try:
-        install_sentinel(export_formats, organize_by, directory, overwrite)
+        install_sentinel(
+            directory=directory,
+            export_formats=export_formats,
+            organize_by=organize_by,
+            overwrite=overwrite,
+        )
     except FileExistsError as msg:
         typer.echo(msg)
         raise typer.Exit(code=1)
