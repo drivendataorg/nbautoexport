@@ -202,7 +202,7 @@ def export(
 
 @app.command()
 def install(
-    config_file: Optional[Path] = typer.Option(
+    jupyter_config: Optional[Path] = typer.Option(
         None,
         exists=False,
         file_okay=True,
@@ -223,7 +223,7 @@ def install(
     nbautoexport's post-save function. If an nbautoexport initialization block already exists and
     is from an older version of nbautoexport, this command will replace it with an updated version.
     """
-    install_post_save_hook(config_file=config_file)
+    install_post_save_hook(config_path=jupyter_config)
 
     typer.echo("nbautoexport post-save hook successfully installed with Jupyter.")
     typer.echo(

@@ -47,7 +47,7 @@ def test_install_existing_config(tmp_path, monkeypatch):
 def test_install_new_config_with_path(tmp_path):
     config_path = tmp_path / "nonstandard_config.py"
 
-    result = CliRunner().invoke(app, ["install", "--config-file", str(config_path)])
+    result = CliRunner().invoke(app, ["install", "--jupyter-config", str(config_path)])
     assert result.exit_code == 0
     assert config_path.exists()
 
@@ -63,7 +63,7 @@ def test_install_existing_config_with_path(tmp_path):
         fp.write("print('hello world!')")
     assert config_path.exists()
 
-    result = CliRunner().invoke(app, ["install", "--config-file", str(config_path)])
+    result = CliRunner().invoke(app, ["install", "--jupyter-config", str(config_path)])
     assert result.exit_code == 0
     assert config_path.exists()
 
