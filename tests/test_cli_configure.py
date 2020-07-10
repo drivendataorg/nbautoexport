@@ -138,3 +138,10 @@ def test_configure_no_warning(tmp_path, monkeypatch):
     result = CliRunner().invoke(app, ["configure", str(tmp_path)])
     assert result.exit_code == 0
     assert "Warning:" not in result.output
+
+
+def test_configure_no_directory_error():
+    result = CliRunner().invoke(app, ["configure"])
+
+    assert result.exit_code == 2
+    assert "Error: Missing argument 'DIRECTORY'." in result.stdout
