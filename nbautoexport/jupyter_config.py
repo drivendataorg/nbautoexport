@@ -1,8 +1,9 @@
 from inspect import getsourcelines
 from pathlib import Path
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 import re
 import textwrap
+from typing import Optional
 
 from jupyter_core.paths import jupyter_config_dir
 from traitlets.config.loader import Config
@@ -42,11 +43,14 @@ block_regex = re.compile(
 version_regex = re.compile(r"(?<=# >>> nbautoexport initialize, version=\[).*(?=\] >>>)")
 
 
-def install_post_save_hook():
+def install_post_save_hook(config_path: Optional[Path] = None):
     """Splices the post save hook into the global Jupyter configuration file
     """
-    config_dir = jupyter_config_dir()
-    config_path = (Path(config_dir) / "jupyter_notebook_config.py").expanduser().resolve()
+    if config_path is None:
+        config_dir = jupyter_config_dir()
+        config_path = Path(config_dir) / "jupyter_notebook_config.py"
+
+    config_path = config_path.expanduser().resolve()
 
     if not config_path.exists():
         logger.debug(f"No existing Jupyter configuration detected at {config_path}. Creating...")

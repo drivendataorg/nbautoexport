@@ -11,7 +11,7 @@ def test_main():
     runner = CliRunner()
     result = runner.invoke(app)
     assert result.exit_code == 0
-    assert "Exports Jupyter notebooks to various file formats" in result.output
+    assert "Automatically export Jupyter notebooks to various file formats" in result.output
 
 
 def test_main_help():
@@ -19,7 +19,7 @@ def test_main_help():
     runner = CliRunner()
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "Exports Jupyter notebooks to various file formats" in result.output
+    assert "Automatically export Jupyter notebooks to various file formats" in result.output
 
 
 def test_version():
@@ -38,7 +38,7 @@ def test_main_python_m():
         universal_newlines=True,
     )
     assert result.returncode == 0
-    assert "Exports Jupyter notebooks to various file formats" in result.stdout
+    assert "Automatically export Jupyter notebooks to various file formats" in result.stdout
     assert result.stdout.startswith("Usage: python -m nbautoexport")
     assert "Usage: __main__.py" not in result.stdout
 

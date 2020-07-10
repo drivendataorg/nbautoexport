@@ -43,16 +43,8 @@ class NbAutoexportConfig(BaseModel):
         extra = "forbid"
 
 
-def install_sentinel(
-    export_formats: List[ExportFormat], organize_by: OrganizeBy, directory: Path, overwrite: bool
-):
+def install_sentinel(directory: Path, config: NbAutoexportConfig, overwrite: bool):
     """Writes the configuration file to a specified directory.
-
-    Args:
-        export_formats: A list of `nbconvert`-supported export formats to write on each save
-        organize_by: Whether to organize exported files by notebook filename or in folders by extension
-        directory: The directory containing the notebooks to monitor
-        overwrite: Overwrite an existing sentinel file if one exists
     """
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
 
@@ -62,8 +54,6 @@ def install_sentinel(
             """If you wish to overwrite, use the --overwrite flag."""
         )
     else:
-        config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
-
         logger.info(f"Creating configuration file at {sentinel_path}")
         logger.info(f"\n{config.json(indent=2)}")
         with sentinel_path.open("w") as fp:

@@ -2,11 +2,13 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
+from jupyter_core.paths import jupyter_config_dir
+from packaging.version import parse as parse_version
 import typer
 
 from nbautoexport.clean import find_files_to_clean
 from nbautoexport.export import export_notebook
-from nbautoexport.jupyter_config import install_post_save_hook
+from nbautoexport.jupyter_config import block_regex, install_post_save_hook, version_regex
 from nbautoexport.sentinel import (
     DEFAULT_CLEAN,
     DEFAULT_EXPORT_FORMATS,
@@ -44,10 +46,18 @@ def main(
         help="Show nbautoexport version.",
     ),
 ):
-    """Exports Jupyter notebooks to various file formats (.py, .html, and more) upon save,
-    automatically.
+    """Automatically export Jupyter notebooks to various file formats (.py, .html, and more) upon
+    save.
 
-    Use the install command to configure a notebooks directory to be watched.
+    To set up, first use the 'install' command to register nbautoexport with Jupyter. If you
+    already have a Jupyter server running, you will need to restart it.
+
+    Next, you will need to use the 'configure' command to create a .nbautoexport configuration file
+    in the same directory as the notebooks you want to have export automatically.
+
+    Once nbautoexport is installed with the first step, exporting will run automatically when
+    saving a notebook in Jupyter for any notebook where there is a .nbautoexport configuration file
+    in the same directory.
     """
     pass
 
@@ -192,13 +202,45 @@ def export(
 
 @app.command()
 def install(
+    jupyter_config: Optional[Path] = typer.Option(
+        None,
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        help=(
+            "Path to config file. If not specified (default), will determine appropriate path "
+            "used by Jupyter. You should only specify this option if you use a nonstandard config "
+            "file path that you explicitly pass to Jupyter with the --config option at startup."
+        ),
+    )
+):
+    """Register nbautoexport post-save hook with Jupyter. Note that if you already have a Jupyter
+    server running, you will need to restart in order for it to take effect. This is a one-time
+    installation.
+
+    This works by adding an initialization block in your Jupyter config file that will register
+    nbautoexport's post-save function. If an nbautoexport initialization block already exists and
+    is from an older version of nbautoexport, this command will replace it with an updated version.
+    """
+    install_post_save_hook(config_path=jupyter_config)
+
+    typer.echo("nbautoexport post-save hook successfully installed with Jupyter.")
+    typer.echo(
+        "If a Jupyter server is already running, you will need to restart it for nbautoexport "
+        "to work."
+    )
+
+
+@app.command()
+def configure(
     directory: Path = typer.Argument(
         "notebooks",
         exists=True,
         file_okay=False,
         dir_okay=True,
         writable=True,
-        help="Path to directory of notebook files to watch with nbautoexport.",
+        help="Path to directory of notebook files to configure with nbautoexport.",
     ),
     export_formats: List[ExportFormat] = typer.Option(
         DEFAULT_EXPORT_FORMATS,
@@ -238,15 +280,48 @@ def install(
     ),
 ):
     """
-    Create a .nbautoexport configuration file in DIRECTORY. Defaults to "./notebooks/"
+    Create a .nbautoexport configuration file in a directory. If nbautoexport has been installed
+    with the 'install' command, then Jupyter will automatically export any notebooks on save that
+    are in the same directory as the .nbautoexport file.
+
+    An .nbautoexport configuration file only applies to that directory, nonrecursively. You must
+    independently configure other directories containing notebooks.
     """
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
 
+    config = NbAutoexportConfig(
+        export_formats=export_formats, organize_by=organize_by, clean=clean
+    )
     try:
-        install_sentinel(export_formats, organize_by, directory, overwrite)
+        install_sentinel(directory=directory, config=config, overwrite=overwrite)
     except FileExistsError as msg:
         typer.echo(msg)
         raise typer.Exit(code=1)
 
-    install_post_save_hook()
+    # Check for installation in Jupyter config
+    installed = False
+    jupyter_config_file = (
+        (Path(jupyter_config_dir()) / "jupyter_notebook_config.py").expanduser().resolve()
+    )
+    if jupyter_config_file.exists():
+        with jupyter_config_file.open("r") as fp:
+            jupyter_config_text = fp.read()
+        if block_regex.search(jupyter_config_text):
+            installed = True
+            version_match = version_regex.search(jupyter_config_text)
+            if version_match:
+                existing_version = version_match.group()
+            else:
+                existing_version = ""
+
+            if parse_version(existing_version) < parse_version(__version__):
+                typer.echo(
+                    "Warning: nbautoexport initialize is an older version. "
+                    "Please run 'install' command to update."
+                )
+    if not installed:
+        typer.echo(
+            "Warning: nbautoexport is not properly installed with Jupyter. "
+            "Please run 'install' command."
+        )
