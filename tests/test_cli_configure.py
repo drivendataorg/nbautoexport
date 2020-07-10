@@ -29,7 +29,7 @@ def test_configure_defaults(tmp_path):
 
 def test_configure_specified(tmp_path):
     export_formats = ["script", "html"]
-    organize_by = "extension"
+    organize_by = "notebook"
     clean = True
     assert export_formats != DEFAULT_EXPORT_FORMATS
     assert organize_by != DEFAULT_ORGANIZE_BY
