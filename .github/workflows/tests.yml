@@ -39,10 +39,11 @@ jobs:
     - name: Install TinyTex
       uses: r-lib/actions/setup-tinytex@v1
 
-    - name: Install LaTeX
+    - name: Install LaTeX dependencies
       shell: bash -l {0}
       run: |
         tlmgr install xetex
+        tlmgr install tcolorbox
 
     - name: Lint package
       shell: bash -l {0}
