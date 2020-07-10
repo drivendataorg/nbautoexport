@@ -46,6 +46,12 @@ jobs:
       run: |
         make test
 
+    - name: Test building documentation
+      shell: bash -l {0}
+      run: |
+        make docs
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+
     - name: Upload coverage to codecov
       uses: codecov/codecov-action@v1
       with:
