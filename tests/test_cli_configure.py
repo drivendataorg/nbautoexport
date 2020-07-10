@@ -97,7 +97,7 @@ def test_force_overwrite(tmp_path):
     assert config == expected_config
 
 
-def test_install_no_jupyter_config_warning(tmp_path, monkeypatch):
+def test_configure_no_jupyter_config_warning(tmp_path, monkeypatch):
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     result = CliRunner().invoke(app, ["configure", str(tmp_path)])
@@ -105,7 +105,7 @@ def test_install_no_jupyter_config_warning(tmp_path, monkeypatch):
     assert "Warning: nbautoexport is not properly installed with Jupyter." in result.output
 
 
-def test_install_no_initialize_warning(tmp_path, monkeypatch):
+def test_configure_no_initialize_warning(tmp_path, monkeypatch):
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     (tmp_path / "jupyter_notebook_config.py").touch()
@@ -115,7 +115,7 @@ def test_install_no_initialize_warning(tmp_path, monkeypatch):
     assert "Warning: nbautoexport is not properly installed with Jupyter." in result.output
 
 
-def test_install_oudated_initialize_warning(tmp_path, monkeypatch):
+def test_configure_oudated_initialize_warning(tmp_path, monkeypatch):
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     jupyter_config_path = tmp_path / "jupyter_notebook_config.py"
@@ -130,7 +130,7 @@ def test_install_oudated_initialize_warning(tmp_path, monkeypatch):
     assert "Warning: nbautoexport initialize is an older version." in result.output
 
 
-def test_install_no_warning(tmp_path, monkeypatch):
+def test_configure_no_warning(tmp_path, monkeypatch):
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     jupyter_config.install_post_save_hook(tmp_path / "jupyter_notebook_config.py")
