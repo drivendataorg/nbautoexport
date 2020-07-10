@@ -36,6 +36,14 @@ jobs:
         python -m pip install -r requirements-dev.txt
         conda install pandoc
 
+    - name: Install TinyTex
+      uses: r-lib/actions/setup-tinytex@v1
+
+    - name: Install LaTeX
+      shell: bash -l {0}
+      run: |
+        tlmgr install xetex
+
     - name: Lint package
       shell: bash -l {0}
       run: |

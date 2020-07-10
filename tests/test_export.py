@@ -9,7 +9,7 @@ from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRES
 from nbautoexport.utils import JupyterNotebook
 
 
-EXPORT_FORMATS_TO_TEST = [fmt for fmt in ExportFormat if fmt != ExportFormat.pdf]
+EXPORT_FORMATS_TO_TEST = [fmt for fmt in ExportFormat]
 
 
 @pytest.fixture()

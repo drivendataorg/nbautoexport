@@ -7,7 +7,7 @@ from nbautoexport.export import export_notebook
 from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, OrganizeBy
 from nbautoexport.utils import find_notebooks
 
-EXPORT_FORMATS_TO_TEST = [fmt for fmt in ExportFormat if fmt != ExportFormat.pdf]
+EXPORT_FORMATS_TO_TEST = [fmt for fmt in ExportFormat]
 
 EXPECTED_NOTEBOOKS = [f"the_notebook_{n}" for n in range(3)]
 
