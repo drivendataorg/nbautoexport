@@ -5,10 +5,7 @@ from nbautoexport import jupyter_config
 
 
 def test_install_new_config(tmp_path, monkeypatch):
-    def mock_jupyter_config_dir():
-        return str(tmp_path)
-
-    monkeypatch.setattr(jupyter_config, "jupyter_config_dir", mock_jupyter_config_dir)
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     config_path = tmp_path / "jupyter_notebook_config.py"
 
@@ -22,10 +19,7 @@ def test_install_new_config(tmp_path, monkeypatch):
 
 
 def test_install_existing_config(tmp_path, monkeypatch):
-    def mock_jupyter_config_dir():
-        return str(tmp_path)
-
-    monkeypatch.setattr(jupyter_config, "jupyter_config_dir", mock_jupyter_config_dir)
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     config_path = tmp_path / "jupyter_notebook_config.py"
 

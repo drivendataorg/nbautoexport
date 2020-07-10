@@ -4,7 +4,7 @@ import json
 
 from typer.testing import CliRunner
 
-from nbautoexport import jupyter_config, nbautoexport
+from nbautoexport import jupyter_config
 from nbautoexport.nbautoexport import app
 from nbautoexport.sentinel import (
     DEFAULT_CLEAN,
@@ -98,10 +98,7 @@ def test_force_overwrite(tmp_path):
 
 
 def test_install_no_jupyter_config_warning(tmp_path, monkeypatch):
-    def mock_jupyter_config_dir():
-        return str(tmp_path)
-
-    monkeypatch.setattr(jupyter_config, "jupyter_config_dir", mock_jupyter_config_dir)
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     result = CliRunner().invoke(app, ["configure", str(tmp_path)])
     assert result.exit_code == 0
@@ -109,10 +106,7 @@ def test_install_no_jupyter_config_warning(tmp_path, monkeypatch):
 
 
 def test_install_no_initialize_warning(tmp_path, monkeypatch):
-    def mock_jupyter_config_dir():
-        return str(tmp_path)
-
-    monkeypatch.setattr(jupyter_config, "jupyter_config_dir", mock_jupyter_config_dir)
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     (tmp_path / "jupyter_notebook_config.py").touch()
 
@@ -122,10 +116,7 @@ def test_install_no_initialize_warning(tmp_path, monkeypatch):
 
 
 def test_install_oudated_initialize_warning(tmp_path, monkeypatch):
-    def mock_jupyter_config_dir():
-        return str(tmp_path)
-
-    monkeypatch.setattr(nbautoexport, "jupyter_config_dir", mock_jupyter_config_dir)
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     jupyter_config_path = tmp_path / "jupyter_notebook_config.py"
     with jupyter_config_path.open("w") as fp:
@@ -140,11 +131,7 @@ def test_install_oudated_initialize_warning(tmp_path, monkeypatch):
 
 
 def test_install_no_warning(tmp_path, monkeypatch):
-    def mock_jupyter_config_dir():
-        return str(tmp_path)
-
-    monkeypatch.setattr(jupyter_config, "jupyter_config_dir", mock_jupyter_config_dir)
-    monkeypatch.setattr(nbautoexport, "jupyter_config_dir", mock_jupyter_config_dir)
+    monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     jupyter_config.install_post_save_hook(tmp_path / "jupyter_notebook_config.py")
 
