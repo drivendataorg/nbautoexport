@@ -41,7 +41,10 @@ dist: clean ## builds source and wheel package
 	python setup.py bdist_wheel
 	ls -l dist
 
-docs:
+docs: clean-docs
+	for cmd in clean configure export install ; do \
+		bash docs/_scripts/generate_command_reference.sh $$cmd; \
+	done
 	cd docs && mkdocs build
 
 format:
