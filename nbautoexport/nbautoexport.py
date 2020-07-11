@@ -235,7 +235,7 @@ def install(
 @app.command()
 def configure(
     directory: Path = typer.Argument(
-        "notebooks",
+        ...,
         exists=True,
         file_okay=False,
         dir_okay=True,

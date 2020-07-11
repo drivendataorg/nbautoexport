@@ -29,7 +29,7 @@ def test_configure_defaults(tmp_path):
 
 def test_configure_specified(tmp_path):
     export_formats = ["script", "html"]
-    organize_by = "extension"
+    organize_by = "notebook"
     clean = True
     assert export_formats != DEFAULT_EXPORT_FORMATS
     assert organize_by != DEFAULT_ORGANIZE_BY
@@ -138,3 +138,10 @@ def test_configure_no_warning(tmp_path, monkeypatch):
     result = CliRunner().invoke(app, ["configure", str(tmp_path)])
     assert result.exit_code == 0
     assert "Warning:" not in result.output
+
+
+def test_configure_no_directory_error():
+    result = CliRunner().invoke(app, ["configure"])
+
+    assert result.exit_code == 2
+    assert "Error: Missing argument 'DIRECTORY'." in result.stdout
