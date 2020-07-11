@@ -42,8 +42,7 @@ jobs:
     - name: Install LaTeX dependencies
       shell: bash -l {0}
       run: |
-        tlmgr install xetex
-        tlmgr install tcolorbox
+        bash .github/install_latex_deps.sh
 
     - name: Lint package
       shell: bash -l {0}
