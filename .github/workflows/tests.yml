@@ -40,9 +40,16 @@ jobs:
       uses: r-lib/actions/setup-tinytex@v1
 
     - name: Install LaTeX dependencies
+      if: matrix.os != 'windows-latest'
       shell: bash -l {0}
       run: |
         bash .github/install_latex_deps.sh
+
+    - name: Install LaTeX dependencies
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        pwsh .github/install_latex_deps.sh
 
     - name: Lint package
       shell: bash -l {0}
