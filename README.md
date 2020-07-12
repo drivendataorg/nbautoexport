@@ -34,54 +34,9 @@ nbautoexport configure ./notebooks
 
 This will create a configuration file `notebooks/.nbautoexport`.
 
-If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate script versions of your notebook and save them in subdirectories named after the notebook.
+If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notbook (with the `.py` extension) and saved in the directory `./notebooks/script`.
 
 If everything is working, your notebooks directory should end up with files like the below example:
-
-```
-notebooks
-├── .nbautoexport
-├── 0.1-ejm-data-exploration
-│   └── 0.1-ejm-data-exploration.py
-├── 0.2-ejm-feature-creation
-│   └── 0.2-ejm-feature-creation.py
-├──0.1-ejm-data-exploration.ipynb
-└──0.2-ejm-feature-creation.ipynb
-```
-
-## Configuring export options
-
-The default `.nbautoexport` configuration file will look like this:
-
-```json
-{
-  "export_formats": [
-    "script"
-  ],
-  "organize_by": "notebook",
-  "clean": false
-}
-```
-
-Upon save, this generates a script which will live in a folder with the same name as the notebook.
-
-```
-notebooks
-├── 0.1-ejm-data-exploration
-│   └── 0.1-ejm-data-exploration.py
-├── 0.2-ejm-feature-creation
-│   └── 0.2-ejm-feature-creation.py
-├──0.1-ejm-data-exploration.ipynb
-└──0.2-ejm-feature-creation.ipynb
-```
-
-This default organization is handy for selecting the pair in git with just `*` at the end of the part that the tab completion matched.
-
-However, this can result in a large number of subfolders. You can put scripts in a single folder instead with
-
-```bash
-nbautoexport configure ./notebooks --organize-by extension
-```
 
 ```
 notebooks
@@ -90,6 +45,47 @@ notebooks
 └── script
     └── 0.1-ejm-data-exploration.py
     └── 0.2-ejm-feature-creation.py
+```
+
+## Configuring export options
+
+The default `.nbautoexport` configuration file looks like this:
+
+```json
+{
+  "export_formats": [
+    "script"
+  ],
+  "organize_by": "extension",
+  "clean": false
+}
+```
+
+Upon save, this will lead to notebooks being exported to scripts which saved to the `./notebooks/script` directory.
+
+```
+notebooks
+├──0.1-ejm-data-exploration.ipynb
+├──0.2-ejm-feature-creation.ipynb
+└── script
+    └── 0.1-ejm-data-exploration.py
+    └── 0.2-ejm-feature-creation.py
+```
+
+An alternative way to organize exported files is to create a directory for each notebook.
+
+```bash
+nbautoexport configure ./notebooks --organize-by notebook
+```
+
+```
+notebooks
+├── 0.1-ejm-data-exploration
+│   └── 0.1-ejm-data-exploration.py
+├── 0.2-ejm-feature-creation
+│   └── 0.2-ejm-feature-creation.py
+├──0.1-ejm-data-exploration.ipynb
+└──0.2-ejm-feature-creation.ipynb
 ```
 
 If you do not like the settings you selected, you can always change them by either 1) re-running the `nbautoexport` command with new arguments and the `--overwrite` flag, or 2) manually editing the `.nbautoexport` file.
