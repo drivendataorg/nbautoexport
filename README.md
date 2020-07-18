@@ -29,16 +29,16 @@ Let's say you have a project and keep your notebooks in a `notebooks/` subdirect
 To configure that directory for automatic exporting, run the following command:
 
 ```bash
-nbautoexport configure ./notebooks
+nbautoexport configure notebooks
 ```
 
 This will create a configuration file `notebooks/.nbautoexport`.
 
-If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notbook (with the `.py` extension) and saved in the directory `./notebooks/script`.
+If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notbook (with the `.py` extension) and saved in the directory `notebooks/script`.
 
 If everything is working, your notebooks directory should end up with files like the below example:
 
-```
+```text
 notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
@@ -61,9 +61,9 @@ The default `.nbautoexport` configuration file looks like this:
 }
 ```
 
-Upon save, this will lead to notebooks being exported to scripts which saved to the `./notebooks/script` directory.
+Upon save, this will lead to notebooks being exported to scripts which saved to the `notebooks/script` directory.
 
-```
+```text
 notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
@@ -72,13 +72,13 @@ notebooks
     └── 0.2-ejm-feature-creation.py
 ```
 
-An alternative way to organize exported files is to create a directory for each notebook.
+An alternative way to organize exported files is to create a directory for each notebook. This can be handy for matching both the notebook and subdirectory when tab-completing and then globbing with `*` after the part that completed.
 
 ```bash
-nbautoexport configure ./notebooks --organize-by notebook
+nbautoexport configure notebooks --organize-by notebook
 ```
 
-```
+```text
 notebooks
 ├── 0.1-ejm-data-exploration
 │   └── 0.1-ejm-data-exploration.py
@@ -97,12 +97,12 @@ The `clean` flag is for automatically deleting files that don't match expected e
 ### Advanced example
 
 ```bash
-nbautoexport configure ./sprint_one_notebooks -f script -f html --organize-by extension
+nbautoexport configure sprint_one_notebooks -f script -f html --organize-by extension
 ```
 
 Upon save, this creates `.py` and `.html` versions of the Jupyter notebooks in `sprint_one_notebooks` folder and results in the following organization:
 
-```
+```text
 notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
@@ -129,7 +129,7 @@ Use the `--help` flag to see the documentation.
 nbautoexport --help
 ```
 
-```
+```text
 Usage: nbautoexport [OPTIONS] COMMAND [ARGS]...
 
   Automatically export Jupyter notebooks to various file formats (.py,
