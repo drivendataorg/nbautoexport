@@ -57,7 +57,7 @@ def find_notebooks(directory: Path) -> List[JupyterNotebook]:
     for subfile in directory.iterdir():
         if subfile.is_file() and subfile.name:
             try:
-                notebook = nbformat.read(subfile, as_version=nbformat.NO_CONVERT)
+                notebook = nbformat.read(str(subfile), as_version=nbformat.NO_CONVERT)
                 nbformat.validate(notebook)
                 notebooks.append(JupyterNotebook(path=subfile, metadata=notebook.metadata))
             except Exception as e:
