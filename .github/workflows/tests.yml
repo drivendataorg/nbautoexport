@@ -2,11 +2,11 @@ name: tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
   schedule:
     # Run every Sunday
-    - cron: '0 0 * * 0'
+    - cron: "0 0 * * 0"
 
 jobs:
   build:
@@ -18,43 +18,58 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
 
     steps:
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }} with Miniconda
+        uses: goanpeca/setup-miniconda@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
 
-    - name: Set up Python ${{ matrix.python-version }} with Miniconda
-      uses: goanpeca/setup-miniconda@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-        channels: conda-forge
+      - name: Install dependencies
+        shell: bash -l {0}
+        run: |
+          which python
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          conda install pandoc
 
-    - name: Install dependencies
-      shell: bash -l {0}
-      run: |
-        which python
-        python --version
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements-dev.txt
-        conda install pandoc
+      - name: Lint package
+        shell: bash -l {0}
+        run: |
+          make lint
 
-    - name: Lint package
-      shell: bash -l {0}
-      run: |
-        make lint
+      - name: Run tests
+        shell: bash -l {0}
+        run: |
+          make test
 
-    - name: Run tests
-      shell: bash -l {0}
-      run: |
-        make test
+      - name: Test building documentation
+        shell: bash -l {0}
+        run: |
+          make docs
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
 
-    - name: Test building documentation
-      shell: bash -l {0}
-      run: |
-        make docs
-      if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+      - name: Deploy site preview to Netlify
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: "./docs/site"
+          production-deploy: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: true
+          enable-commit-comment: false
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
 
-    - name: Upload coverage to codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: true
-      if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
