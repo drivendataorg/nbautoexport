@@ -47,15 +47,16 @@ Ready to contribute? Here's how to set up `nbautoexport` for local development.
 2. Clone your fork locally:
 
 ```bash
-git clone git@github.com:your_name_here/nbautoexport.git
+git clone https://github.com/YOUR_ACCOUNT_NAME/nbautoexport.git
 ```
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development:
+3. Install your local copy into a virtual environment. Here's how to set one up with Python's built in `venv` module.
 
 ```bash
-mkvirtualenv nbautoexport
 cd nbautoexport/
-python setup.py develop
+python -m venv ./.venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
 ```
 
 4. Create a branch for local development:
@@ -64,17 +65,14 @@ python setup.py develop
 git checkout -b name-of-your-bugfix-or-feature
 ```
 
-   Now you can make your changes locally.
+Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox:
+5. When you're done making changes, check that your changes pass linting and the tests:
 
 ```bash
-flake8 nbautoexport tests
-python setup.py test or pytest
-tox
+make lint
+make test
 ```
-
-   To get flake8 and tox, just pip install them into your virtualenv.
 
 6. Commit your changes and push your branch to GitHub:
 
@@ -91,20 +89,20 @@ git push origin name-of-your-bugfix-or-feature
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring, and add the feature to the list in README.rst.
-3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and for PyPy. Check https://travis-ci.com/drivendata/nbautoexport/pull_requests and make sure that the tests pass for all supported Python versions.
+2. If the pull request adds functionality, please ensure you have created appropriate documentation.
+3. The pull request should work for Python 3.6, 3.7 and 3.8 and different operating systems. Check [GitHub Actions](https://github.com/drivendataorg/nbautoexport/actions?query=event%3Apull_request+workflow%3Atests) and make sure that the tests pass for all supported Python versions and environments.
 
 ## Tips
 
-To run a subset of tests:
+To run a subset of tests, for example:
 
 ```bash
-pytest tests.test_nbautoexport
+pytest tests/test_export.py
 ```
 
 ## Deploying
 
-A reminder for the maintainers on how to deploy. Make sure all your changes are committed (including an entry in `HISTORY.rst`). Then run:
+A reminder for the maintainers on how to deploy. Make sure all your changes are committed (including an entry in `HISTORY.md`). Then run:
 
 ```bash
 git push

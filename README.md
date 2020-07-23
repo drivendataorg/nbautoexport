@@ -1,43 +1,84 @@
 # nbautoexport
 
-[![Build Status](https://dev.azure.com/drivendataco/nbautoexport/_apis/build/status/drivendataorg.nbautoexport?branchName=master)](https://dev.azure.com/drivendataco/nbautoexport/_build/latest?definitionId=1&branchName=master)
+[![tests](https://github.com/drivendataorg/nbautoexport/workflows/tests/badge.svg?branch=master)](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Atests+branch%3Amaster)
 
 > Making it easier to code review Jupyter notebooks, one script at a time.
 
-nbautoexport automatically exports Jupyter notebooks to various file formats (.py, .html, and more) on save.
+`nbautoexport` automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save.
 
 ## Installation
+
+First, you will need to install `nbautoexport`.
 
 ```bash
 pip install nbautoexport
 ```
 
+Then, to register `nbautoexport` to run automatically while using Jupyter Notebook or Jupyter Lab, run:
+
+```bash
+nbautoexport install
+```
+
+If you already have a Jupyter server running, you will need to restart it for this to take effect.
+
 ## Simple usage
 
-Before installing, you must [initialize a `jupyter_notebook_config.py`](https://jupyter-notebook.readthedocs.io/en/stable/config.html) file with the following command:
+Let's say you have a project and keep your notebooks in a `notebooks/` subdirectory.
+
+To configure that directory for automatic exporting, run the following command:
 
 ```bash
-jupyter notebook --generate-config
+nbautoexport configure notebooks
 ```
 
-To set up, run the following command from the root folder of your project:
+This will create a configuration file `notebooks/.nbautoexport`.
 
-```bash
-nbautoexport [DIRECTORY] [--export-format/-f] [--export-format/-f] [--organize-by/-b] [--overwrite/-o] [--verbose/-v]
+If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notbook (with the `.py` extension) and saved in the directory `notebooks/script`.
+
+If everything is working, your notebooks directory should end up with files like the below example:
+
+```text
+notebooks
+├──0.1-ejm-data-exploration.ipynb
+├──0.2-ejm-feature-creation.ipynb
+└── script
+    └── 0.1-ejm-data-exploration.py
+    └── 0.2-ejm-feature-creation.py
 ```
 
-Under the hood, this command performs two steps: 1) edits `jupyter_notebook_config.py` to add a post-save hook, and 2) creates a sentinel file `./notebooks/.nbautoexport`, a JSON file that contains the project-specific settings. Here is the default `.nbautoexport`:
+## Configuring export options
+
+The default `.nbautoexport` configuration file looks like this:
 
 ```json
 {
-  "export_formats": ["script"],
-  "organize_by": "notebook",
+  "export_formats": [
+    "script"
+  ],
+  "organize_by": "extension",
+  "clean": false
 }
 ```
 
-This will track Jupyter notebooks in your `notebooks` folder and upon save, generate a script which will live in a folder with the same name as the notebook.
+Upon save, this will lead to notebooks being exported to scripts which saved to the `notebooks/script` directory.
 
+```text
+notebooks
+├──0.1-ejm-data-exploration.ipynb
+├──0.2-ejm-feature-creation.ipynb
+└── script
+    └── 0.1-ejm-data-exploration.py
+    └── 0.2-ejm-feature-creation.py
 ```
+
+An alternative way to organize exported files is to create a directory for each notebook. This can be handy for matching both the notebook and subdirectory when tab-completing and then globbing with `*` after the part that completed.
+
+```bash
+nbautoexport configure notebooks --organize-by notebook
+```
+
+```text
 notebooks
 ├── 0.1-ejm-data-exploration
 │   └── 0.1-ejm-data-exploration.py
@@ -47,73 +88,22 @@ notebooks
 └──0.2-ejm-feature-creation.ipynb
 ```
 
-This default organization is handy for selecting the pair in git with just `*` at the end of the part that the tab completion matched. However, this can result in a large number of subfolders. You can put scripts in a single folder instead with
-
-```bash
-nbautoexport --organize-by extension
-```
-
-```
-notebooks
-├──0.1-ejm-data-exploration.ipynb
-├──0.2-ejm-feature-creation.ipynb
-└── script
-    └── 0.1-ejm-data-exploration.py
-    └── 0.2-ejm-feature-creation.py
-```
-
 If you do not like the settings you selected, you can always change them by either 1) re-running the `nbautoexport` command with new arguments and the `--overwrite` flag, or 2) manually editing the `.nbautoexport` file.
 
-## Command line options
+You can also specify as many export formats as you'd like. We support most of the export formats available from [`nbconvert`](https://nbconvert.readthedocs.io/en/latest/), such as `html`, `md`, and `pdf`. To specify formats, use the `--export-format` for each format you want to include.
 
-```
-Usage: nbautoexport [OPTIONS]
+The `clean` flag is for automatically deleting files that don't match expected exports based on your current `.nbautoexport` settings. **Be warned: turning on this setting will delete files without confirmation and can result in unintentional data loss.**
 
-  Exports Jupyter notebooks to various file formats (.py, .html, and more)
-  upon save.
-
-Options:
-  -f, --export-format [html|latex|pdf|slides|markdown|asciidoc|script|notebook]
-                                  File format(s) to save for each notebook.
-                                  Options are 'script', 'html', 'markdown',
-                                  and 'rst'. Multiple formats should be
-                                  provided using multiple flags, e.g., '-f
-                                  script-f html -f markdown'.  [default:
-                                  script]
-
-  -b, --organize-by [notebook|extension]
-                                  Whether to save exported file(s) in a folder
-                                  per notebook or a folder per extension.
-                                  Options are 'notebook' or 'extension'.
-                                  [default: notebook]
-
-  -d, --directory TEXT            Directory containing Jupyter notebooks to
-                                  track.  [default: notebooks]
-
-  -o, --overwrite                 Overwrite existing configuration, if one is
-                                  detected.  [default: False]
-
-  -v, --verbose                   Verbose mode  [default: False]
-  --install-completion [bash|zsh|fish|powershell|pwsh]
-                                  Install completion for the specified shell.
-  --show-completion [bash|zsh|fish|powershell|pwsh]
-                                  Show completion for the specified shell, to
-                                  copy it or customize the installation.
-
-  --help                          Show this message and exit.
-
-```
-
-## Example
+### Advanced example
 
 ```bash
-nbautoexport -f script -f html --organize-by extension --directory sprint_one_notebooks
+nbautoexport configure sprint_one_notebooks -f script -f html --organize-by extension
 ```
 
 Upon save, this creates `.py` and `.html` versions of the Jupyter notebooks in `sprint_one_notebooks` folder and results in the following organization:
 
-```
-sprint_one_notebooks
+```text
+notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
 ├── script
@@ -124,8 +114,54 @@ sprint_one_notebooks
     └── 0.1-ejm-features-creation.html
 ```
 
+## More functionality
 
-# Credits
+The `nbautoexport` CLI has two additional commands:
 
-- [Cookiecutter](https://github.com/audreyr/cookiecutter)
-- [`audreyr/cookiecutter-pypackage`](https://github.com/audreyr/cookiecutter-pypackage)
+- `export` is for ad hoc exporting of a notebook or directory of notebooks
+- `clean` will delete files in a directory that are not generated by the current `.nbautoexport` configuration
+
+Use the `--help` flag to see the documentation.
+
+## Command-line help
+
+```bash
+nbautoexport --help
+```
+
+```text
+Usage: nbautoexport [OPTIONS] COMMAND [ARGS]...
+
+  Automatically export Jupyter notebooks to various file formats (.py,
+  .html, and more) upon save.
+
+  To set up, first use the 'install' command to register nbautoexport with
+  Jupyter. If you already have a Jupyter server running, you will need to
+  restart it.
+
+  Next, you will need to use the 'configure' command to create a
+  .nbautoexport configuration file in the same directory as the notebooks
+  you want to have export automatically.
+
+  Once nbautoexport is installed with the first step, exporting will run
+  automatically when saving a notebook in Jupyter for any notebook where
+  there is a .nbautoexport configuration file in the same directory.
+
+Options:
+  --version             Show nbautoexport version.
+  --install-completion  Install completion for the current shell.
+  --show-completion     Show completion for the current shell, to copy it or
+                        customize the installation.
+
+  --help                Show this message and exit.
+
+Commands:
+  clean      Remove subfolders/files not matching .nbautoconvert...
+  configure  Create a .nbautoexport configuration file in a directory.
+  export     Manually export notebook or directory of notebooks.
+  install    Register nbautoexport post-save hook with Jupyter.
+```
+
+---
+
+This repository was initially created using [Cookiecutter](https://github.com/audreyr/cookiecutter) with [`audreyr/cookiecutter-pypackage`](https://github.com/audreyr/cookiecutter-pypackage).

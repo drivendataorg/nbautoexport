@@ -64,7 +64,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
 
     Args:
         model (dict): the model representing the file. See [Jupyter documentation](
-        https://jupyter-notebook.readthedocs.io/en/stable/extending/contents.html#data-model).
+            https://jupyter-notebook.readthedocs.io/en/stable/extending/contents.html#data-model).
         os_path (str): the filesystem path to the file just written
         contents_manager (FileContentsManager): FileContentsManager instance that hook is bound to
     """

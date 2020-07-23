@@ -1,12 +1,23 @@
 site_name: nbautoexport
+site_url: https://nbautoexport.drivendata.org
 site_description: Automatically export Jupyter notebooks to various file formats (.py, .html, and more) on save.
 repo_url: https://github.com/drivendataorg/nbautoexport
-theme: 
+theme:
   name: material
 
 nav:
-  - Home: 'readme.md'
-  - Reference: 'reference.md'
+  - Home: 'index.md'
+  - Command Reference:
+    - 'nbautoexport clean' : 'command-reference/clean.md'
+    - 'nbautoexport configure' : 'command-reference/configure.md'
+    - 'nbautoexport export' : 'command-reference/export.md'
+    - 'nbautoexport install' : 'command-reference/install.md'
+  - API Reference:
+    - 'nbautoexport.clean' : 'api-reference/nbautoexport-clean.md'
+    - 'nbautoexport.export' : 'api-reference/nbautoexport-export.md'
+    - 'nbautoexport.jupyter_config' : 'api-reference/nbautoexport-jupyter_config.md'
+    - 'nbautoexport.sentinel' : 'api-reference/nbautoexport-sentinel.md'
+    - 'nbautoexport.utils' : 'api-reference/nbautoexport-utils.md'
 
 plugins:
   - search
@@ -16,5 +27,6 @@ plugins:
         python:
           rendering:
             show_source: true
+            heading_level: 2
       watch:
         - nbautoexport
