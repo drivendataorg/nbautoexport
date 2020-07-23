@@ -10,7 +10,6 @@ from nbautoexport.utils import logger
 SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"
 DEFAULT_EXPORT_FORMATS = ["script"]
 DEFAULT_ORGANIZE_BY = "extension"
-DEFAULT_CLEAN = False
 
 
 class ExportFormat(str, Enum):
@@ -37,7 +36,6 @@ class OrganizeBy(str, Enum):
 class NbAutoexportConfig(BaseModel):
     export_formats: List[ExportFormat] = [ExportFormat(fmt) for fmt in DEFAULT_EXPORT_FORMATS]
     organize_by: OrganizeBy = OrganizeBy(DEFAULT_ORGANIZE_BY)
-    clean: bool = DEFAULT_CLEAN
 
     class Config:
         extra = "forbid"

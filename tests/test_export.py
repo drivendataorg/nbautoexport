@@ -138,37 +138,3 @@ def test_post_save_type_directory(notebooks_dir):
         sentinel_path,  # sentinel file
         notebook_path,  # original ipynb
     }
-
-
-def test_post_save_clean(notebooks_dir):
-    notebook_path = notebooks_dir / "the_notebook.ipynb"
-    sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
-        json.dump(
-            NbAutoexportConfig(
-                export_formats=["script"], organize_by="extension", clean=True
-            ).dict(),
-            fp,
-        )
-
-    org_by_notebook_dir = notebooks_dir / "the_notebook"
-    org_by_notebook_dir.mkdir()
-    org_by_notebook_script = org_by_notebook_dir / "the_notebook.py"
-    org_by_notebook_script.touch()
-    html_dir = notebooks_dir / "html"
-    html_dir.mkdir()
-    html_file = html_dir / "the_notebook.html"
-    html_file.touch()
-
-    for path in [org_by_notebook_dir, org_by_notebook_script, html_dir, html_file]:
-        assert path.exists()
-
-    post_save(model={"type": "notebook"}, os_path=str(notebook_path), contents_manager=None)
-
-    all_expected = {
-        notebook_path,
-        sentinel_path,
-        notebooks_dir / "script",
-        notebooks_dir / "script" / "the_notebook.py",
-    }
-    assert set(notebooks_dir.glob("**/*")) == all_expected
