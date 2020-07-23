@@ -100,13 +100,10 @@ To run a subset of tests, for example:
 pytest tests/test_export.py
 ```
 
-## Deploying
+## Release Instructions (for maintainers)
 
-A reminder for the maintainers on how to deploy. Make sure all your changes are committed (including an entry in `HISTORY.md`). Then run:
+To release a new version of `nbautoexport`, create a new release using the [GitHub releases UI](https://github.com/drivendataorg/nbautoexport/releases/new). The tag version must have a prefix `v` and should have a semantic versioning format, e.g., `v0.1.0`.
 
-```bash
-git push
-git push --tags
-```
+On publishing of the release, the [`release`](https://github.com/drivendataorg/nbautoexport/blob/master/.github/workflows/release.yml) GitHub action workflow will be triggered. This workflow builds the package and publishes it to PyPI. You will be able to see the workflow status in the [Actions tab](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Arelease).
 
-Travis will then deploy to PyPI if tests pass.
+The built package for `nbautoexport` will automatically match the created git tag via [versioneer](https://github.com/warner/python-versioneer).
