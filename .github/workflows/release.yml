@@ -32,6 +32,25 @@ jobs:
           [ ${{ github.event.release.tag_name }} == "v$PACKAGE_VERSION" ] || { exit 1; }
           make dist
 
+      - name: Build docs
+        run: |
+          make docs
+
+      - name: Deploy docs to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: "./docs/site"
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
+
       - name: Publish to Test PyPI
         uses: pypa/gh-action-pypi-publish@v1.3.0
         with:
