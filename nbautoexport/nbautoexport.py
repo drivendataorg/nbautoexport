@@ -10,7 +10,6 @@ from nbautoexport.clean import find_files_to_clean
 from nbautoexport.export import export_notebook
 from nbautoexport.jupyter_config import block_regex, install_post_save_hook, version_regex
 from nbautoexport.sentinel import (
-    DEFAULT_CLEAN,
     DEFAULT_EXPORT_FORMATS,
     DEFAULT_ORGANIZE_BY,
     ExportFormat,
@@ -74,7 +73,12 @@ def clean(
         False, "--dry-run", help="Show files that would be removed, without actually removing."
     ),
 ):
-    """Remove subfolders/files not matching .nbautoconvert configuration and existing notebooks.
+    """(EXPERIMENTAL) Remove subfolders/files not matching .nbautoconvert configuration and
+    existing notebooks.
+
+    Known limitations:
+    - Not able to correctly handle additional intended files, such as image assets or
+      non-notebook-related files.
     """
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
     validate_sentinel_path(sentinel_path)
@@ -261,12 +265,6 @@ def configure(
             "Whether to save exported file(s) in a subfolder per notebook or per export format. "
         ),
     ),
-    clean: bool = typer.Option(
-        DEFAULT_CLEAN,
-        show_default=True,
-        help="Whether to automatically delete files that don't match expected exports given "
-        + "notebooks and configuration.",
-    ),
     overwrite: bool = typer.Option(
         False,
         "--overwrite",
@@ -290,9 +288,7 @@ def configure(
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
 
-    config = NbAutoexportConfig(
-        export_formats=export_formats, organize_by=organize_by, clean=clean
-    )
+    config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
     try:
         install_sentinel(directory=directory, config=config, overwrite=overwrite)
     except FileExistsError as msg:

@@ -5,7 +5,7 @@ from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
 from notebook.services.contents.filemanager import FileContentsManager
 
-from nbautoexport.clean import find_files_to_clean, FORMATS_WITH_IMAGE_DIR
+from nbautoexport.clean import FORMATS_WITH_IMAGE_DIR
 from nbautoexport.sentinel import (
     ExportFormat,
     NbAutoexportConfig,
@@ -83,18 +83,6 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
             path=save_progress_indicator, content_type="application/json"
         )
         export_notebook(os_path, config=config)
-
-        if config.clean:
-            # Remove files that are not notebooks or expected files
-            files_to_clean = find_files_to_clean(cwd, config)
-            for path in files_to_clean:
-                path.unlink()
-
-            # Remove empty subdirectories
-            subfolders = (d for d in cwd.iterdir() if d.is_dir())
-            for subfolder in subfolders:
-                if not any(subfolder.iterdir()):
-                    subfolder.rmdir()
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):

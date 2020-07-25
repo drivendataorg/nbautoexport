@@ -7,7 +7,6 @@ from typer.testing import CliRunner
 from nbautoexport import jupyter_config
 from nbautoexport.nbautoexport import app
 from nbautoexport.sentinel import (
-    DEFAULT_CLEAN,
     DEFAULT_EXPORT_FORMATS,
     DEFAULT_ORGANIZE_BY,
     NbAutoexportConfig,
@@ -30,17 +29,13 @@ def test_configure_defaults(tmp_path):
 def test_configure_specified(tmp_path):
     export_formats = ["script", "html"]
     organize_by = "notebook"
-    clean = True
     assert export_formats != DEFAULT_EXPORT_FORMATS
     assert organize_by != DEFAULT_ORGANIZE_BY
-    assert clean != DEFAULT_CLEAN
 
     cmd_list = ["configure", str(tmp_path)]
     for fmt in export_formats:
         cmd_list.extend(["-f", fmt])
     cmd_list.extend(["-b", organize_by])
-    if clean:
-        cmd_list.append("--clean")
 
     result = CliRunner().invoke(app, cmd_list)
     assert result.exit_code == 0
@@ -49,9 +44,7 @@ def test_configure_specified(tmp_path):
         path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE, content_type="application/json"
     )
 
-    expected_config = NbAutoexportConfig(
-        export_formats=export_formats, organize_by=organize_by, clean=clean
-    )
+    expected_config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
     assert config == expected_config
 
 
