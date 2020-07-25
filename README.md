@@ -1,6 +1,9 @@
 # nbautoexport
 
-[![tests](https://github.com/drivendataorg/nbautoexport/workflows/tests/badge.svg?branch=master)](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Atests+branch%3Amaster)
+| | |
+| --: | :-- |
+| tests | [![tests](https://github.com/drivendataorg/nbautoexport/workflows/tests/badge.svg?branch=master)](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Atests+branch%3Amaster)
+| docs | [![Docs Status](https://api.netlify.com/api/v1/badges/d16bbd7e-36f9-498f-b0db-b3144b8bb93e/deploy-status)](https://nbautoexport.drivendata.org/) |
 
 > Making it easier to code review Jupyter notebooks, one script at a time.
 
