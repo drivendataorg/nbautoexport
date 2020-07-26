@@ -26,40 +26,37 @@ history = Path("HISTORY.md").read_text()
 
 requirements = load_requirements(Path(__file__).parent / "requirements.txt")
 
-setup_requirements = [
-    "pytest-runner",
-]
-
-test_requirements = [
-    "pytest>=3",
-]
-
 setup(
     author="DrivenData",
     author_email="info@drivendata.org",
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Framework :: Jupyter",
         "Intended Audience :: Developers",
-        "Natural Language :: English",
+        "Intended Audience :: Science/Research",
+        "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    description="Automatically export Jupyter notebooks to various file formats (.py, .html, and more) on save.",
+    description=(
+        "Automatically export Jupyter notebooks to various file formats (.py, .html, and more) on "
+        "save."
+    ),
     entry_points={"console_scripts": ["nbautoexport=nbautoexport.nbautoexport:app"]},
     install_requires=requirements,
     long_description=readme + "\n\n" + history,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    keywords="nbautoexport",
+    keywords=["nbautoexport", "jupyter", "nbconvert"],
     name="nbautoexport",
     packages=find_packages(include=["nbautoexport", "nbautoexport.*"]),
-    setup_requires=setup_requirements,
-    test_suite="tests",
-    tests_require=test_requirements,
+    project_urls={
+        "Bug Tracker": "https://github.com/drivendataorg/nbautoexport/issues",
+        "Documentation": "https://nbautoexport.drivendata.org/",
+        "Source Code": "https://github.com/drivendataorg/nbautoexport",
+    },
     url="https://github.com/drivendataorg/nbautoexport",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
