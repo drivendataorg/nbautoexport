@@ -132,8 +132,8 @@ def export(
         writable=True,
         help="Path to notebook file or directory of notebook files to export.",
     ),
-    export_formats: Optional[List[ExportFormat]] = typer.Option(
-        None,
+    export_formats: List[ExportFormat] = typer.Option(
+        [],
         "--export-format",
         "-f",
         show_default=True,

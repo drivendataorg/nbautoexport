@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Iterable, List, Set
 from pathlib import Path
 
 from nbconvert.exporters import get_exporter
@@ -79,7 +79,7 @@ def get_expected_exports(
         List[Path]: list of expected nbautoexport output files, relative to notebook files
     """
 
-    export_paths = set()
+    export_paths: Set[Path] = set()
     for notebook in notebooks:
         for export_format in config.export_formats:
             export_paths.update(
