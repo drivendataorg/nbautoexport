@@ -131,7 +131,8 @@ nbautoexport --help
 Usage: nbautoexport [OPTIONS] COMMAND [ARGS]...
 
   Automatically export Jupyter notebooks to various file formats (.py,
-  .html, and more) upon save.
+  .html, and more) upon save. One great use case is to automatically have
+  script versions of your notebooks to facilitate code review commenting.
 
   To set up, first use the 'install' command to register nbautoexport with
   Jupyter. If you already have a Jupyter server running, you will need to
