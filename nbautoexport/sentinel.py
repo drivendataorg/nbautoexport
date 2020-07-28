@@ -8,8 +8,6 @@ from nbautoexport.utils import logger
 
 
 SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"
-DEFAULT_EXPORT_FORMATS = ["script"]
-DEFAULT_ORGANIZE_BY = "extension"
 
 
 class ExportFormat(str, Enum):
@@ -31,6 +29,10 @@ class ExportFormat(str, Enum):
 class OrganizeBy(str, Enum):
     notebook = "notebook"
     extension = "extension"
+
+
+DEFAULT_EXPORT_FORMATS = [ExportFormat.script]
+DEFAULT_ORGANIZE_BY = OrganizeBy.extension
 
 
 class NbAutoexportConfig(BaseModel):

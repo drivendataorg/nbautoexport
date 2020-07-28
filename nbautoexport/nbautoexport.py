@@ -46,7 +46,8 @@ def main(
     ),
 ):
     """Automatically export Jupyter notebooks to various file formats (.py, .html, and more) upon
-    save.
+    save. One great use case is to automatically have script versions of your notebooks to
+    facilitate code review commenting.
 
     To set up, first use the 'install' command to register nbautoexport with Jupyter. If you
     already have a Jupyter server running, you will need to restart it.
@@ -132,8 +133,8 @@ def export(
         writable=True,
         help="Path to notebook file or directory of notebook files to export.",
     ),
-    export_formats: Optional[List[ExportFormat]] = typer.Option(
-        None,
+    export_formats: List[ExportFormat] = typer.Option(
+        [],
         "--export-format",
         "-f",
         show_default=True,

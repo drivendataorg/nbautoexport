@@ -25,7 +25,7 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
         if self.subfolder is None:
             return
 
-        input = Path(input)
+        input: Path = Path(input)
 
         new_dir = input.parent / self.subfolder
         new_dir.mkdir(exist_ok=True)
