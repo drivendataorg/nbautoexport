@@ -1,6 +1,9 @@
 # nbautoexport
 
+[![Docs Status](https://img.shields.io/badge/docs-latest-blueviolet)](https://nbautoexport.drivendata.org/)
+[![PyPI](https://img.shields.io/pypi/v/nbautoexport.svg)](https://pypi.org/project/nbautoexport/)
 [![tests](https://github.com/drivendataorg/nbautoexport/workflows/tests/badge.svg?branch=master)](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Atests+branch%3Amaster)
+[![codecov](https://codecov.io/gh/drivendataorg/nbautoexport/branch/master/graph/badge.svg)](https://codecov.io/gh/drivendataorg/nbautoexport)
 
 > Making it easier to code review Jupyter notebooks, one script at a time.
 
