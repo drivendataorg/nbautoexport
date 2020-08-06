@@ -37,7 +37,7 @@ nbautoexport configure notebooks
 
 This will create a configuration file `notebooks/.nbautoexport`.
 
-If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notbook (with the `.py` extension) and saved in the directory `notebooks/script`.
+If you've set up `nbautoexport` to work with Jupyter (using the `install` command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a `.nbautoexport` configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notebook (with the `.py` extension) and saved in the directory `notebooks/script`.
 
 If everything is working, your notebooks directory should end up with files like the below example:
 
