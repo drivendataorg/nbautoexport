@@ -45,6 +45,13 @@ jobs:
         run: |
           make test
 
+      - name: Build distribution and test installation
+        shell: bash -l {0}
+        run: |
+          make dist
+          python -m pip install dist/nbautoexport-*.whl --no-deps --force-reinstall
+          python -m pip install dist/nbautoexport-*.tar.gz --no-deps --force-reinstall
+
       - name: Test building documentation
         shell: bash -l {0}
         run: |
