@@ -1,6 +1,6 @@
 # History
 
-## 0.1.1 (2020-08-05)
+## Unreleased
 
 - Fixes missing `requirements.txt` bug when installing from source distribution. ([#50](https://github.com/drivendataorg/nbautoexport/issues/50), [#52](https://github.com/drivendataorg/nbautoexport/pull/52))
 
