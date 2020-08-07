@@ -2,19 +2,24 @@
 
 [![Docs Status](https://img.shields.io/badge/docs-latest-blueviolet)](https://nbautoexport.drivendata.org/)
 [![PyPI](https://img.shields.io/pypi/v/nbautoexport.svg)](https://pypi.org/project/nbautoexport/)
+[![conda-forge](https://img.shields.io/conda/vn/conda-forge/nbautoexport.svg)](https://anaconda.org/conda-forge/nbautoexport)
 [![tests](https://github.com/drivendataorg/nbautoexport/workflows/tests/badge.svg?branch=master)](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Atests+branch%3Amaster)
 [![codecov](https://codecov.io/gh/drivendataorg/nbautoexport/branch/master/graph/badge.svg)](https://codecov.io/gh/drivendataorg/nbautoexport)
 
 > Making it easier to code review Jupyter notebooks, one script at a time.
 
-`nbautoexport` automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save. One great use case is to automatically have script versions of your notebooks to facilitate code review commenting.
+`nbautoexport` automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save while using Jupyter. One great use case is to automatically have script versions of your notebooks to facilitate code review commenting.
 
 ## Installation
 
-First, you will need to install `nbautoexport`. This should be installed in the same environment you are running Jupyter Notebook or Jupyter Lab from.
+First, you will need to install `nbautoexport`. This should be installed in the same environment you are running Jupyter Notebook or Jupyter Lab from. `nbautoexport` is available either from [PyPI](https://pypi.org/project/nbautoexport/) via `pip` or from [conda-forge](https://github.com/conda-forge/nbautoexport-feedstock) via `conda`.
 
 ```bash
 pip install nbautoexport
+```
+
+```bash
+conda install nbautoexport --channel conda-forge
 ```
 
 Then, to register `nbautoexport` to run automatically while using Jupyter Notebook or Jupyter Lab, run:
