@@ -10,6 +10,7 @@ from nbautoexport.clean import find_files_to_clean
 from nbautoexport.export import export_notebook
 from nbautoexport.jupyter_config import block_regex, install_post_save_hook, version_regex
 from nbautoexport.sentinel import (
+    CleanConfig,
     DEFAULT_EXPORT_FORMATS,
     DEFAULT_ORGANIZE_BY,
     ExportFormat,
@@ -65,7 +66,21 @@ def main(
 @app.command()
 def clean(
     directory: Path = typer.Argument(
-        ..., exists=True, file_okay=False, dir_okay=True, writable=True, help="Directory to clean."
+        ...,
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        writable=True,
+        help=f"Directory to clean. Must have a {SAVE_PROGRESS_INDICATOR_FILE} config file.",
+    ),
+    exclude: List[str] = typer.Option(
+        [],
+        "--exclude",
+        "-e",
+        help=(
+            "Glob-style patterns that designate files to exclude from deletion. Combined with any "
+            f"patterns specified in {SAVE_PROGRESS_INDICATOR_FILE} config file."
+        ),
     ),
     yes: bool = typer.Option(
         False, "--yes", "-y", help="Assume 'yes' answer to confirmation prompt to delete files."
@@ -74,7 +89,7 @@ def clean(
         False, "--dry-run", help="Show files that would be removed, without actually removing."
     ),
 ):
-    """(EXPERIMENTAL) Remove subfolders/files not matching .nbautoconvert configuration and
+    """(EXPERIMENTAL) Remove subfolders/files not matching .nbautoexport configuration and
     existing notebooks.
 
     Known limitations:
@@ -85,6 +100,13 @@ def clean(
     validate_sentinel_path(sentinel_path)
 
     config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
+
+    # Combine exclude patterns from config and command-line
+    config.clean.exclude.extend(exclude)
+    if len(config.clean.exclude) > 0:
+        typer.echo("Excluding files from cleaning using the following patterns:")
+        for pattern in config.clean.exclude:
+            typer.echo(f"  {pattern}")
 
     files_to_clean = find_files_to_clean(directory, config)
 
@@ -266,6 +288,16 @@ def configure(
             "Whether to save exported file(s) in a subfolder per notebook or per export format. "
         ),
     ),
+    clean_exclude: List[str] = typer.Option(
+        [],
+        "--clean-exclude",
+        "-e",
+        show_default=True,
+        help=(
+            "Glob-style patterns that designate files to exclude from deletion when running clean "
+            "command."
+        ),
+    ),
     overwrite: bool = typer.Option(
         False,
         "--overwrite",
@@ -289,7 +321,11 @@ def configure(
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
 
-    config = NbAutoexportConfig(export_formats=export_formats, organize_by=organize_by)
+    config = NbAutoexportConfig(
+        export_formats=export_formats,
+        organize_by=organize_by,
+        clean=CleanConfig(exclude=clean_exclude),
+    )
     try:
         install_sentinel(directory=directory, config=config, overwrite=overwrite)
     except FileExistsError as msg:
