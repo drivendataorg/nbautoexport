@@ -6,18 +6,19 @@ theme:
   name: material
 
 nav:
-  - Home: 'index.md'
+  - Home: "index.md"
+  - Cleaning (Experimental): "cleaning.md"
   - Command Reference:
-    - 'nbautoexport clean' : 'command-reference/clean.md'
-    - 'nbautoexport configure' : 'command-reference/configure.md'
-    - 'nbautoexport export' : 'command-reference/export.md'
-    - 'nbautoexport install' : 'command-reference/install.md'
+      - "nbautoexport clean": "command-reference/clean.md"
+      - "nbautoexport configure": "command-reference/configure.md"
+      - "nbautoexport export": "command-reference/export.md"
+      - "nbautoexport install": "command-reference/install.md"
   - API Reference:
-    - 'nbautoexport.clean' : 'api-reference/nbautoexport-clean.md'
-    - 'nbautoexport.export' : 'api-reference/nbautoexport-export.md'
-    - 'nbautoexport.jupyter_config' : 'api-reference/nbautoexport-jupyter_config.md'
-    - 'nbautoexport.sentinel' : 'api-reference/nbautoexport-sentinel.md'
-    - 'nbautoexport.utils' : 'api-reference/nbautoexport-utils.md'
+      - "nbautoexport.clean": "api-reference/nbautoexport-clean.md"
+      - "nbautoexport.export": "api-reference/nbautoexport-export.md"
+      - "nbautoexport.jupyter_config": "api-reference/nbautoexport-jupyter_config.md"
+      - "nbautoexport.sentinel": "api-reference/nbautoexport-sentinel.md"
+      - "nbautoexport.utils": "api-reference/nbautoexport-utils.md"
 
 plugins:
   - search
