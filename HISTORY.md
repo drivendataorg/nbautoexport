@@ -1,6 +1,6 @@
 # History
 
-## Unreleased
+## 0.2.0 (2020-09-04)
 
 - Add option to specify glob-style patterns to exclude files from deletion when using `clean`. See [documentation](https://nbautoexport.drivendata.org/cleaning/#excluding-files) for more details. ([#46](https://github.com/drivendataorg/nbautoexport/issues/46), [#54](https://github.com/drivendataorg/nbautoexport/pull/54))
 
