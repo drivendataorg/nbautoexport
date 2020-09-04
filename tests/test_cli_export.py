@@ -28,8 +28,7 @@ def notebooks_dir(tmp_path, notebook_asset):
 
 @pytest.mark.parametrize("input_type", ["dir", "notebook"])
 def test_export_no_config_no_cli_opts(notebooks_dir, input_type):
-    """Test export command with no config file and no CLI options. Should use default options.
-    """
+    """Test export command with no config file and no CLI options. Should use default options."""
     expected_notebooks = find_notebooks(notebooks_dir)
     assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
 
@@ -54,8 +53,7 @@ def test_export_no_config_no_cli_opts(notebooks_dir, input_type):
     "input_type, organize_by", product(["dir", "notebook"], ["extension", "notebook"])
 )
 def test_export_no_config_with_cli_opts(notebooks_dir, input_type, organize_by):
-    """Test export command with no config file and CLI options. Should use CLI options.
-    """
+    """Test export command with no config file and CLI options. Should use CLI options."""
     expected_notebooks = find_notebooks(notebooks_dir)
     assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
 
@@ -84,8 +82,7 @@ def test_export_no_config_with_cli_opts(notebooks_dir, input_type, organize_by):
     "input_type, organize_by", product(["dir", "notebook"], ["extension", "notebook"])
 )
 def test_export_with_config_no_cli_opts(notebooks_dir, input_type, organize_by):
-    """Test that export works with a config and no CLI options. Should use config options.
-    """
+    """Test that export works with a config and no CLI options. Should use config options."""
     expected_notebooks = find_notebooks(notebooks_dir)
     assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
 
@@ -115,8 +112,7 @@ def test_export_with_config_no_cli_opts(notebooks_dir, input_type, organize_by):
     "input_type, organize_by", product(["dir", "notebook"], ["extension", "notebook"])
 )
 def test_export_with_config_with_cli_opts(notebooks_dir, input_type, organize_by):
-    """Test that export works with both config and CLI options. CLI options should overide config.
-    """
+    """Test that export works with both config and CLI options. CLI options should overide config."""
     expected_notebooks = find_notebooks(notebooks_dir)
     assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
 
@@ -153,8 +149,7 @@ def test_export_with_config_with_cli_opts(notebooks_dir, input_type, organize_by
     "input_type, organize_by", product(["dir", "notebook"], ["extension", "notebook"])
 )
 def test_export_relative(notebooks_dir, input_type, organize_by):
-    """ Test that export works relative to current working directory.
-    """
+    """Test that export works relative to current working directory."""
     with working_directory(notebooks_dir):
         expected_notebooks = find_notebooks(Path())
         assert len(expected_notebooks) == len(EXPECTED_NOTEBOOKS)
@@ -185,8 +180,7 @@ def test_export_relative(notebooks_dir, input_type, organize_by):
     "input_type, organize_by", product(["dir", "notebook"], ["extension", "notebook"])
 )
 def test_clean_relative_subdirectory(notebooks_dir, input_type, organize_by):
-    """ Test that export works for subdirectory relative to current working directory.
-    """
+    """Test that export works for subdirectory relative to current working directory."""
     with working_directory(notebooks_dir):
         # Set up subdirectory
         subdir = Path("subdir")

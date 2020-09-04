@@ -204,8 +204,7 @@ def test_install_hook_replace_hook_older_version(tmp_path, monkeypatch):
 
 
 def test_initialize_post_save_binding():
-    """Test that post_save hook can be successfully bound to a Jupyter config.
-    """
+    """Test that post_save hook can be successfully bound to a Jupyter config."""
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
     jupyter_config.initialize_post_save_hook(jupyter_config_obj)
     assert isinstance(jupyter_config_obj.FileContentsManager, FileContentsManager)
@@ -213,14 +212,12 @@ def test_initialize_post_save_binding():
 
 
 def test_initialize_post_save_execution(monkeypatch):
-    """Test that bound post_save hook with given signature can be successfully run.
-    """
+    """Test that bound post_save hook with given signature can be successfully run."""
 
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
 
     def mocked_post_save(model, os_path, contents_manager):
-        """Append a token to os_path to certify that function ran.
-        """
+        """Append a token to os_path to certify that function ran."""
         os_path.append("nbautoexport")
 
     monkeypatch.setattr(nbautoexport_root, "post_save", mocked_post_save)
@@ -235,21 +232,18 @@ def test_initialize_post_save_execution(monkeypatch):
 
 
 def test_initialize_post_save_existing(monkeypatch):
-    """Test that handling of existing post_save hook works properly.
-    """
+    """Test that handling of existing post_save hook works properly."""
 
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
 
     def old_post_save(model, os_path, contents_manager):
-        """Append a token to os_path to certify that function ran.
-        """
+        """Append a token to os_path to certify that function ran."""
         os_path.append("old_post_save")
 
     jupyter_config_obj.FileContentsManager.post_save_hook = old_post_save
 
     def mocked_post_save(model, os_path, contents_manager):
-        """Append a token to os_path to certify that function ran.
-        """
+        """Append a token to os_path to certify that function ran."""
         os_path.append("nbautoexport")
 
     monkeypatch.setattr(nbautoexport_root, "post_save", mocked_post_save)
@@ -264,8 +258,7 @@ def test_initialize_post_save_existing(monkeypatch):
 
 
 def test_initialize_post_save_import_error_caught(monkeypatch):
-    """Test that bound post_save hook with given signature can be successfully run.
-    """
+    """Test that bound post_save hook with given signature can be successfully run."""
 
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
 

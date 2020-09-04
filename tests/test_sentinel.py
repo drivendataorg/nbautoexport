@@ -5,8 +5,7 @@ from nbautoexport.sentinel import ExportFormat
 
 
 def test_export_format_compatibility():
-    """Test that export formats are compatible with Jupyter nbautoconvert.
-    """
+    """Test that export formats are compatible with Jupyter nbautoconvert."""
     nbconvert_export_names = get_export_names()
     for export_format in ExportFormat:
         assert export_format.value in nbconvert_export_names

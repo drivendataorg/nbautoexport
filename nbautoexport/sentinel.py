@@ -49,8 +49,7 @@ class NbAutoexportConfig(BaseModel):
 
 
 def install_sentinel(directory: Path, config: NbAutoexportConfig, overwrite: bool):
-    """Writes the configuration file to a specified directory.
-    """
+    """Writes the configuration file to a specified directory."""
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
 
     if sentinel_path.exists() and (not overwrite):

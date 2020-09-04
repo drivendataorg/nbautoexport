@@ -49,8 +49,7 @@ def test_export_notebook(notebooks_dir, organize_by):
 
 
 def test_post_save_no_sentinel(notebooks_dir):
-    """Test that post_save does nothing with no sentinel file.
-    """
+    """Test that post_save does nothing with no sentinel file."""
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
 
@@ -107,8 +106,7 @@ def test_post_save_organize_by_extension(notebooks_dir):
 
 
 def test_post_save_type_file(notebooks_dir):
-    """Test that post_save should do nothing if model type is 'file'.
-    """
+    """Test that post_save should do nothing if model type is 'file'."""
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
     with sentinel_path.open("w") as fp:
@@ -124,8 +122,7 @@ def test_post_save_type_file(notebooks_dir):
 
 
 def test_post_save_type_directory(notebooks_dir):
-    """Test that post_save should do nothing if model type is 'directory'.
-    """
+    """Test that post_save should do nothing if model type is 'directory'."""
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
     with sentinel_path.open("w") as fp:

@@ -44,8 +44,7 @@ version_regex = re.compile(r"(?<=# >>> nbautoexport initialize, version=\[).*(?=
 
 
 def install_post_save_hook(config_path: Optional[Path] = None):
-    """Splices the post save hook into the global Jupyter configuration file
-    """
+    """Splices the post save hook into the global Jupyter configuration file"""
     if config_path is None:
         config_dir = jupyter_config_dir()
         config_path = Path(config_dir) / "jupyter_notebook_config.py"

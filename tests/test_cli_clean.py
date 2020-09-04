@@ -83,8 +83,7 @@ def test_clean(notebooks_dir, need_confirmation, organize_by):
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
 def test_clean_relative(notebooks_dir, organize_by):
-    """ Test that cleaning works relative to current working directory.
-    """
+    """Test that cleaning works relative to current working directory."""
     with working_directory(notebooks_dir):
         sentinel_path = Path(SAVE_PROGRESS_INDICATOR_FILE)
         config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
@@ -110,8 +109,7 @@ def test_clean_relative(notebooks_dir, organize_by):
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
 def test_clean_relative_subdirectory(notebooks_dir, organize_by):
-    """ Test that cleaning works for subdirectory relative to current working directory.
-    """
+    """Test that cleaning works for subdirectory relative to current working directory."""
     with working_directory(notebooks_dir):
         # Set up subdirectory
         subdir = Path("subdir")
@@ -142,8 +140,7 @@ def test_clean_relative_subdirectory(notebooks_dir, organize_by):
 
 
 def test_clean_exclude(notebooks_dir):
-    """ Test that cleaning works with exclude
-    """
+    """Test that cleaning works with exclude"""
     with working_directory(notebooks_dir):
         # Set up subdirectory
         subdir = Path("subdir")
