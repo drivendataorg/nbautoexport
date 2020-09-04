@@ -35,17 +35,21 @@ DEFAULT_EXPORT_FORMATS = [ExportFormat.script]
 DEFAULT_ORGANIZE_BY = OrganizeBy.extension
 
 
+class CleanConfig(BaseModel):
+    exclude: List[str] = []
+
+
 class NbAutoexportConfig(BaseModel):
     export_formats: List[ExportFormat] = [ExportFormat(fmt) for fmt in DEFAULT_EXPORT_FORMATS]
     organize_by: OrganizeBy = OrganizeBy(DEFAULT_ORGANIZE_BY)
+    clean: CleanConfig = CleanConfig()
 
     class Config:
         extra = "forbid"
 
 
 def install_sentinel(directory: Path, config: NbAutoexportConfig, overwrite: bool):
-    """Writes the configuration file to a specified directory.
-    """
+    """Writes the configuration file to a specified directory."""
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
 
     if sentinel_path.exists() and (not overwrite):

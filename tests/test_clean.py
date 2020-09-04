@@ -24,8 +24,7 @@ def notebooks_dir(tmp_path, notebook_asset):
     "export_format, organize_by", itertools.product(EXPORT_FORMATS_TO_TEST, OrganizeBy)
 )
 def test_notebook_exports_generator(notebooks_dir, export_format, organize_by):
-    """Test that notebook_exports_generator matches what export_notebook produces.
-    """
+    """Test that notebook_exports_generator matches what export_notebook produces."""
     notebook = find_notebooks(notebooks_dir)[0]
     notebook_files = {notebooks_dir / f"{nb}.ipynb" for nb in EXPECTED_NOTEBOOKS}
 

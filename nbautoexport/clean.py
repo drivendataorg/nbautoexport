@@ -43,15 +43,16 @@ def get_extension(notebook: JupyterNotebook, export_format: ExportFormat) -> str
 def notebook_exports_generator(
     notebook: JupyterNotebook, export_format: ExportFormat, organize_by: OrganizeBy
 ) -> Iterable[Path]:
-    """[summary]
+    """Generator that yields paths of expected exports for a notebook given an export_format and
+    an organize_by setting.
 
     Args:
         notebook (JupyterNotebook): notebook to get export paths for
         export_format (ExportFormat): export format
         organize_by (OrganizeBy): type of subfolder approach
 
-    Returns:
-        Iterable[Path]: expected export paths given notebook and configuration options
+    Yields:
+        Path: expected export paths given notebook and configuration options
     """
     if organize_by == OrganizeBy.notebook:
         subfolder = notebook.path.parent / notebook.name
@@ -88,6 +89,20 @@ def get_expected_exports(
     return sorted(export_paths)
 
 
+def globs(directory: Path, patterns: Iterable[str]) -> Iterable[Path]:
+    """Generator that yields paths matching glob-style patterns relative to directory.
+
+    Args:
+        directory (Path): a directory
+        patterns (Iterable[str]): glob-style patterns relative to directory
+
+    Yields:
+        Path: paths matching provided patterns relative to directory
+    """
+    for pattern in patterns:
+        yield from directory.glob(pattern)
+
+
 def find_files_to_clean(directory: Path, config: NbAutoexportConfig) -> List[Path]:
     """Given path to a notebooks directory watched by nbautoexport, find all files that are not
     expected exports by current nbautoexport configuration and existing notebooks, or other
@@ -110,6 +125,7 @@ def find_files_to_clean(directory: Path, config: NbAutoexportConfig) -> List[Pat
         set(subfiles)
         .difference(nb.path for nb in notebooks)
         .difference(expected_exports)
+        .difference(globs(directory=directory, patterns=config.clean.exclude))
         .difference(checkpoints)
         .difference([sentinel_path])
     )

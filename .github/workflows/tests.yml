@@ -32,7 +32,7 @@ jobs:
           which python
           python --version
           python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt
+          python -m pip install -r requirements-dev.txt --use-feature=2020-resolver
           conda install pandoc
 
       - name: Lint package

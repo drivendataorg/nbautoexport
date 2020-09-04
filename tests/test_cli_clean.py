@@ -7,7 +7,12 @@ from typer.testing import CliRunner
 
 from nbautoexport.clean import get_expected_exports, get_extension
 from nbautoexport.nbautoexport import app
-from nbautoexport.sentinel import ExportFormat, NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
+from nbautoexport.sentinel import (
+    CleanConfig,
+    ExportFormat,
+    NbAutoexportConfig,
+    SAVE_PROGRESS_INDICATOR_FILE,
+)
 from nbautoexport.utils import JupyterNotebook, working_directory
 
 EXPECTED_NOTEBOOKS = [f"the_notebook_{n}" for n in range(3)]
@@ -78,8 +83,7 @@ def test_clean(notebooks_dir, need_confirmation, organize_by):
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
 def test_clean_relative(notebooks_dir, organize_by):
-    """ Test that cleaning works relative to current working directory.
-    """
+    """Test that cleaning works relative to current working directory."""
     with working_directory(notebooks_dir):
         sentinel_path = Path(SAVE_PROGRESS_INDICATOR_FILE)
         config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
@@ -105,8 +109,7 @@ def test_clean_relative(notebooks_dir, organize_by):
 
 @pytest.mark.parametrize("organize_by", ["extension", "notebook"])
 def test_clean_relative_subdirectory(notebooks_dir, organize_by):
-    """ Test that cleaning works for subdirectory relative to current working directory.
-    """
+    """Test that cleaning works for subdirectory relative to current working directory."""
     with working_directory(notebooks_dir):
         # Set up subdirectory
         subdir = Path("subdir")
@@ -132,6 +135,64 @@ def test_clean_relative_subdirectory(notebooks_dir, organize_by):
 
         # Run clean again, there should be nothing to do
         result_rerun = CliRunner().invoke(app, ["clean", "subdir"])
+        assert result_rerun.exit_code == 0
+        assert result_rerun.stdout.strip().endswith("No files identified for cleaning. Exiting.")
+
+
+def test_clean_exclude(notebooks_dir):
+    """Test that cleaning works with exclude"""
+    with working_directory(notebooks_dir):
+        # Set up subdirectory
+        subdir = Path("subdir")
+        subdir.mkdir()
+        for subfile in Path().iterdir():
+            shutil.move(str(subfile), str(subdir))
+
+        # Set up extra files
+        extra_files = [
+            subdir / "keep.txt",
+            subdir / "delete.txt",
+            subdir / "images" / "keep.jpg",
+            subdir / "images" / "delete.png",
+            subdir / "pictures" / "delete.jpg",
+            subdir / "keep.md",
+            subdir / "docs" / "keep.md",
+        ]
+        for extra_file in extra_files:
+            extra_file.parent.mkdir(exist_ok=True)
+            extra_file.touch()
+
+        sentinel_path = subdir / SAVE_PROGRESS_INDICATOR_FILE
+        config = NbAutoexportConfig(
+            export_formats=EXPECTED_FORMATS,
+            organize_by="extension",
+            clean=CleanConfig(exclude=["keep.txt", "images/*.jpg"]),
+        )
+        with sentinel_path.open("w") as fp:
+            fp.write(config.json())
+
+        command = ["clean", "subdir", "-e", "**/*.md"]
+        result = CliRunner().invoke(app, command, input="y")
+        assert result.exit_code == 0
+
+        expected_notebooks = [
+            JupyterNotebook.from_file(subdir / f"{nb}.ipynb") for nb in EXPECTED_NOTEBOOKS
+        ]
+        expected_exports = set(get_expected_exports(expected_notebooks, config))
+        expected_extra = {
+            extra_file for extra_file in extra_files if extra_file.match("keep.*")
+        } | {subdir / "images", subdir / "docs"}
+
+        all_expected = (
+            {nb.path for nb in expected_notebooks}
+            | expected_exports
+            | {sentinel_path}
+            | expected_extra
+        )
+        assert set(subdir.glob("**/*")) == all_expected
+
+        # Run clean again, there should be nothing to do
+        result_rerun = CliRunner().invoke(app, command)
         assert result_rerun.exit_code == 0
         assert result_rerun.stdout.strip().endswith("No files identified for cleaning. Exiting.")
 
