@@ -24,7 +24,7 @@ Identified following files to clean up:
 Are you sure you want to delete these files? [y/N]: █
 ```
 
-At this point, you can enter `y` to continue with the deletion or `N` to cancel the deletion. There is also a `--dry-run` flag to automatically exit at this point without prompting to continue with deletion.
+At this point, you can enter `y` to continue with the deletion or `n` to cancel the deletion. Alternatively, you can run the `clean` command with the `--dry-run` flag which will automatically exit at this point without performing any file deletion.
 
 ## How it works
 
@@ -32,9 +32,6 @@ Let's say you have the following files:
 
 ```text
 notebooks/
-├── .ipynb_checkpoints
-│   ├── 0.1-ejm-data-exploration-checkpoint.ipynb
-│   └── 0.2-ejm-feature-creation-checkpoint.ipynb
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
@@ -83,9 +80,6 @@ After running `clean`, we end up with the following files:
 
 ```text
 notebooks/
-├── .ipynb_checkpoints
-│   ├── 0.1-ejm-data-exploration-checkpoint.ipynb
-│   └── 0.2-ejm-feature-creation-checkpoint.ipynb
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
@@ -102,9 +96,6 @@ Building on the previous example, let's say we have the following files:
 
 ```text
 notebooks/
-├── .ipynb_checkpoints
-│   ├── 0.1-ejm-data-exploration-checkpoint.ipynb
-│   └── 0.2-ejm-feature-creation-checkpoint.ipynb
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
@@ -172,9 +163,6 @@ We can see that `README.md` and `images/diagram.png` are left alone.
 
 ```text
 notebooks/
-├── .ipynb_checkpoints
-│   ├── 0.1-ejm-data-exploration-checkpoint.ipynb
-│   └── 0.2-ejm-feature-creation-checkpoint.ipynb
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
