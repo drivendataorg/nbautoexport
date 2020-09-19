@@ -54,7 +54,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
     if not config_path.exists():
         logger.debug(f"No existing Jupyter configuration detected at {config_path}. Creating...")
         config_path.parent.mkdir(exist_ok=True, parents=True)
-        with config_path.open("w") as fp:
+        with config_path.open("w", encoding="utf-8") as fp:
             fp.write(post_save_hook_initialize_block)
         logger.info("nbautoexport post-save hook installed.")
         return
@@ -62,7 +62,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
     # If config exists, check for existing nbautoexport initialize block and install as appropriate
     logger.debug(f"Detected existing Jupyter configuration at {config_path}")
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
 
     if block_regex.search(config):
@@ -78,7 +78,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
 
         if parse_version(existing_version) < parse_version(__version__):
             logger.info(f"Updating nbautoexport post-save hook with version {__version__}...")
-            with config_path.open("w") as fp:
+            with config_path.open("w", encoding="utf-8") as fp:
                 # Open as w replaces existing file. We're replacing entire config.
                 fp.write(block_regex.sub(post_save_hook_initialize_block, config))
         else:

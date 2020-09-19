@@ -62,7 +62,7 @@ def test_post_save_no_sentinel(notebooks_dir):
 def test_post_save_organize_by_notebook(notebooks_dir):
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         json.dump(
             NbAutoexportConfig(export_formats=["script", "html"], organize_by="notebook").dict(),
             fp,
@@ -84,7 +84,7 @@ def test_post_save_organize_by_notebook(notebooks_dir):
 def test_post_save_organize_by_extension(notebooks_dir):
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         json.dump(
             NbAutoexportConfig(export_formats=["script", "html"], organize_by="extension").dict(),
             fp,
@@ -109,7 +109,7 @@ def test_post_save_type_file(notebooks_dir):
     """Test that post_save should do nothing if model type is 'file'."""
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         json.dump(NbAutoexportConfig().dict(), fp)
 
     assert notebook_path.exists()
@@ -125,7 +125,7 @@ def test_post_save_type_directory(notebooks_dir):
     """Test that post_save should do nothing if model type is 'directory'."""
     notebook_path = notebooks_dir / "the_notebook.ipynb"
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         json.dump(NbAutoexportConfig().dict(), fp)
 
     assert notebook_path.exists()

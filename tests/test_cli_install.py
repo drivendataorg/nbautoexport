@@ -13,7 +13,7 @@ def test_install_new_config(tmp_path, monkeypatch):
     assert result.exit_code == 0
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == jupyter_config.post_save_hook_initialize_block
 
@@ -23,7 +23,7 @@ def test_install_existing_config(tmp_path, monkeypatch):
 
     config_path = tmp_path / "jupyter_notebook_config.py"
 
-    with config_path.open("w") as fp:
+    with config_path.open("w", encoding="utf-8") as fp:
         fp.write("print('hello world!')")
     assert config_path.exists()
 
@@ -31,7 +31,7 @@ def test_install_existing_config(tmp_path, monkeypatch):
     assert result.exit_code == 0
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == (
         "print('hello world!')" + "\n" + jupyter_config.post_save_hook_initialize_block
@@ -45,7 +45,7 @@ def test_install_new_config_with_path(tmp_path):
     assert result.exit_code == 0
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == jupyter_config.post_save_hook_initialize_block
 
@@ -53,7 +53,7 @@ def test_install_new_config_with_path(tmp_path):
 def test_install_existing_config_with_path(tmp_path):
     config_path = tmp_path / "nonstandard_config.py"
 
-    with config_path.open("w") as fp:
+    with config_path.open("w", encoding="utf-8") as fp:
         fp.write("print('hello world!')")
     assert config_path.exists()
 
@@ -61,7 +61,7 @@ def test_install_existing_config_with_path(tmp_path):
     assert result.exit_code == 0
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == (
         "print('hello world!')" + "\n" + jupyter_config.post_save_hook_initialize_block

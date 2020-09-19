@@ -95,7 +95,7 @@ def test_export_with_config_no_cli_opts(notebooks_dir, input_type, organize_by):
 
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
     config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         fp.write(config.json())
 
     result = CliRunner().invoke(app, ["export", input_path])
@@ -125,7 +125,7 @@ def test_export_with_config_with_cli_opts(notebooks_dir, input_type, organize_by
 
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
     written_config = NbAutoexportConfig()
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         fp.write(written_config.json())
 
     expected_config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
@@ -156,7 +156,7 @@ def test_export_relative(notebooks_dir, input_type, organize_by):
 
         sentinel_path = Path(SAVE_PROGRESS_INDICATOR_FILE)
         config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
-        with sentinel_path.open("w") as fp:
+        with sentinel_path.open("w", encoding="utf-8") as fp:
             fp.write(config.json())
 
         if input_type == "dir":
@@ -190,7 +190,7 @@ def test_clean_relative_subdirectory(notebooks_dir, input_type, organize_by):
 
         sentinel_path = subdir / SAVE_PROGRESS_INDICATOR_FILE
         config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
-        with sentinel_path.open("w") as fp:
+        with sentinel_path.open("w", encoding="utf-8") as fp:
             fp.write(config.json())
 
         expected_notebooks = find_notebooks(subdir)

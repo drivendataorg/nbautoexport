@@ -20,7 +20,9 @@ def test_configure_defaults(tmp_path):
     assert result.exit_code == 0
 
     config = NbAutoexportConfig.parse_file(
-        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE, content_type="application/json"
+        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE,
+        content_type="application/json",
+        encoding="utf-8",
     )
 
     expected_config = NbAutoexportConfig()
@@ -45,7 +47,9 @@ def test_configure_specified(tmp_path):
     assert result.exit_code == 0
 
     config = NbAutoexportConfig.parse_file(
-        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE, content_type="application/json"
+        path=tmp_path / SAVE_PROGRESS_INDICATOR_FILE,
+        content_type="application/json",
+        encoding="utf-8",
     )
 
     expected_config = NbAutoexportConfig(
@@ -91,7 +95,7 @@ def test_force_overwrite(tmp_path):
         app, ["configure", str(tmp_path), "-o", "-f", "script", "-f", "html", "-b", "notebook"]
     )
     assert result.exit_code == 0
-    with (tmp_path / ".nbautoexport").open("r") as fp:
+    with (tmp_path / ".nbautoexport").open("r", encoding="utf-8") as fp:
         config = json.load(fp)
 
     expected_config = NbAutoexportConfig(export_formats=["script", "html"], organize_by="notebook")
@@ -120,7 +124,7 @@ def test_configure_oudated_initialize_warning(tmp_path, monkeypatch):
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
     jupyter_config_path = tmp_path / "jupyter_notebook_config.py"
-    with jupyter_config_path.open("w") as fp:
+    with jupyter_config_path.open("w", encoding="utf-8") as fp:
         initialize_block = jupyter_config.version_regex.sub(
             "0", jupyter_config.post_save_hook_initialize_block
         )

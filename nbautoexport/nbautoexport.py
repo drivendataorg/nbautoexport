@@ -99,7 +99,9 @@ def clean(
     sentinel_path = directory / SAVE_PROGRESS_INDICATOR_FILE
     validate_sentinel_path(sentinel_path)
 
-    config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
+    config = NbAutoexportConfig.parse_file(
+        path=sentinel_path, content_type="application/json", encoding="utf-8"
+    )
 
     # Combine exclude patterns from config and command-line
     config.clean.exclude.extend(exclude)
@@ -204,7 +206,9 @@ def export(
     # Configuration: input options override existing sentinel file
     if sentinel_path.exists():
         typer.echo(f"Reading existing configuration file from {sentinel_path} ...")
-        config = NbAutoexportConfig.parse_file(path=sentinel_path, content_type="application/json")
+        config = NbAutoexportConfig.parse_file(
+            path=sentinel_path, content_type="application/json", encoding="utf-8"
+        )
 
         # Overrides
         if len(export_formats) > 0:
@@ -338,7 +342,7 @@ def configure(
         (Path(jupyter_config_dir()) / "jupyter_notebook_config.py").expanduser().resolve()
     )
     if jupyter_config_file.exists():
-        with jupyter_config_file.open("r") as fp:
+        with jupyter_config_file.open("r", encoding="utf-8") as fp:
             jupyter_config_text = fp.read()
         if block_regex.search(jupyter_config_text):
             installed = True
