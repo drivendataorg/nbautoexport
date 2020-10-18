@@ -58,7 +58,7 @@ def notebooks_dir(tmp_path, notebook_asset):
 def test_clean(notebooks_dir, need_confirmation, organize_by):
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
     config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         fp.write(config.json())
 
     if need_confirmation:
@@ -87,7 +87,7 @@ def test_clean_relative(notebooks_dir, organize_by):
     with working_directory(notebooks_dir):
         sentinel_path = Path(SAVE_PROGRESS_INDICATOR_FILE)
         config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
-        with sentinel_path.open("w") as fp:
+        with sentinel_path.open("w", encoding="utf-8") as fp:
             fp.write(config.json())
 
         result = CliRunner().invoke(app, ["clean", "."], input="y")
@@ -119,7 +119,7 @@ def test_clean_relative_subdirectory(notebooks_dir, organize_by):
 
         sentinel_path = subdir / SAVE_PROGRESS_INDICATOR_FILE
         config = NbAutoexportConfig(export_formats=EXPECTED_FORMATS, organize_by=organize_by)
-        with sentinel_path.open("w") as fp:
+        with sentinel_path.open("w", encoding="utf-8") as fp:
             fp.write(config.json())
 
         result = CliRunner().invoke(app, ["clean", "subdir"], input="y")
@@ -168,7 +168,7 @@ def test_clean_exclude(notebooks_dir):
             organize_by="extension",
             clean=CleanConfig(exclude=["keep.txt", "images/*.jpg"]),
         )
-        with sentinel_path.open("w") as fp:
+        with sentinel_path.open("w", encoding="utf-8") as fp:
             fp.write(config.json())
 
         command = ["clean", "subdir", "-e", "**/*.md"]
@@ -199,7 +199,7 @@ def test_clean_exclude(notebooks_dir):
 
 def test_clean_abort(notebooks_dir):
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         fp.write(NbAutoexportConfig(export_formats=EXPECTED_FORMATS).json())
 
     starting_files = set(notebooks_dir.glob("**/*"))
@@ -216,7 +216,7 @@ def test_clean_abort(notebooks_dir):
 
 def test_clean_dry_run(notebooks_dir):
     sentinel_path = notebooks_dir / SAVE_PROGRESS_INDICATOR_FILE
-    with sentinel_path.open("w") as fp:
+    with sentinel_path.open("w", encoding="utf-8") as fp:
         fp.write(NbAutoexportConfig(export_formats=EXPECTED_FORMATS).json())
 
     starting_files = set(notebooks_dir.glob("**/*"))

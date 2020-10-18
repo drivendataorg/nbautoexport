@@ -44,7 +44,7 @@ def test_find_notebooks(tmp_path, notebook_asset):
 
     # Non-notebook files
     (tmp_path / "the_journal.txt").touch()
-    with (tmp_path / "the_log.json").open("w") as fp:
+    with (tmp_path / "the_log.json").open("w", encoding="utf-8") as fp:
         json.dump(
             {
                 "LOG ENTRY: SOL 61": "How come Aquaman can control whales?",
@@ -52,7 +52,7 @@ def test_find_notebooks(tmp_path, notebook_asset):
             },
             fp,
         )
-    with (tmp_path / SAVE_PROGRESS_INDICATOR_FILE).open("w") as fp:
+    with (tmp_path / SAVE_PROGRESS_INDICATOR_FILE).open("w", encoding="utf-8") as fp:
         fp.write(NbAutoexportConfig().json())
 
     found_notebooks = find_notebooks(tmp_path)

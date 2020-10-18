@@ -60,5 +60,5 @@ def install_sentinel(directory: Path, config: NbAutoexportConfig, overwrite: boo
     else:
         logger.info(f"Creating configuration file at {sentinel_path}")
         logger.info(f"\n{config.json(indent=2)}")
-        with sentinel_path.open("w") as fp:
+        with sentinel_path.open("w", encoding="utf-8") as fp:
             fp.write(config.json(indent=2))

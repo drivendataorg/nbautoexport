@@ -37,9 +37,9 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
             return
 
         # Rewrite converted file to new path, removing cell numbers
-        with input.open("r") as f:
+        with input.open("r", encoding="utf-8") as f:
             text = f.read()
-        with new_path.open("w") as f:
+        with new_path.open("w", encoding="utf-8") as f:
             f.write(re.sub(r"\n#\sIn\[(([0-9]+)|(\s))\]:\n{2}", "", text))
 
         # For some formats, we also need to move the assets directory, for stuff like images
@@ -80,7 +80,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
 
     if should_convert:
         config = NbAutoexportConfig.parse_file(
-            path=save_progress_indicator, content_type="application/json"
+            path=save_progress_indicator, content_type="application/json", encoding="utf-8"
         )
         export_notebook(os_path, config=config)
 

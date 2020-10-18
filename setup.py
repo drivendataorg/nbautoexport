@@ -10,7 +10,7 @@ import versioneer
 
 def load_requirements(path: Path):
     requirements = []
-    with path.open("r") as fp:
+    with path.open("r", encoding="utf-8") as fp:
         for line in fp.readlines():
             if line.startswith("-r"):
                 requirements += load_requirements(line.split(" ")[1].strip())

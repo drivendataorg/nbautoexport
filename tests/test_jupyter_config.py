@@ -83,7 +83,7 @@ def test_install_hook_no_config(tmp_path, monkeypatch):
 
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == jupyter_config.post_save_hook_initialize_block
 
@@ -106,7 +106,7 @@ def test_install_hook_missing_config_dir(tmp_path, monkeypatch):
     assert config_dir.exists()
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == jupyter_config.post_save_hook_initialize_block
 
@@ -119,14 +119,14 @@ def test_install_hook_existing_config_no_hook(tmp_path, monkeypatch):
 
     config_path = tmp_path / "jupyter_notebook_config.py"
 
-    with config_path.open("w") as fp:
+    with config_path.open("w", encoding="utf-8") as fp:
         fp.write("print('hello world!')")
 
     jupyter_config.install_post_save_hook()
 
     assert config_path.exists()
 
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == (
         "print('hello world!')" + "\n" + jupyter_config.post_save_hook_initialize_block
@@ -151,13 +151,13 @@ def test_install_hook_replace_hook_no_version(tmp_path, monkeypatch):
         print('good night world!')
     """
 
-    with config_path.open("w") as fp:
+    with config_path.open("w", encoding="utf-8") as fp:
         fp.write(textwrap.dedent(old_config_text))
 
     jupyter_config.install_post_save_hook()
 
     assert config_path.exists()
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == (
         "print('hello world!')\n\n"
@@ -186,13 +186,13 @@ def test_install_hook_replace_hook_older_version(tmp_path, monkeypatch):
         print('good night world!')
     """
 
-    with config_path.open("w") as fp:
+    with config_path.open("w", encoding="utf-8") as fp:
         fp.write(textwrap.dedent(old_config_text))
 
     jupyter_config.install_post_save_hook()
 
     assert config_path.exists()
-    with config_path.open("r") as fp:
+    with config_path.open("r", encoding="utf-8") as fp:
         config = fp.read()
     assert config == (
         "print('hello world!')\n\n"
