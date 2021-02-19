@@ -1,8 +1,8 @@
 # History
 
-## 0.3.0 (Unreleased)
+## 0.3.0 (2021-02-18)
 
-- Explicitly set all input and output file encodings to UTF-8, which fixes a bug with HTML exports on Windows with `nbconvert` v6.0.
+- Explicitly set all input and output file encodings to UTF-8, which fixes a bug with HTML exports on Windows with `nbconvert` v6.0. This version removes the version ceiling on <6. 
   - This is not expected to cause any backwards compatibility issues. However, in the _very_ unlikely instance that your `jupyter_notebook_config.py` file or your `nbautoexport.json` config file is Windows-1252-encoded _and_ contains non-ASCII characters, you will need to convert them to UTF-8. ([#57](https://github.com/drivendataorg/nbautoexport/issues/57), [#61](https://github.com/drivendataorg/nbautoexport/pull/61))
 
 ## 0.2.1 (2020-09-18)
