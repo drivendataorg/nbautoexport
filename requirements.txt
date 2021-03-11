@@ -1,5 +1,8 @@
-jupyter-contrib-nbextensions>=0.5.1
+jupyter_core
 nbconvert>=5.6.1
+nbformat
+notebook
 packaging
 pydantic
+traitlets
 typer>=0.3.0

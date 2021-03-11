@@ -6,7 +6,7 @@ import textwrap
 from typing import Optional
 
 from jupyter_core.paths import jupyter_config_dir
-from traitlets.config.loader import Config
+from traitlets.config import Config
 
 from nbautoexport.utils import __version__, logger
 
