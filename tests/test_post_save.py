@@ -39,7 +39,8 @@ def file_contents_manager(notebook_file):
 
 
 def test_post_save(file_contents_manager, notebook_file, notebook_model):
-    """Test that post_save function works when FileContentsManager saves."""
+    """Test that post_save function works when FileContentsManager saves based on config file."""
+
     config = NbAutoexportConfig(
         export_formats=[ExportFormat.script], organize_by=OrganizeBy.extension
     )
@@ -49,6 +50,23 @@ def test_post_save(file_contents_manager, notebook_file, notebook_model):
     file_contents_manager.save(notebook_model, path=notebook_file.name)
 
     assert (notebook_file.parent / "script" / f"{notebook_file.stem}.py").exists()
+    assert not (notebook_file.parent / notebook_file.stem / f"{notebook_file.stem}.html").exists()
+
+    # Update config and check that output is different
+
+    (notebook_file.parent / "script" / f"{notebook_file.stem}.py").unlink()
+
+    config = NbAutoexportConfig(
+        export_formats=[ExportFormat.html], organize_by=OrganizeBy.notebook
+    )
+
+    with (notebook_file.parent / SAVE_PROGRESS_INDICATOR_FILE).open("w", encoding="utf-8") as fp:
+        fp.write(config.json())
+
+    file_contents_manager.save(notebook_model, path=notebook_file.name)
+
+    assert not (notebook_file.parent / "script" / f"{notebook_file.stem}.py").exists()
+    assert (notebook_file.parent / notebook_file.stem / f"{notebook_file.stem}.html").exists()
 
 
 def test_not_notebook(file_contents_manager, tmp_path):
@@ -80,4 +98,7 @@ def test_no_config(file_contents_manager, notebook_file, notebook_model):
     FileContentsManager saves."""
     file_contents_manager.save(notebook_model, path=notebook_file.name)
 
-    assert not (notebook_file.parent / "script" / f"{notebook_file.stem}.py").exists()
+    assert set(notebook_file.parent.iterdir()) == {
+        notebook_file.parent / ".ipynb_checkpoints",
+        notebook_file,
+    }
