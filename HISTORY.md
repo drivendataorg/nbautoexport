@@ -1,6 +1,6 @@
 # History
 
-## 0.3.1 (Unreleased)
+## 0.3.1 (2021-03-10)
 
 - Remove extraneous dependency on `jupyter_contrib_nbextensions`. Add `traitlets`, `notebook`, `jupyter_core`, and `nbformat` as explicit dependencies; previously they were treated as transitive dependencies even though they are actually direct dependencies. [#68](https://github.com/drivendataorg/nbautoexport/issues/68)
 
@@ -11,7 +11,7 @@
 
 ## 0.2.1 (2020-09-18)
 
- - `nbconvert` released version 6, which may break HTML exports on Windows. Pinning to `nbconvert<6` until we can address [#57](https://github.com/drivendataorg/nbautoexport/issues/57).
+- `nbconvert` released version 6, which may break HTML exports on Windows. Pinning to `nbconvert<6` until we can address [#57](https://github.com/drivendataorg/nbautoexport/issues/57).
 
 ## 0.2.0 (2020-09-04)
 
