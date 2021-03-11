@@ -8,7 +8,7 @@
 
 > Making it easier to code review Jupyter notebooks, one script at a time.
 
-`nbautoexport` automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save while using Jupyter. One great use case is to automatically have script versions of your notebooks to facilitate code review commenting.
+`nbautoexport` automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save while using Jupyter. One great use case is to automatically have script versions of your notebooks to [facilitate code review commenting](https://www.drivendata.co/blog/nbautoexport-jupyter-code-review/).
 
 ## Installation
 
