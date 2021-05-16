@@ -21,7 +21,7 @@ class CopyToSubfolderPostProcessor(PostProcessorBase):
         super(CopyToSubfolderPostProcessor, self).__init__()
 
     def postprocess(self, input: str):
-        """ Save converted file to a separate directory, removing cell numbers."""
+        """Save converted file to a separate directory, removing cell numbers."""
         if self.subfolder is None:
             return
 
