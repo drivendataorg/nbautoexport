@@ -59,7 +59,7 @@ install: clean ## install the package to the active Python's site-packages
 lint: ## check style with flake8
 	black --check nbautoexport tests
 	flake8 nbautoexport tests
-	mypy nbautoexport tests
+	mypy --install-types --non-interactive nbautoexport tests
 
 release: dist ## package and upload a release
 	twine upload dist/*
