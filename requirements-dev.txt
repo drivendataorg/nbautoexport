@@ -1,13 +1,11 @@
--c requirements.txt
--r requirements.txt
-
 -e .
 
 black>=19.3b0
 coverage>=4.5.4
 flake8>=3.7.8
-mkdocs>=1.1
-mkdocs-material
+mike
+mkdocs>=1.2.2
+mkdocs-material>=7.2.6
 mkdocstrings
 mypy>=0.782
 pip>=19.2.3
