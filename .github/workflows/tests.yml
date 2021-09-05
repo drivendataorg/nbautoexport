@@ -7,15 +7,48 @@ on:
   schedule:
     # Run every Sunday
     - cron: "0 0 * * 0"
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: ${{ matrix.os }}, Python ${{ matrix.python-version }}
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python with Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.8
+          channels: conda-forge
+
+      - name: Install dependencies
+        run: |
+          which python
+          python --version
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          conda install pandoc
+
+      - name: Lint package
+        run: |
+          make lint
+
+  tests:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: code-quality
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.6, 3.7, 3.8]
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +60,6 @@ jobs:
           channels: conda-forge
 
       - name: Install dependencies
-        shell: bash -l {0}
         run: |
           which python
           python --version
@@ -35,31 +67,27 @@ jobs:
           python -m pip install -r requirements-dev.txt --use-feature=2020-resolver
           conda install pandoc
 
-      - name: Lint package
-        shell: bash -l {0}
-        run: |
-          make lint
-
       - name: Run tests
-        shell: bash -l {0}
         run: |
           make test
 
       - name: Build distribution and test installation
-        shell: bash -l {0}
         run: |
           make dist
           python -m pip install dist/nbautoexport-*.whl --no-deps --force-reinstall
+          nbautoexport --version
           python -m pip install dist/nbautoexport-*.tar.gz --no-deps --force-reinstall
+          nbautoexport --version
 
       - name: Test building documentation
-        shell: bash -l {0}
         run: |
           make docs
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
 
       - name: Deploy site preview to Netlify
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+        if: |
+          matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+          && github.event.pull_request != null
         uses: nwtgck/actions-netlify@v1.1
         with:
           publish-dir: "./docs/site"
@@ -80,4 +108,21 @@ jobs:
         with:
           file: ./coverage.xml
           fail_ci_if_error: true
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8
+        if: matrix.os == 'ubuntu-latest'
+
+  notify:
+    name: Notify failed build
+    needs: [code-quality, tests]
+    if: failure() && github.event.pull_request == null
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          RUN_NUMBER: ${{ github.run_number}}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        with:
+          filename: .github/failed_build_issue_template.md
