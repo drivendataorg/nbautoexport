@@ -64,20 +64,16 @@ def test_invalid_export_format():
     runner = CliRunner()
     result = runner.invoke(app, ["configure", "-f", "invalid-output-format"])
     assert result.exit_code == 2
-    assert (
-        "Error: Invalid value for '--export-format' / '-f': invalid choice: invalid-output-format"
-        in result.output
-    )
+    assert "Error: Invalid value for '--export-format' / '-f'" in result.output
+    assert "invalid-output-format" in result.output
 
 
 def test_invalid_organize_by():
     runner = CliRunner()
     result = runner.invoke(app, ["configure", "-b", "invalid-organize-by"])
     assert result.exit_code == 2
-    assert (
-        "Invalid value for '--organize-by' / '-b': invalid choice: invalid-organize-by"
-        in result.output
-    )
+    assert "Invalid value for '--organize-by' / '-b'" in result.output
+    assert "invalid-organize-by" in result.output
 
 
 def test_refuse_overwrite(tmp_path):
