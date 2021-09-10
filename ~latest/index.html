@@ -318,7 +318,9 @@
   
   
     
-    <li class="md-nav__item md-nav__item--nested">
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
@@ -340,7 +342,7 @@
   
     <li class="md-nav__item">
       <a href="command-reference/clean/" class="md-nav__link">
-        nbautoexport clean
+        clean
       </a>
     </li>
   
@@ -352,7 +354,7 @@
   
     <li class="md-nav__item">
       <a href="command-reference/configure/" class="md-nav__link">
-        nbautoexport configure
+        configure
       </a>
     </li>
   
@@ -364,7 +366,7 @@
   
     <li class="md-nav__item">
       <a href="command-reference/export/" class="md-nav__link">
-        nbautoexport export
+        export
       </a>
     </li>
   
@@ -376,7 +378,7 @@
   
     <li class="md-nav__item">
       <a href="command-reference/install/" class="md-nav__link">
-        nbautoexport install
+        install
       </a>
     </li>
   
@@ -396,7 +398,9 @@
   
   
     
-    <li class="md-nav__item md-nav__item--nested">
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
@@ -474,6 +478,21 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="changelog/" class="md-nav__link">
+        Changelog
+      </a>
     </li>
   
 
@@ -568,7 +587,7 @@
                   </a>
                 
                 
-                <h1 id="nbautoexport">nbautoexport</h1>
+                <h1 id="nbautoexport">nbautoexport<a class="headerlink" href="#nbautoexport" title="Permanent link">&para;</a></h1>
 <p><a href="https://nbautoexport.drivendata.org/"><img alt="Docs Status" src="https://img.shields.io/badge/docs-stable-informational" /></a>
 <a href="https://pypi.org/project/nbautoexport/"><img alt="PyPI" src="https://img.shields.io/pypi/v/nbautoexport.svg" /></a>
 <a href="https://anaconda.org/conda-forge/nbautoexport"><img alt="conda-forge" src="https://img.shields.io/conda/vn/conda-forge/nbautoexport.svg" /></a>
@@ -578,66 +597,66 @@
 <p>Making it easier to code review Jupyter notebooks, one script at a time.</p>
 </blockquote>
 <p><code>nbautoexport</code> automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save while using Jupyter. One great use case is to automatically have script versions of your notebooks to <a href="https://www.drivendata.co/blog/nbautoexport-jupyter-code-review/">facilitate code review commenting</a>.</p>
-<h2 id="installation">Installation</h2>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>First, you will need to install <code>nbautoexport</code>. This should be installed in the same environment you are running Jupyter Notebook or Jupyter Lab from. <code>nbautoexport</code> is available either from <a href="https://pypi.org/project/nbautoexport/">PyPI</a> via <code>pip</code> or from <a href="https://github.com/conda-forge/nbautoexport-feedstock">conda-forge</a> via <code>conda</code>.</p>
-<pre><code class="language-bash">pip install nbautoexport
-</code></pre>
-<pre><code class="language-bash">conda install nbautoexport --channel conda-forge
-</code></pre>
+<div class="highlight"><pre><span></span><code>pip install nbautoexport
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>conda install nbautoexport --channel conda-forge
+</code></pre></div>
 <p>Then, to register <code>nbautoexport</code> to run automatically while using Jupyter Notebook or Jupyter Lab, run:</p>
-<pre><code class="language-bash">nbautoexport install
-</code></pre>
+<div class="highlight"><pre><span></span><code>nbautoexport install
+</code></pre></div>
 <p>If you already have a Jupyter server running, you will need to restart it for this to take effect.</p>
-<h2 id="simple-usage">Simple usage</h2>
+<h2 id="simple-usage">Simple usage<a class="headerlink" href="#simple-usage" title="Permanent link">&para;</a></h2>
 <p>Let's say you have a project and keep your notebooks in a <code>notebooks/</code> subdirectory.</p>
 <p>To configure that directory for automatic exporting, run the following command:</p>
-<pre><code class="language-bash">nbautoexport configure notebooks
-</code></pre>
+<div class="highlight"><pre><span></span><code>nbautoexport configure notebooks
+</code></pre></div>
 <p>This will create a configuration file <code>notebooks/.nbautoexport</code>.</p>
 <p>If you've set up <code>nbautoexport</code> to work with Jupyter (using the <code>install</code> command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a <code>.nbautoexport</code> configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notebook (with the <code>.py</code> extension) and saved in the directory <code>notebooks/script</code>.</p>
 <p>If everything is working, your notebooks directory should end up with files like the below example:</p>
-<pre><code class="language-text">notebooks
+<div class="highlight"><pre><span></span><code>notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
 └── script
     └── 0.1-ejm-data-exploration.py
     └── 0.2-ejm-feature-creation.py
-</code></pre>
-<h2 id="configuring-export-options">Configuring export options</h2>
+</code></pre></div>
+<h2 id="configuring-export-options">Configuring export options<a class="headerlink" href="#configuring-export-options" title="Permanent link">&para;</a></h2>
 <p>The default <code>.nbautoexport</code> configuration file looks like this:</p>
-<pre><code class="language-json">{
-  &quot;export_formats&quot;: [
-    &quot;script&quot;
-  ],
-  &quot;organize_by&quot;: &quot;extension&quot;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;export_formats&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;script&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;organize_by&quot;</span><span class="p">:</span> <span class="s2">&quot;extension&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>Upon save, this will lead to notebooks being exported to scripts which saved to the <code>notebooks/script</code> directory.</p>
-<pre><code class="language-text">notebooks
+<div class="highlight"><pre><span></span><code>notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
 └── script
     └── 0.1-ejm-data-exploration.py
     └── 0.2-ejm-feature-creation.py
-</code></pre>
+</code></pre></div>
 <p>An alternative way to organize exported files is to create a directory for each notebook. This can be handy for matching both the notebook and subdirectory when tab-completing and then globbing with <code>*</code> after the part that completed.</p>
-<pre><code class="language-bash">nbautoexport configure notebooks --organize-by notebook
-</code></pre>
-<pre><code class="language-text">notebooks
+<div class="highlight"><pre><span></span><code>nbautoexport configure notebooks --organize-by notebook
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>notebooks
 ├── 0.1-ejm-data-exploration
 │   └── 0.1-ejm-data-exploration.py
 ├── 0.2-ejm-feature-creation
 │   └── 0.2-ejm-feature-creation.py
 ├──0.1-ejm-data-exploration.ipynb
 └──0.2-ejm-feature-creation.ipynb
-</code></pre>
+</code></pre></div>
 <p>If you do not like the settings you selected, you can always change them by either 1) re-running the <code>nbautoexport</code> command with new arguments and the <code>--overwrite</code> flag, or 2) manually editing the <code>.nbautoexport</code> file.</p>
 <p>You can also specify as many export formats as you'd like. We support most of the export formats available from <a href="https://nbconvert.readthedocs.io/en/latest/"><code>nbconvert</code></a>, such as <code>html</code>, <code>md</code>, and <code>pdf</code>. To specify formats, use the <code>--export-format</code> for each format you want to include.</p>
-<h3 id="advanced-example">Advanced example</h3>
-<pre><code class="language-bash">nbautoexport configure sprint_one_notebooks -f script -f html --organize-by extension
-</code></pre>
+<h3 id="advanced-example">Advanced example<a class="headerlink" href="#advanced-example" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>nbautoexport configure sprint_one_notebooks -f script -f html --organize-by extension
+</code></pre></div>
 <p>Upon save, this creates <code>.py</code> and <code>.html</code> versions of the Jupyter notebooks in <code>sprint_one_notebooks</code> folder and results in the following organization:</p>
-<pre><code class="language-text">notebooks
+<div class="highlight"><pre><span></span><code>notebooks
 ├──0.1-ejm-data-exploration.ipynb
 ├──0.2-ejm-feature-creation.ipynb
 ├── script
@@ -646,28 +665,28 @@
 └── html
     └── 0.1-ejm-data-exploration.html
     └── 0.1-ejm-features-creation.html
-</code></pre>
-<h2 id="more-functionality">More functionality</h2>
+</code></pre></div>
+<h2 id="more-functionality">More functionality<a class="headerlink" href="#more-functionality" title="Permanent link">&para;</a></h2>
 <p>The <code>nbautoexport</code> CLI has two additional commands:</p>
 <ul>
 <li><code>export</code> is for ad hoc exporting of a notebook or directory of notebooks</li>
 <li><code>clean</code> (EXPERIMENTAL) will delete files in a directory that are not generated by the current <code>.nbautoexport</code> configuration</li>
 </ul>
 <p>Use the <code>--help</code> flag to see the documentation.</p>
-<h2 id="command-line-help">Command-line help</h2>
-<pre><code class="language-bash">nbautoexport --help
-</code></pre>
-<pre><code class="language-text">Usage: nbautoexport [OPTIONS] COMMAND [ARGS]...
+<h2 id="command-line-help">Command-line help<a class="headerlink" href="#command-line-help" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>nbautoexport --help
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Usage: nbautoexport [OPTIONS] COMMAND [ARGS]...
 
   Automatically export Jupyter notebooks to various file formats (.py,
   .html, and more) upon save. One great use case is to automatically have
   script versions of your notebooks to facilitate code review commenting.
 
-  To set up, first use the 'install' command to register nbautoexport with
+  To set up, first use the &#39;install&#39; command to register nbautoexport with
   Jupyter. If you already have a Jupyter server running, you will need to
   restart it.
 
-  Next, you will need to use the 'configure' command to create a
+  Next, you will need to use the &#39;configure&#39; command to create a
   .nbautoexport configuration file in the same directory as the notebooks
   you want to have export automatically.
 
@@ -688,7 +707,7 @@ Commands:
   configure  Create a .nbautoexport configuration file in a directory.
   export     Manually export notebook or directory of notebooks.
   install    Register nbautoexport post-save hook with Jupyter.
-</code></pre>
+</code></pre></div>
 <hr />
 <p>This repository was initially created using <a href="https://github.com/audreyr/cookiecutter">Cookiecutter</a> with <a href="https://github.com/audreyr/cookiecutter-pypackage"><code>audreyr/cookiecutter-pypackage</code></a>.</p>
                 
@@ -701,6 +720,11 @@ Commands:
             </article>
           </div>
         </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
         
       </main>
       
@@ -746,7 +770,7 @@ Commands:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.409db549.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.409db549.min.js", "version": {"provider": "mike"}}</script>
     
     
       <script src="assets/javascripts/bundle.756773cc.min.js"></script>
