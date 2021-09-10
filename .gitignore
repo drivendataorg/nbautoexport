@@ -1,3 +1,5 @@
+docs/docs/index.md
+docs/docs/changelog.md
 docs/docs/command-reference/*.md
 
 ## GitHub Python .gitignore ##

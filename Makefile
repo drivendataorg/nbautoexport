@@ -42,6 +42,10 @@ dist: clean ## builds source and wheel package
 	ls -l dist
 
 docs: clean-docs
+	sed 's|https://nbautoexport.drivendata.org/stable/||g' README.md \
+		> docs/docs/index.md
+	sed 's|https://nbautoexport.drivendata.org/stable/|../|g' HISTORY.md \
+		> docs/docs/changelog.md
 	for cmd in clean configure export install ; do \
 		bash docs/_scripts/generate_command_reference.sh $$cmd; \
 	done
