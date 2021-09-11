@@ -117,7 +117,7 @@ We use the [`mike` tool](https://github.com/jimporter/mike) to manage the docume
 - The current stable version is tagged with the alias `"stable"` and has `"(stable)"` as part of the title.
 - The head of the `master` branch is keyed as `"~latest"` and titled as `"latest"`
 
-**To deploy the latest docs from the master branch, all you need to do is trigger the `docs-master` GitHub Actions workflow.**
+**To deploy the latest docs from the master branch, all you need to do is manually trigger the [`docs-master` GitHub Actions workflow](https://github.com/drivendataorg/nbautoexport/actions/workflows/docs-master.yml).**
 
 **To manually deploy a previously released version, you will need to use `mike`. Follow the instructions in the following section.**
 
