@@ -207,7 +207,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../index.md" class="md-nav__link">
         Home
       </a>
     </li>
@@ -311,7 +311,9 @@
   
   
     
-    <li class="md-nav__item md-nav__item--nested">
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
@@ -333,7 +335,7 @@
   
     <li class="md-nav__item">
       <a href="../command-reference/clean/" class="md-nav__link">
-        nbautoexport clean
+        clean
       </a>
     </li>
   
@@ -345,7 +347,7 @@
   
     <li class="md-nav__item">
       <a href="../command-reference/configure/" class="md-nav__link">
-        nbautoexport configure
+        configure
       </a>
     </li>
   
@@ -357,7 +359,7 @@
   
     <li class="md-nav__item">
       <a href="../command-reference/export/" class="md-nav__link">
-        nbautoexport export
+        export
       </a>
     </li>
   
@@ -369,7 +371,7 @@
   
     <li class="md-nav__item">
       <a href="../command-reference/install/" class="md-nav__link">
-        nbautoexport install
+        install
       </a>
     </li>
   
@@ -389,7 +391,9 @@
   
   
     
-    <li class="md-nav__item md-nav__item--nested">
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
@@ -467,6 +471,21 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        Changelog
+      </a>
     </li>
   
 
@@ -554,25 +573,25 @@
                   </a>
                 
                 
-                <h1 id="cleaning-experimental">Cleaning (Experimental)</h1>
+                <h1 id="cleaning-experimental">Cleaning (Experimental)<a class="headerlink" href="#cleaning-experimental" title="Permanent link">&para;</a></h1>
 <p>While using <code>nbautoexport</code>, you may sometimes end up with leftover files you no longer want. Some ways this can happen are if you rename notebooks, or if you change your export configuration. The <code>nbautoexport</code> CLI has an experimental <code>clean</code> command to delete extraneous files.</p>
 <p><strong>WARNING: the <code>clean</code> command can delete files irreversibly. Please use with care.</strong></p>
-<h2 id="basic-usage">Basic usage</h2>
+<h2 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>Let's say you have a project and keep your notebooks in a <code>notebooks/</code> subdirectory. You can clean it with:</p>
-<pre><code class="language-bash">nbautoexport clean notebooks/
-</code></pre>
+<div class="highlight"><pre><span></span><code>nbautoexport clean notebooks/
+</code></pre></div>
 <p>Note that in order to use <code>clean</code>, this directory <em>must</em> be configured with <code>nbautoexport</code>, i.e., you have a <code>notebooks/.nbautoexport</code> configuration file.</p>
 <p>If you have some files that would be cleaned, you would see something that looks like this:</p>
-<pre><code class="language-text">Identified following files to clean up:
+<div class="highlight"><pre><span></span><code>Identified following files to clean up:
   notebooks/html/0.1-ejm-data-exploration.html
   notebooks/html/0.2-ejm-feature-creation.html
   notebooks/script/Untitled.py
 Are you sure you want to delete these files? [y/N]: █
-</code></pre>
+</code></pre></div>
 <p>At this point, you can enter <code>y</code> to continue with the deletion or <code>n</code> to cancel the deletion. Alternatively, you can run the <code>clean</code> command with the <code>--dry-run</code> flag which will automatically exit at this point without performing any file deletion.</p>
-<h2 id="how-it-works">How it works</h2>
+<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <p>Let's say you have the following files:</p>
-<pre><code class="language-text">notebooks/
+<div class="highlight"><pre><span></span><code>notebooks/
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
@@ -583,22 +602,22 @@ Are you sure you want to delete these files? [y/N]: █
     ├── 0.1-ejm-data-exploration.py
     ├── 0.2-ejm-feature-creation.py
     └── Untitled.py
-</code></pre>
+</code></pre></div>
 <p>and you have the following <code>.nbautoexport</code> configuration:</p>
-<pre><code class="language-json">{
-  &quot;export_formats&quot;: [
-    &quot;script&quot;
-  ],
-  &quot;organize_by&quot;: &quot;extension&quot;
-}
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;export_formats&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;script&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;organize_by&quot;</span><span class="p">:</span> <span class="s2">&quot;extension&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>We have some extra files that we want to clean up:</p>
 <ul>
 <li><code>html/</code> has some exports from when we earlier had <code>html</code> as an export format.</li>
 <li><code>script/Untitled.py</code> got saved when we had an <code>Untitled.ipynb</code> notebook before it was renamed.</li>
 </ul>
 <p><code>nbautoexport</code>, based on the configuration file and the notebooks it finds, identifies which files are expected exports or other expected files based on normal <code>nbautoexport</code> and Jupyter usage. All other files found are marked for clean up.</p>
-<pre><code class="language-ShellSession">$ nbautoexport clean notebooks/
+<div class="highlight"><pre><span></span><code>$ nbautoexport clean notebooks/
 
 Identified following files to clean up:
   notebooks/html/0.1-ejm-data-exploration.html
@@ -609,20 +628,20 @@ Removing identified files...
 Removing empty subdirectories...
   notebooks/html
 Cleaning complete.
-</code></pre>
+</code></pre></div>
 <p>After running <code>clean</code>, we end up with the following files:</p>
-<pre><code class="language-text">notebooks/
+<div class="highlight"><pre><span></span><code>notebooks/
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
 └── script
     ├── 0.1-ejm-data-exploration.py
     └── 0.2-ejm-feature-creation.py
-</code></pre>
-<h2 id="excluding-files">Excluding files</h2>
+</code></pre></div>
+<h2 id="excluding-files">Excluding files<a class="headerlink" href="#excluding-files" title="Permanent link">&para;</a></h2>
 <p>Sometimes you may have additional files in the notebooks directory of your project that are intentional. You can use <a href="https://docs.python.org/3/library/glob.html">glob-style patterns</a> indicate files to exclude from deletion.</p>
 <p>Building on the previous example, let's say we have the following files:</p>
-<pre><code class="language-text">notebooks/
+<div class="highlight"><pre><span></span><code>notebooks/
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
@@ -636,33 +655,33 @@ Cleaning complete.
     ├── 0.1-ejm-data-exploration.py
     ├── 0.2-ejm-feature-creation.py
     └── Untitled.py
-</code></pre>
+</code></pre></div>
 <p>We have additional files that we want to keep:</p>
 <ul>
 <li><code>README.md</code></li>
 <li><code>images/diagram.png</code></li>
 </ul>
 <p>We can specify <a href="https://docs.python.org/3/library/glob.html">glob-style patterns</a> to exclude from cleaning with the <code>--clean-exclude</code> flag in the <code>configure</code> command. Alternatively, we could also directly manually edit the <code>.nbautoexport</code> configuration file.</p>
-<pre><code class="language-bash">nbautoexport configure notebooks/ \
-    --overwrite \
-    --clean-exclude README.md \
+<div class="highlight"><pre><span></span><code>nbautoexport configure notebooks/ <span class="se">\</span>
+    --overwrite <span class="se">\</span>
+    --clean-exclude README.md <span class="se">\</span>
     --clean-exclude images/*
-</code></pre>
-<pre><code class="language-json">{
-  &quot;export_formats&quot;: [
-    &quot;script&quot;
-  ],
-  &quot;organize_by&quot;: &quot;extension&quot;,
-  &quot;clean&quot;: {
-    &quot;exclude&quot;: [
-      &quot;README.md&quot;,
-      &quot;images/*&quot;
-    ]
-  }
-}
-</code></pre>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;export_formats&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;script&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;organize_by&quot;</span><span class="p">:</span> <span class="s2">&quot;extension&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;clean&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;exclude&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;README.md&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;images/*&quot;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>Then, running the <code>clean</code> command:</p>
-<pre><code class="language-ShellSession">$ nbautoexport clean notebooks/
+<div class="highlight"><pre><span></span><code>$ nbautoexport clean notebooks/
 
 Excluding files from cleaning using the following patterns:
   README.md
@@ -676,9 +695,9 @@ Removing identified files...
 Removing empty subdirectories...
   notebooks/html
 Cleaning complete.
-</code></pre>
+</code></pre></div>
 <p>We can see that <code>README.md</code> and <code>images/diagram.png</code> are left alone.</p>
-<pre><code class="language-text">notebooks/
+<div class="highlight"><pre><span></span><code>notebooks/
 ├── .nbautoexport
 ├── 0.1-ejm-data-exploration.ipynb
 ├── 0.2-ejm-feature-creation.ipynb
@@ -688,15 +707,15 @@ Cleaning complete.
 └── script
     ├── 0.1-ejm-data-exploration.py
     └── 0.2-ejm-feature-creation.py
-</code></pre>
-<h3 id="-exclude-flag"><code>--exclude</code> flag</h3>
+</code></pre></div>
+<h3 id="-exclude-flag"><code>--exclude</code> flag<a class="headerlink" href="#-exclude-flag" title="Permanent link">&para;</a></h3>
 <p>You can also provide patterns to exclude with the <code>--exclude</code> (<code>-e</code>) flag when calling <code>clean</code>.</p>
-<pre><code class="language-bash">nbautoexport clean notebooks/ \
-    --exclude README.md \
+<div class="highlight"><pre><span></span><code>nbautoexport clean notebooks/ <span class="se">\</span>
+    --exclude README.md <span class="se">\</span>
     --exclude images/*
-</code></pre>
+</code></pre></div>
 <p>Any patterns specified this way will be used <em>in addition</em> to the patterns in the <code>.nbautoexport</code> configuration.</p>
-<h2 id="experimental-status">Experimental status</h2>
+<h2 id="experimental-status">Experimental status<a class="headerlink" href="#experimental-status" title="Permanent link">&para;</a></h2>
 <p>The <code>clean</code> command is experimental. The logic for identifying files to delete may be in need of improvement. If you have any feedback from using the <code>clean</code> command, please let us know by <a href="https://github.com/drivendataorg/nbautoexport/issues">creating a GitHub issue</a>.</p>
                 
               
@@ -709,6 +728,11 @@ Cleaning complete.
           </div>
         </div>
         
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
       </main>
       
         
@@ -716,30 +740,15 @@ Cleaning complete.
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Home
-            </div>
-          </div>
-        </a>
-      
       
         
-        <a href="../command-reference/clean/" class="md-footer__link md-footer__link--next" aria-label="Next: nbautoexport clean" rel="next">
+        <a href="../command-reference/clean/" class="md-footer__link md-footer__link--next" aria-label="Next: clean" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              nbautoexport clean
+              clean
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -768,7 +777,7 @@ Cleaning complete.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.409db549.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.409db549.min.js", "version": {"provider": "mike"}}</script>
     
     
       <script src="../assets/javascripts/bundle.756773cc.min.js"></script>
