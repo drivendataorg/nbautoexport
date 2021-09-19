@@ -15,7 +15,7 @@ logger = get_logger()
 
 
 def initialize_post_save_hook(c: Config):
-    # >>> nbautoexport initialize, version=[{version}] >>>
+    # >>> nbautoexport initialize, version=[{{version}}] >>>
     try:
         import nbautoexport
 
@@ -57,7 +57,9 @@ def initialize_post_save_hook(c: Config):
 
 
 post_save_hook_initialize_block = textwrap.dedent(
-    "".join(getsourcelines(initialize_post_save_hook)[0][1:-1]).format(version=__version__)
+    "".join(getsourcelines(initialize_post_save_hook)[0][1:-1]).replace(
+        r"{{version}}", __version__, 1
+    )
 )
 
 block_regex = re.compile(
