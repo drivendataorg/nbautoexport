@@ -11,7 +11,9 @@ from nbautoexport.sentinel import (
     NbAutoexportConfig,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
-from nbautoexport.utils import cleared_argv
+from nbautoexport.utils import cleared_argv, get_logger
+
+logger = get_logger()
 
 
 class CopyToSubfolderPostProcessor(PostProcessorBase):
@@ -70,6 +72,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
     """
     # only do this for notebooks
     if model["type"] != "notebook":
+        logger.debug(f"nbautoexport | {os_path} is not a notebook. Nothing to do.")
         return
 
     # only do this if we've added the special indicator file to the working directory
@@ -79,10 +82,16 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
     should_convert = save_progress_indicator.exists()
 
     if should_convert:
-        config = NbAutoexportConfig.parse_file(
-            path=save_progress_indicator, content_type="application/json", encoding="utf-8"
-        )
-        export_notebook(os_path, config=config)
+        logger.info(f"nbautoexport | Exporting {os_path.relative_to(Path())} ...")
+        try:
+            config = NbAutoexportConfig.parse_file(
+                path=save_progress_indicator, content_type="application/json", encoding="utf-8"
+            )
+            export_notebook(os_path, config=config)
+        except Exception as e:
+            logger.error(f"nbautoexport | {type(e).__name__}: {e}")
+    else:
+        logger.debug(f"nbautoexport | {save_progress_indicator} not found. Nothing to do.")
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):

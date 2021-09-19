@@ -8,7 +8,10 @@ from typing import Optional
 from jupyter_core.paths import jupyter_config_dir
 from traitlets.config import Config
 
-from nbautoexport.utils import __version__, logger
+from nbautoexport.utils import __version__, get_logger
+
+
+logger = get_logger()
 
 
 def initialize_post_save_hook(c: Config):

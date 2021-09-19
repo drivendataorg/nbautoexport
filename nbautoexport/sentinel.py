@@ -4,7 +4,10 @@ from typing import List
 
 from pydantic import BaseModel
 
-from nbautoexport.utils import logger
+from nbautoexport.utils import get_logger
+
+
+logger = get_logger()
 
 
 SAVE_PROGRESS_INDICATOR_FILE = ".nbautoexport"

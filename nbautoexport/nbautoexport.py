@@ -19,9 +19,16 @@ from nbautoexport.sentinel import (
     OrganizeBy,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
-from nbautoexport.utils import __version__, find_notebooks
+from nbautoexport.utils import __version__, find_notebooks, get_logger
 
 app = typer.Typer()
+
+# Set up a logger for CLI
+logger = get_logger()
+log_handler = logging.StreamHandler()
+logger.addHandler(log_handler)
+log_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+log_handler.setFormatter(log_formatter)
 
 
 def validate_sentinel_path(path: Path):
@@ -323,7 +330,7 @@ def configure(
     independently configure other directories containing notebooks.
     """
     if verbose:
-        logging.basicConfig(level=logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
 
     config = NbAutoexportConfig(
         export_formats=export_formats,
