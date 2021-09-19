@@ -22,13 +22,7 @@ from nbautoexport.sentinel import (
 from nbautoexport.utils import __version__, find_notebooks, get_logger
 
 app = typer.Typer()
-
-# Set up a logger for CLI
 logger = get_logger()
-log_handler = logging.StreamHandler()
-logger.addHandler(log_handler)
-log_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-log_handler.setFormatter(log_formatter)
 
 
 def validate_sentinel_path(path: Path):
@@ -38,6 +32,10 @@ def validate_sentinel_path(path: Path):
 
 
 def verbose_callback(value: int):
+    log_handler = logging.StreamHandler()
+    logger.addHandler(log_handler)
+    log_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    log_handler.setFormatter(log_formatter)
     if value >= 2:
         logger.setLevel(logging.DEBUG)
     elif value == 1:
