@@ -70,6 +70,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
         os_path (str): the filesystem path to the file just written
         contents_manager (FileContentsManager): FileContentsManager instance that hook is bound to
     """
+    logger.debug("nbautoexport | Executing nbautoexport.export.post_save ...")
     # only do this for notebooks
     if model["type"] != "notebook":
         logger.debug(f"nbautoexport | {os_path} is not a notebook. Nothing to do.")
@@ -79,6 +80,9 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
     os_path = Path(os_path)
     cwd = os_path.parent
     save_progress_indicator = cwd / SAVE_PROGRESS_INDICATOR_FILE
+    logger.debug(
+        f"nbautoexport | Looking for config file {save_progress_indicator} ...",
+    )
     should_convert = save_progress_indicator.exists()
 
     if should_convert:
@@ -92,6 +96,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
             logger.error(f"nbautoexport | {type(e).__name__}: {e}")
     else:
         logger.debug(f"nbautoexport | {save_progress_indicator} not found. Nothing to do.")
+    logger.debug("nbautoexport | post_save done.")
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
@@ -101,6 +106,7 @@ def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
         notebook_path (Path): path to notebook to export with nbconvert
         config (NbAutoexportConfig): configuration
     """
+    logger.debug(f"nbautoexport | Exporting notebook with configuration:\n{config.json(indent=2)}")
     with cleared_argv():
         converter = NbConvertApp()
 
