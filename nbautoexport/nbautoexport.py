@@ -37,6 +37,24 @@ def validate_sentinel_path(path: Path):
         raise typer.Exit(code=1)
 
 
+def verbose_callback(value: int):
+    if value >= 2:
+        logger.setLevel(logging.DEBUG)
+    elif value == 1:
+        logger.setLevel(logging.INFO)
+
+
+verbose_option = typer.Option(
+    0,
+    "--verbose",
+    "-v",
+    count=True,
+    show_default=False,
+    help="Use multiple times to set verbosity/log level. [0 = WARNING, 1 = INFO, 2 = DEBUG]",
+    callback=verbose_callback,
+)
+
+
 def version_callback(value: bool):
     if value:
         typer.echo(__version__)
@@ -95,6 +113,7 @@ def clean(
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show files that would be removed, without actually removing."
     ),
+    verbose: int = verbose_option,
 ):
     """(EXPERIMENTAL) Remove subfolders/files not matching .nbautoexport configuration and
     existing notebooks.
@@ -187,6 +206,7 @@ def export(
             f"provided, defaults to '{DEFAULT_ORGANIZE_BY}'."
         ),
     ),
+    verbose: int = verbose_option,
 ):
     """Manually export notebook or directory of notebooks.
 
@@ -251,7 +271,8 @@ def install(
             "used by Jupyter. You should only specify this option if you use a nonstandard config "
             "file path that you explicitly pass to Jupyter with the --config option at startup."
         ),
-    )
+    ),
+    verbose: int = verbose_option,
 ):
     """Register nbautoexport post-save hook with Jupyter. Note that if you already have a Jupyter
     server running, you will need to restart in order for it to take effect. This is a one-time
@@ -317,9 +338,7 @@ def configure(
         show_default=True,
         help="Overwrite existing configuration, if one is detected.",
     ),
-    verbose: bool = typer.Option(
-        False, "--verbose", "-v", is_flag=True, show_default=True, help="Verbose mode"
-    ),
+    verbose: int = verbose_option,
 ):
     """
     Create a .nbautoexport configuration file in a directory. If nbautoexport has been installed
@@ -329,9 +348,6 @@ def configure(
     An .nbautoexport configuration file only applies to that directory, nonrecursively. You must
     independently configure other directories containing notebooks.
     """
-    if verbose:
-        logger.setLevel(logging.DEBUG)
-
     config = NbAutoexportConfig(
         export_formats=export_formats,
         organize_by=organize_by,
