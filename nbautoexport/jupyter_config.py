@@ -17,20 +17,41 @@ logger = get_logger()
 def initialize_post_save_hook(c: Config):
     # >>> nbautoexport initialize, version=[{version}] >>>
     try:
-        from nbautoexport import post_save
+        import nbautoexport
+
+        logger = nbautoexport.get_logger()
+        logger.debug(f"nbautoexport | Installed version is {nbautoexport.__version__}.")
 
         if callable(c.FileContentsManager.post_save_hook):
+            logger.info(
+                "nbautoexport | Existing post_save_hook found. "
+                "Wrapping it to run nbautoexport's afterwards ..."
+            )
             old_post_save = c.FileContentsManager.post_save_hook
 
             def _post_save(model, os_path, contents_manager):
                 old_post_save(model=model, os_path=os_path, contents_manager=contents_manager)
-                post_save(model=model, os_path=os_path, contents_manager=contents_manager)
+                nbautoexport.post_save(
+                    model=model, os_path=os_path, contents_manager=contents_manager
+                )
 
             c.FileContentsManager.post_save_hook = _post_save
         else:
-            c.FileContentsManager.post_save_hook = post_save
-    except Exception:
-        pass
+            c.FileContentsManager.post_save_hook = nbautoexport.post_save
+
+        logger.info("nbautoexport | Successfully registered post-save hook.")
+    except Exception as e:
+        msg = f"nbautoexport | Failed to register post-save hook due to {type(e).__name__}: {e}"
+        try:
+            from traitlets.log import get_logger
+
+            get_logger().error(msg)
+        except Exception as e2:
+            print(
+                "nbautoexport | Failed to load traitlets application logger due to "
+                f"{type(e2).__name__}: {e2}"
+            )
+            print(msg)
     # <<< nbautoexport initialize <<<
     pass  # need this line for above comment to be included in function source
 
