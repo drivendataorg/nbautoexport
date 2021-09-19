@@ -86,7 +86,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
     should_convert = save_progress_indicator.exists()
 
     if should_convert:
-        logger.info(f"nbautoexport | Exporting {os_path.relative_to(Path())} ...")
+        logger.info(f"nbautoexport | Exporting {os_path} ...")
         try:
             config = NbAutoexportConfig.parse_file(
                 path=save_progress_indicator, content_type="application/json", encoding="utf-8"
