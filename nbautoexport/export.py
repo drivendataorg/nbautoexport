@@ -71,32 +71,30 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
         contents_manager (FileContentsManager): FileContentsManager instance that hook is bound to
     """
     logger.debug("nbautoexport | Executing nbautoexport.export.post_save ...")
-    # only do this for notebooks
-    if model["type"] != "notebook":
-        logger.debug(f"nbautoexport | {os_path} is not a notebook. Nothing to do.")
-        return
+    try:
+        # only do this for notebooks
+        if model["type"] != "notebook":
+            logger.debug(f"nbautoexport | {os_path} is not a notebook. Nothing to do.")
+            return
 
-    # only do this if we've added the special indicator file to the working directory
-    os_path = Path(os_path)
-    cwd = os_path.parent
-    save_progress_indicator = cwd / SAVE_PROGRESS_INDICATOR_FILE
-    logger.debug(
-        f"nbautoexport | Looking for config file {save_progress_indicator} ...",
-    )
-    should_convert = save_progress_indicator.exists()
+        # only do this if we've added the special indicator file to the working directory
+        os_path = Path(os_path)
+        cwd = os_path.parent
+        save_progress_indicator = cwd / SAVE_PROGRESS_INDICATOR_FILE
+        should_convert = save_progress_indicator.exists()
 
-    if should_convert:
-        logger.info(f"nbautoexport | Exporting {os_path} ...")
-        try:
+        if should_convert:
+            logger.info(f"nbautoexport | {save_progress_indicator} found. Exporting notebook ...")
             config = NbAutoexportConfig.parse_file(
                 path=save_progress_indicator, content_type="application/json", encoding="utf-8"
             )
             export_notebook(os_path, config=config)
-        except Exception as e:
-            logger.error(f"nbautoexport | {type(e).__name__}: {e}")
-    else:
-        logger.debug(f"nbautoexport | {save_progress_indicator} not found. Nothing to do.")
-    logger.debug("nbautoexport | post_save done.")
+
+        else:
+            logger.debug(f"nbautoexport | {save_progress_indicator} not found. Nothing to do.")
+        logger.debug("nbautoexport | post_save successful.")
+    except Exception as e:
+        logger.error(f"nbautoexport | post_save failed due to {type(e).__name__}: {e}")
 
 
 def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
@@ -106,10 +104,12 @@ def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
         notebook_path (Path): path to notebook to export with nbconvert
         config (NbAutoexportConfig): configuration
     """
-    logger.debug(f"nbautoexport | Exporting notebook with configuration:\n{config.json(indent=2)}")
+    logger.info(f"nbautoexport | Exporting {notebook_path} ...")
+    logger.debug(f"nbautoexport | Using export configuration:\n{config.json(indent=2)}")
     with cleared_argv():
         converter = NbConvertApp()
         converter.log.handlers = logger.handlers
+        converter.log.setLevel(logger.level)
 
         for export_format in config.export_formats:
             if config.organize_by == "notebook":
