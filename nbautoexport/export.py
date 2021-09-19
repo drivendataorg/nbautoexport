@@ -109,6 +109,7 @@ def export_notebook(notebook_path: Path, config: NbAutoexportConfig):
     logger.debug(f"nbautoexport | Exporting notebook with configuration:\n{config.json(indent=2)}")
     with cleared_argv():
         converter = NbConvertApp()
+        converter.log.handlers = logger.handlers
 
         for export_format in config.export_formats:
             if config.organize_by == "notebook":
