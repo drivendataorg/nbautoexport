@@ -6,7 +6,25 @@ import sys
 import pytest
 
 from nbautoexport.sentinel import NbAutoexportConfig, SAVE_PROGRESS_INDICATOR_FILE
-from nbautoexport.utils import JupyterNotebook, cleared_argv, find_notebooks, working_directory
+from nbautoexport.utils import (
+    JupyterNotebook,
+    cleared_argv,
+    find_notebooks,
+    get_logger,
+    working_directory,
+)
+
+
+def test_get_logger_jupyter_app(mock_jupyter_app):
+    """Test that get_logger() returns Jupyter app's logger if one is active."""
+    logger = get_logger()
+    assert logger is mock_jupyter_app.log
+
+
+def test_get_logger_no_jupyter_app():
+    """Test that get_logger() returns 'nbautoexport' logger if no Jupyter app is active."""
+    logger = get_logger()
+    assert logger.name == "nbautoexport"
 
 
 def test_get_script_extensions(notebook_asset, monkeypatch):
