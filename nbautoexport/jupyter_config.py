@@ -43,9 +43,9 @@ def initialize_post_save_hook(c: Config):
     except Exception as e:
         msg = f"nbautoexport | Failed to register post-save hook due to {type(e).__name__}: {e}"
         try:
-            from traitlets.log import get_logger
+            import traitlets.config.application
 
-            get_logger().error(msg)
+            traitlets.config.application.Application.instance().log.error(msg)
         except Exception as e2:
             print(
                 "nbautoexport | Failed to load traitlets application logger due to "

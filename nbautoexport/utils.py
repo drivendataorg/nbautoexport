@@ -20,7 +20,7 @@ __version__ = get_versions()["version"]
 
 def get_logger():
     if traitlets.config.Application.initialized():
-        return traitlets.log.get_logger()
+        return traitlets.config.Application.instance().log
     else:
         logger = logging.getLogger("nbautoexport")
         logger.addHandler(logging.NullHandler())
