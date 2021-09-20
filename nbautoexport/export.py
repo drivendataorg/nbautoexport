@@ -78,8 +78,8 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
             return
 
         # only do this if we've added the special indicator file to the working directory
-        os_path = Path(os_path)
-        cwd = os_path.parent
+        notebook_path = Path(os_path)
+        cwd = notebook_path.parent
         save_progress_indicator = cwd / SAVE_PROGRESS_INDICATOR_FILE
         should_convert = save_progress_indicator.exists()
 
@@ -88,7 +88,7 @@ def post_save(model: dict, os_path: str, contents_manager: FileContentsManager):
             config = NbAutoexportConfig.parse_file(
                 path=save_progress_indicator, content_type="application/json", encoding="utf-8"
             )
-            export_notebook(os_path, config=config)
+            export_notebook(notebook_path, config=config)
 
         else:
             logger.debug(f"nbautoexport | {save_progress_indicator} not found. Nothing to do.")
