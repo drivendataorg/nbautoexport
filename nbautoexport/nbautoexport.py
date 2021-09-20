@@ -32,6 +32,7 @@ def validate_sentinel_path(path: Path):
 
 
 def verbose_callback(value: int):
+    """Set up logger with level based on --verbose count."""
     log_handler = logging.StreamHandler()
     logger.addHandler(log_handler)
     log_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -48,7 +49,7 @@ verbose_option = typer.Option(
     "-v",
     count=True,
     show_default=False,
-    help="Use multiple times to set verbosity/log level. [0 = WARNING, 1 = INFO, 2 = DEBUG]",
+    help="Use multiple times to set verbosity/log level. [-v = INFO, -vv = DEBUG]",
     callback=verbose_callback,
 )
 
