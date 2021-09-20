@@ -9,8 +9,7 @@ from warnings import warn
 from pydantic import BaseModel
 from nbconvert.exporters import get_export_names, get_exporter
 import nbformat
-import traitlets.log
-import traitlets.config
+from jupyter_core.application import JupyterApp
 
 from nbautoexport._version import get_versions
 
@@ -19,8 +18,8 @@ __version__ = get_versions()["version"]
 
 
 def get_logger():
-    if traitlets.config.Application.initialized():
-        return traitlets.config.Application.instance().log
+    if JupyterApp.initialized():
+        return JupyterApp.instance().log
     else:
         logger = logging.getLogger("nbautoexport")
         logger.addHandler(logging.NullHandler())

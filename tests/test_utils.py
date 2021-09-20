@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 import shutil
 import sys
@@ -15,15 +16,17 @@ from nbautoexport.utils import (
 )
 
 
-def test_get_logger_jupyter_app(mock_jupyter_app):
+def test_get_logger_jupyter_app(jupyter_app):
     """Test that get_logger() returns Jupyter app's logger if one is active."""
     logger = get_logger()
-    assert logger is mock_jupyter_app.log
+    assert isinstance(logger, logging.Logger)
+    assert logger is jupyter_app.log
 
 
 def test_get_logger_no_jupyter_app():
     """Test that get_logger() returns 'nbautoexport' logger if no Jupyter app is active."""
     logger = get_logger()
+    assert isinstance(logger, logging.Logger)
     assert logger.name == "nbautoexport"
 
 

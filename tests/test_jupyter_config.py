@@ -214,9 +214,9 @@ def test_initialize_post_save_binding():
     assert jupyter_config_obj.FileContentsManager.post_save_hook is export.post_save
 
 
-def test_initialize_post_save_execution(monkeypatch, caplog, mock_jupyter_app):
+def test_initialize_post_save_execution(monkeypatch, caplog):
     """Test that post_save initialization works as expected and bound post_save executes."""
-    caplog.set_level(logging.DEBUG, logger=mock_jupyter_app.log.name)
+    caplog.set_level(logging.DEBUG)
 
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
 
@@ -231,7 +231,6 @@ def test_initialize_post_save_execution(monkeypatch, caplog, mock_jupyter_app):
 
     assert caplog_contains(
         caplog,
-        name=mock_jupyter_app.log.name,
         level=logging.INFO,
         in_msg="nbautoexport | Successfully registered post-save hook",
     )
@@ -244,9 +243,9 @@ def test_initialize_post_save_execution(monkeypatch, caplog, mock_jupyter_app):
     assert os_path_list == ["nbautoexport"]
 
 
-def test_initialize_post_save_existing(monkeypatch, caplog, mock_jupyter_app):
+def test_initialize_post_save_existing(monkeypatch, caplog):
     """Test that handling of existing post_save hook works properly."""
-    caplog.set_level(logging.DEBUG, logger=mock_jupyter_app.log.name)
+    caplog.set_level(logging.DEBUG)
 
     jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
 
@@ -267,13 +266,11 @@ def test_initialize_post_save_existing(monkeypatch, caplog, mock_jupyter_app):
 
     assert caplog_contains(
         caplog,
-        name=mock_jupyter_app.log.name,
         level=logging.INFO,
         in_msg="nbautoexport | Existing post_save_hook found",
     )
     assert caplog_contains(
         caplog,
-        name=mock_jupyter_app.log.name,
         level=logging.INFO,
         in_msg="nbautoexport | Successfully registered post-save hook",
     )
@@ -286,7 +283,7 @@ def test_initialize_post_save_existing(monkeypatch, caplog, mock_jupyter_app):
     assert os_path_list == ["old_post_save", "nbautoexport"]
 
 
-def test_initialize_post_save_import_error_caught(monkeypatch, caplog, mock_jupyter_app):
+def test_initialize_post_save_import_error_caught(monkeypatch, caplog, jupyter_app):
     """Test that missing nbautoexport error is caught and properly logged."""
 
     real_import = __builtins__["__import__"]
@@ -309,7 +306,7 @@ def test_initialize_post_save_import_error_caught(monkeypatch, caplog, mock_jupy
 
     assert caplog_contains(
         caplog,
-        name=mock_jupyter_app.log.name,
+        name=jupyter_app.log.name,
         level=logging.ERROR,
         in_msg="ModuleNotFoundError: No module named 'nbautoexport'",
     )
