@@ -310,3 +310,37 @@ def test_initialize_post_save_import_error_caught(monkeypatch, caplog, jupyter_a
         level=logging.ERROR,
         in_msg="ModuleNotFoundError: No module named 'nbautoexport'",
     )
+
+
+def test_initialize_post_save_double_import_error_caught(monkeypatch, caplog, capsys, jupyter_app):
+    """Test that both missing nbautoexport error and missing jupyer_core are caught and properly
+    logged."""
+
+    real_import = __builtins__["__import__"]
+
+    def mock_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "nbautoexport":
+            raise ModuleNotFoundError("No module named 'nbautoexport'")
+        if name == "jupyter_core.application":
+            raise ModuleNotFoundError("No module named 'jupyter_core.application'")
+        return real_import(
+            name=name, globals=globals, locals=locals, fromlist=fromlist, level=level
+        )
+
+    monkeypatch.setattr(builtins, "__import__", mock_import)
+    monkeypatch.delitem(sys.modules, "nbautoexport")
+    monkeypatch.delitem(sys.modules, "jupyter_core.application")
+
+    jupyter_config_obj = Config(FileContentsManager=FileContentsManager())
+
+    # Initialize post_save hook
+    # Should run through since error is caught
+    jupyter_config.initialize_post_save_hook(jupyter_config_obj)
+
+    # Caplog should be empty, since logger didn't work
+    assert len(caplog.record_tuples) == 0
+
+    # Errors should be in stderr
+    captured = capsys.readouterr()
+    assert "ModuleNotFoundError: No module named 'jupyter_core.application'" in captured.err
+    assert "ModuleNotFoundError: No module named 'nbautoexport'" in captured.err
