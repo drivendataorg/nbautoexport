@@ -47,11 +47,13 @@ def initialize_post_save_hook(c: Config):
 
             jupyter_core.application.JupyterApp.instance().log.error(msg)
         except Exception as e2:
-            print(
+            import sys
+
+            sys.stderr.write(
                 "nbautoexport | Failed to load JupyterApp logger due to "
-                f"{type(e2).__name__}: {e2}"
+                f"{type(e2).__name__}: {e2}\n"
             )
-            print(msg)
+            sys.stderr.write(msg + "\n")
     # <<< nbautoexport initialize <<<
     pass  # need this line for above comment to be included in function source
 
