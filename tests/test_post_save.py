@@ -1,3 +1,4 @@
+import json
 import logging
 import shutil
 
@@ -119,3 +120,24 @@ def test_no_config(file_contents_manager, notebook_file, notebook_model):
         notebook_file.parent / ".ipynb_checkpoints",
         notebook_file,
     }
+
+
+def test_invalid_config(file_contents_manager, notebook_file, notebook_model, caplog):
+    """Test that post_save function gracefully logs errors."""
+    config = NbAutoexportConfig(
+        export_formats=[ExportFormat.script], organize_by=OrganizeBy.extension
+    )
+    invalid_config = json.loads(config.json())
+    invalid_config["export_formats"] = ["triplicate"]
+    with (notebook_file.parent / SAVE_PROGRESS_INDICATOR_FILE).open("w", encoding="utf-8") as fp:
+        json.dump(invalid_config, fp)
+
+    # Runs through, since error is caught
+    file_contents_manager.save(notebook_model, path=notebook_file.name)
+
+    assert caplog_contains(
+        caplog,
+        level=logging.ERROR,
+        in_msg="nbautoexport | post_save failed due to ValidationError",
+    )
+    assert not (notebook_file.parent / "script" / f"{notebook_file.stem}.py").exists()
