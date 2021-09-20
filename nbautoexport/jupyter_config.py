@@ -108,7 +108,10 @@ def install_post_save_hook(config_path: Optional[Path] = None):
             logger.info(f"Updating nbautoexport post-save hook with version {__version__}...")
             with config_path.open("w", encoding="utf-8") as fp:
                 # Open as w replaces existing file. We're replacing entire config.
-                fp.write(block_regex.sub(post_save_hook_initialize_block, config))
+                escaped_init = post_save_hook_initialize_block.replace(
+                    "\\", r"\\"
+                )  # escape metachars
+                fp.write(block_regex.sub(escaped_init, config))
         else:
             logger.debug("No changes made.")
             return
