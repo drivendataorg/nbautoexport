@@ -1,3 +1,5 @@
+import logging
+import shutil
 import subprocess
 
 from typer.testing import CliRunner
@@ -53,3 +55,36 @@ def test_version_python_m():
     )
     assert result.returncode == 0
     assert result.stdout.strip() == __version__
+
+
+def test_verbose0(notebook_asset, tmp_path, caplog):
+    notebook_path = tmp_path / "the_notebook.ipynb"
+    shutil.copy(notebook_asset.path, notebook_path)
+
+    result = CliRunner().invoke(app, ["export", str(notebook_path)])
+    print(result.stdout)
+    assert all(record[1] >= logging.WARNING for record in caplog.record_tuples)
+    assert "INFO" not in result.stdout
+    assert "DEBUG" not in result.stdout
+
+
+def test_verbose1(notebook_asset, tmp_path, caplog):
+    notebook_path = tmp_path / "the_notebook.ipynb"
+    shutil.copy(notebook_asset.path, notebook_path)
+
+    result = CliRunner().invoke(app, ["export", str(notebook_path), "-v"])
+    print(result.stdout)
+    assert "INFO" in result.stdout
+    assert "DEBUG" not in result.stdout
+    assert all(record[1] >= logging.INFO for record in caplog.record_tuples)
+
+
+def test_verbose2(notebook_asset, tmp_path, caplog):
+    notebook_path = tmp_path / "the_notebook.ipynb"
+    shutil.copy(notebook_asset.path, notebook_path)
+
+    result = CliRunner().invoke(app, ["export", str(notebook_path), "-vv"])
+    print(result.stdout)
+    assert "INFO" in result.stdout
+    assert "DEBUG" in result.stdout
+    assert all(record[1] >= logging.DEBUG for record in caplog.record_tuples)
