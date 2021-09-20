@@ -1,3 +1,4 @@
+import logging
 import shutil
 
 import nbformat
@@ -12,6 +13,7 @@ from nbautoexport.sentinel import (
     OrganizeBy,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
+from tests.utils import caplog_contains
 
 
 @pytest.fixture()
@@ -38,8 +40,9 @@ def file_contents_manager(notebook_file):
     return config.FileContentsManager
 
 
-def test_post_save(file_contents_manager, notebook_file, notebook_model):
+def test_post_save(file_contents_manager, notebook_file, notebook_model, caplog):
     """Test that post_save function works when FileContentsManager saves based on config file."""
+    caplog.set_level(logging.DEBUG)
 
     config = NbAutoexportConfig(
         export_formats=[ExportFormat.script], organize_by=OrganizeBy.extension
@@ -48,6 +51,13 @@ def test_post_save(file_contents_manager, notebook_file, notebook_model):
         fp.write(config.json())
 
     file_contents_manager.save(notebook_model, path=notebook_file.name)
+
+    assert caplog_contains(
+        caplog,
+        level=logging.INFO,
+        in_msg=f"nbautoexport | Exporting {notebook_file}",
+    )
+    caplog.clear()
 
     assert (notebook_file.parent / "script" / f"{notebook_file.stem}.py").exists()
     assert not (notebook_file.parent / notebook_file.stem / f"{notebook_file.stem}.html").exists()
@@ -64,6 +74,13 @@ def test_post_save(file_contents_manager, notebook_file, notebook_model):
         fp.write(config.json())
 
     file_contents_manager.save(notebook_model, path=notebook_file.name)
+
+    assert caplog_contains(
+        caplog,
+        level=logging.INFO,
+        in_msg=f"nbautoexport | Exporting {notebook_file}",
+    )
+    caplog.clear()
 
     assert not (notebook_file.parent / "script" / f"{notebook_file.stem}.py").exists()
     assert (notebook_file.parent / notebook_file.stem / f"{notebook_file.stem}.html").exists()
