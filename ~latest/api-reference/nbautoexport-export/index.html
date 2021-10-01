@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://nbautoexport.drivendata.org/~latest/api-reference/nbautoexport-export/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.3.0">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8b42a75e.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -76,7 +76,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="nbautoexport" class="md-header__button md-logo" aria-label="nbautoexport" data-md-component="logo">
       
@@ -155,11 +157,14 @@
       </div>
     
   </nav>
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
+        
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -244,10 +249,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
-      <label class="md-nav__link" for="__nav_3">
-        Command Reference
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Command Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Command Reference" data-md-level="1">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
@@ -256,6 +265,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -266,8 +276,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -278,8 +290,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -290,8 +304,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -302,6 +318,7 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
@@ -326,10 +343,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
       
-      <label class="md-nav__link" for="__nav_4">
-        API Reference
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          API Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="API Reference" data-md-level="1">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
@@ -338,6 +359,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -348,8 +370,10 @@
     </li>
   
 
+            
           
             
+              
   
   
     
@@ -434,8 +458,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -446,8 +472,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -458,8 +486,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -470,6 +500,7 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
@@ -594,12 +625,15 @@
 
 
 
+
   <div class="doc doc-object doc-class">
 
 
 
 <h2 id="nbautoexport.export.CopyToSubfolderPostProcessor" class="doc doc-heading">
-        <code>CopyToSubfolderPostProcessor</code>
+        <code>
+CopyToSubfolderPostProcessor            (<span title="nbconvert.postprocessors.base.PostProcessorBase">PostProcessorBase</span>)
+        </code>
 
 
 
@@ -738,8 +772,12 @@
 <span class="sd">        notebook_path (Path): path to notebook to export with nbconvert</span>
 <span class="sd">        config (NbAutoexportConfig): configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nbautoexport | Exporting </span><span class="si">{</span><span class="n">notebook_path</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nbautoexport | Using export configuration:</span><span class="se">\n</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">cleared_argv</span><span class="p">():</span>
         <span class="n">converter</span> <span class="o">=</span> <span class="n">NbConvertApp</span><span class="p">()</span>
+        <span class="n">converter</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
+        <span class="n">converter</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logger</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">export_format</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">export_formats</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">organize_by</span> <span class="o">==</span> <span class="s2">&quot;notebook&quot;</span><span class="p">:</span>
@@ -824,21 +862,31 @@ in a subfolder.</p>
 <span class="sd">        os_path (str): the filesystem path to the file just written</span>
 <span class="sd">        contents_manager (FileContentsManager): FileContentsManager instance that hook is bound to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># only do this for notebooks</span>
-    <span class="k">if</span> <span class="n">model</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;notebook&quot;</span><span class="p">:</span>
-        <span class="k">return</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;nbautoexport | Executing nbautoexport.export.post_save ...&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># only do this for notebooks</span>
+        <span class="k">if</span> <span class="n">model</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;notebook&quot;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nbautoexport | </span><span class="si">{</span><span class="n">os_path</span><span class="si">}</span><span class="s2"> is not a notebook. Nothing to do.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
 
-    <span class="c1"># only do this if we&#39;ve added the special indicator file to the working directory</span>
-    <span class="n">os_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os_path</span><span class="p">)</span>
-    <span class="n">cwd</span> <span class="o">=</span> <span class="n">os_path</span><span class="o">.</span><span class="n">parent</span>
-    <span class="n">save_progress_indicator</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">/</span> <span class="n">SAVE_PROGRESS_INDICATOR_FILE</span>
-    <span class="n">should_convert</span> <span class="o">=</span> <span class="n">save_progress_indicator</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="c1"># only do this if we&#39;ve added the special indicator file to the working directory</span>
+        <span class="n">notebook_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os_path</span><span class="p">)</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">notebook_path</span><span class="o">.</span><span class="n">parent</span>
+        <span class="n">save_progress_indicator</span> <span class="o">=</span> <span class="n">cwd</span> <span class="o">/</span> <span class="n">SAVE_PROGRESS_INDICATOR_FILE</span>
+        <span class="n">should_convert</span> <span class="o">=</span> <span class="n">save_progress_indicator</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">should_convert</span><span class="p">:</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="n">NbAutoexportConfig</span><span class="o">.</span><span class="n">parse_file</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="n">save_progress_indicator</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
-        <span class="p">)</span>
-        <span class="n">export_notebook</span><span class="p">(</span><span class="n">os_path</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">should_convert</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nbautoexport | </span><span class="si">{</span><span class="n">save_progress_indicator</span><span class="si">}</span><span class="s2"> found. Exporting notebook ...&quot;</span><span class="p">)</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">NbAutoexportConfig</span><span class="o">.</span><span class="n">parse_file</span><span class="p">(</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">save_progress_indicator</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
+            <span class="p">)</span>
+            <span class="n">export_notebook</span><span class="p">(</span><span class="n">notebook_path</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nbautoexport | </span><span class="si">{</span><span class="n">save_progress_indicator</span><span class="si">}</span><span class="s2"> not found. Nothing to do.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;nbautoexport | post_save successful.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nbautoexport | post_save failed due to </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -915,10 +963,12 @@ in a subfolder.</p>
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
         
-        Made with
-        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-          Material for MkDocs
-        </a>
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
         
       </div>
       
@@ -930,10 +980,10 @@ in a subfolder.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.f8263e09.min.js", "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.4fc53ad4.min.js"></script>
       
     
   </body>
