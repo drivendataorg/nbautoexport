@@ -94,7 +94,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
         config = fp.read()
 
     if block_regex.search(config):
-        logger.debug("Detected existing nbautoexport post-save hook.")
+        logger.info("Detected existing nbautoexport post-save hook.")
 
         version_match = version_regex.search(config)
         if version_match:
@@ -113,7 +113,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
                 )  # escape metachars
                 fp.write(block_regex.sub(escaped_init, config))
         else:
-            logger.debug("No changes made.")
+            logger.info("No changes made.")
             return
     else:
         logger.info("Installing post-save hook.")
