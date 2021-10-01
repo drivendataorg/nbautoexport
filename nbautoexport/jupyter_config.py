@@ -8,32 +8,60 @@ from typing import Optional
 from jupyter_core.paths import jupyter_config_dir
 from traitlets.config import Config
 
-from nbautoexport.utils import __version__, logger
+from nbautoexport.utils import __version__, get_logger
+
+
+logger = get_logger()
 
 
 def initialize_post_save_hook(c: Config):
-    # >>> nbautoexport initialize, version=[{version}] >>>
+    # >>> nbautoexport initialize, version=[{{version}}] >>>
     try:
-        from nbautoexport import post_save
+        import nbautoexport
+
+        logger = nbautoexport.get_logger()
+        logger.debug(f"nbautoexport | Installed version is {nbautoexport.__version__}.")
 
         if callable(c.FileContentsManager.post_save_hook):
+            logger.info(
+                "nbautoexport | Existing post_save_hook found. "
+                "Wrapping it to run nbautoexport's afterwards ..."
+            )
             old_post_save = c.FileContentsManager.post_save_hook
 
             def _post_save(model, os_path, contents_manager):
                 old_post_save(model=model, os_path=os_path, contents_manager=contents_manager)
-                post_save(model=model, os_path=os_path, contents_manager=contents_manager)
+                nbautoexport.post_save(
+                    model=model, os_path=os_path, contents_manager=contents_manager
+                )
 
             c.FileContentsManager.post_save_hook = _post_save
         else:
-            c.FileContentsManager.post_save_hook = post_save
-    except Exception:
-        pass
+            c.FileContentsManager.post_save_hook = nbautoexport.post_save
+
+        logger.info("nbautoexport | Successfully registered post-save hook.")
+    except Exception as e:
+        msg = f"nbautoexport | Failed to register post-save hook due to {type(e).__name__}: {e}"
+        try:
+            import jupyter_core.application
+
+            jupyter_core.application.JupyterApp.instance().log.error(msg)
+        except Exception as e2:
+            import sys
+
+            sys.stderr.write(
+                "nbautoexport | Failed to load JupyterApp logger due to "
+                f"{type(e2).__name__}: {e2}\n"
+            )
+            sys.stderr.write(msg + "\n")
     # <<< nbautoexport initialize <<<
     pass  # need this line for above comment to be included in function source
 
 
 post_save_hook_initialize_block = textwrap.dedent(
-    "".join(getsourcelines(initialize_post_save_hook)[0][1:-1]).format(version=__version__)
+    "".join(getsourcelines(initialize_post_save_hook)[0][1:-1]).replace(
+        r"{{version}}", __version__, 1
+    )
 )
 
 block_regex = re.compile(
@@ -66,7 +94,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
         config = fp.read()
 
     if block_regex.search(config):
-        logger.debug("Detected existing nbautoexport post-save hook.")
+        logger.info("Detected existing nbautoexport post-save hook.")
 
         version_match = version_regex.search(config)
         if version_match:
@@ -80,9 +108,12 @@ def install_post_save_hook(config_path: Optional[Path] = None):
             logger.info(f"Updating nbautoexport post-save hook with version {__version__}...")
             with config_path.open("w", encoding="utf-8") as fp:
                 # Open as w replaces existing file. We're replacing entire config.
-                fp.write(block_regex.sub(post_save_hook_initialize_block, config))
+                escaped_init = post_save_hook_initialize_block.replace(
+                    "\\", r"\\"
+                )  # escape metachars
+                fp.write(block_regex.sub(escaped_init, config))
         else:
-            logger.debug("No changes made.")
+            logger.info("No changes made.")
             return
     else:
         logger.info("Installing post-save hook.")

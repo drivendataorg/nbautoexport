@@ -2,6 +2,9 @@ docs/docs/index.md
 docs/docs/changelog.md
 docs/docs/command-reference/*.md
 
+# Ignore notebooks directory used for manual testing
+notebooks/
+
 ## GitHub Python .gitignore ##
 # https://github.com/github/gitignore/blob/master/Python.gitignore
 

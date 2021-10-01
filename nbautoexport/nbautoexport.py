@@ -19,15 +19,39 @@ from nbautoexport.sentinel import (
     OrganizeBy,
     SAVE_PROGRESS_INDICATOR_FILE,
 )
-from nbautoexport.utils import __version__, find_notebooks
+from nbautoexport.utils import __version__, find_notebooks, get_logger
 
 app = typer.Typer()
+logger = get_logger()
 
 
 def validate_sentinel_path(path: Path):
     if not path.exists():
         typer.echo(f"Error: Missing expected nbautoexport config file [{path.resolve()}].")
         raise typer.Exit(code=1)
+
+
+def verbose_callback(value: int):
+    """Set up logger with level based on --verbose count."""
+    log_handler = logging.StreamHandler()
+    logger.addHandler(log_handler)
+    log_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    log_handler.setFormatter(log_formatter)
+    if value >= 2:
+        logger.setLevel(logging.DEBUG)
+    elif value == 1:
+        logger.setLevel(logging.INFO)
+
+
+verbose_option = typer.Option(
+    0,
+    "--verbose",
+    "-v",
+    count=True,
+    show_default=False,
+    help="Use multiple times to set verbosity/log level. [-v = INFO, -vv = DEBUG]",
+    callback=verbose_callback,
+)
 
 
 def version_callback(value: bool):
@@ -88,6 +112,7 @@ def clean(
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show files that would be removed, without actually removing."
     ),
+    verbose: int = verbose_option,
 ):
     """(EXPERIMENTAL) Remove subfolders/files not matching .nbautoexport configuration and
     existing notebooks.
@@ -180,6 +205,7 @@ def export(
             f"provided, defaults to '{DEFAULT_ORGANIZE_BY}'."
         ),
     ),
+    verbose: int = verbose_option,
 ):
     """Manually export notebook or directory of notebooks.
 
@@ -244,7 +270,8 @@ def install(
             "used by Jupyter. You should only specify this option if you use a nonstandard config "
             "file path that you explicitly pass to Jupyter with the --config option at startup."
         ),
-    )
+    ),
+    verbose: int = verbose_option,
 ):
     """Register nbautoexport post-save hook with Jupyter. Note that if you already have a Jupyter
     server running, you will need to restart in order for it to take effect. This is a one-time
@@ -310,9 +337,7 @@ def configure(
         show_default=True,
         help="Overwrite existing configuration, if one is detected.",
     ),
-    verbose: bool = typer.Option(
-        False, "--verbose", "-v", is_flag=True, show_default=True, help="Verbose mode"
-    ),
+    verbose: int = verbose_option,
 ):
     """
     Create a .nbautoexport configuration file in a directory. If nbautoexport has been installed
@@ -322,9 +347,6 @@ def configure(
     An .nbautoexport configuration file only applies to that directory, nonrecursively. You must
     independently configure other directories containing notebooks.
     """
-    if verbose:
-        logging.basicConfig(level=logging.DEBUG)
-
     config = NbAutoexportConfig(
         export_formats=export_formats,
         organize_by=organize_by,

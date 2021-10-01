@@ -9,11 +9,21 @@ from warnings import warn
 from pydantic import BaseModel
 from nbconvert.exporters import get_export_names, get_exporter
 import nbformat
+from jupyter_core.application import JupyterApp
 
 from nbautoexport._version import get_versions
 
-logger = logging.getLogger("nbautoexport")
+
 __version__ = get_versions()["version"]
+
+
+def get_logger():
+    if JupyterApp.initialized():
+        return JupyterApp.instance().log
+    else:
+        logger = logging.getLogger("nbautoexport")
+        logger.addHandler(logging.NullHandler())
+        return logger
 
 
 class JupyterNotebook(BaseModel):

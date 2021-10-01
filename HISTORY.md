@@ -1,5 +1,13 @@
 # History
 
+## 0.4.0 (unreleased)
+
+- Logging improvements. ([Issue #74](https://github.com/drivendataorg/nbautoexport/issues/74), [PR #80](https://github.com/drivendataorg/nbautoexport/pull/80))
+  - Adds additional log statements during post-save hook initialization and execution to facilitate debugging.
+  - Changes runtime errors in post-save hook to be caught gracefully instead of interrupting user with an alert dialog in the Jupyter UI.
+  - Adds logging integration with active Jupyter applications. Logs will use Jupyter formatting.
+  - Changes `--verbose`/`-v` flag to work as a counter. `-v` will set log level to INFO, and `-vv` will set log level to `DEBUG`.
+
 ## 0.3.1 (2021-03-10)
 
 - Remove extraneous dependency on `jupyter_contrib_nbextensions`. Add `traitlets`, `notebook`, `jupyter_core`, and `nbformat` as explicit dependencies; previously they were treated as transitive dependencies even though they are actually direct dependencies. [#68](https://github.com/drivendataorg/nbautoexport/issues/68)

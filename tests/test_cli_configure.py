@@ -125,6 +125,9 @@ def test_configure_oudated_initialize_warning(tmp_path, monkeypatch):
             "0", jupyter_config.post_save_hook_initialize_block
         )
         fp.write(initialize_block)
+    # Print to assist with debugging
+    with jupyter_config_path.open("r") as fp:
+        print(fp.read())
 
     result = CliRunner().invoke(app, ["configure", str(tmp_path)])
     assert result.exit_code == 0
@@ -134,7 +137,11 @@ def test_configure_oudated_initialize_warning(tmp_path, monkeypatch):
 def test_configure_no_warning(tmp_path, monkeypatch):
     monkeypatch.setenv("JUPYTER_CONFIG_DIR", str(tmp_path))
 
-    jupyter_config.install_post_save_hook(tmp_path / "jupyter_notebook_config.py")
+    jupyter_config_path = tmp_path / "jupyter_notebook_config.py"
+    jupyter_config.install_post_save_hook(jupyter_config_path)
+    # Print to assist with debugging
+    with jupyter_config_path.open("r") as fp:
+        print(fp.read())
 
     result = CliRunner().invoke(app, ["configure", str(tmp_path)])
     assert result.exit_code == 0
