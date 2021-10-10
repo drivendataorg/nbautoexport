@@ -58,8 +58,8 @@ jobs:
           which python
           python --version
           mamba update pip
-          python -m pip install -r requirements-dev.txt
           mamba install pandoc
+          python -m pip install -r requirements-dev.txt
 
       - name: Run tests
         run: |
