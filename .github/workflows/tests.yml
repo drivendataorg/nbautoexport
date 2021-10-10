@@ -13,26 +13,19 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python with Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
           python-version: 3.8
-          channels: conda-forge
 
       - name: Install dependencies
         run: |
-          which python
-          python --version
           python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt
-          conda install pandoc
+          pip install -r requirements-dev.txt
 
       - name: Lint package
         run: |
@@ -45,7 +38,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
     defaults:
       run:
         shell: bash -l {0}
@@ -53,19 +46,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }} with Miniconda
+      - name: Set up Python ${{ matrix.python-version }} with conda
         uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
-          channels: conda-forge
+          miniforge-variant: Mambaforge
+          use-mamba: true
 
       - name: Install dependencies
         run: |
           which python
           python --version
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt --use-feature=2020-resolver
-          conda install pandoc
+          mamba update pip
+          python -m pip install -r requirements-dev.txt
+          mamba install pandoc
 
       - name: Run tests
         run: |
