@@ -46,19 +46,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Python ${{ matrix.python-version }} with conda
+      - name: Set up Python ${{ matrix.python-version }} with Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
-          miniforge-variant: Mambaforge
-          use-mamba: true
+          channels: conda-forge
 
       - name: Install dependencies
         run: |
           which python
           python --version
-          mamba update pip
-          mamba install pandoc
+          conda update pip
+          conda install pandoc
           python -m pip install -r requirements-dev.txt
 
       - name: Run tests
