@@ -51,13 +51,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge
+          mamba-version: "*"
+          use-mamba: true
 
       - name: Install dependencies
         run: |
           which python
           python --version
-          conda update pip
-          conda install pandoc
+          mamba update pip
+          mamba install pandoc
           python -m pip install -r requirements-dev.txt
 
       - name: Run tests
