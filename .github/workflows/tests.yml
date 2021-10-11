@@ -51,15 +51,19 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge
-          mamba-version: "*"
-          use-mamba: true
+
+      # https://github.com/drivendataorg/nbautoexport/issues/84
+      - name: Python 3.6 workaround for setuptools and certifi
+        if: matrix.python-version == 3.6
+        run: |
+          conda install "setuptools>=58" "certifi>=2021"
 
       - name: Install dependencies
         run: |
           which python
           python --version
-          mamba update pip
-          mamba install pandoc
+          conda update pip
+          conda install pandoc
           python -m pip install -r requirements-dev.txt
 
       - name: Run tests
