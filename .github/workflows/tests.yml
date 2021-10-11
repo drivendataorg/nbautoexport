@@ -56,14 +56,15 @@ jobs:
       - name: Python 3.6 workaround for setuptools and certifi
         if: matrix.python-version == 3.6
         run: |
+          conda config --add pinned_packages defaults::setuptools defaults::certifi
           conda install "setuptools>=58" "certifi>=2021"
 
       - name: Install dependencies
         run: |
           which python
           python --version
+          conda update pip
           conda install pandoc
-          python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
       - name: Run tests
