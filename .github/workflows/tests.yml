@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.6, 3.7, 3.8, 3.9]
     defaults:
       run:
         shell: bash -l {0}
@@ -51,15 +51,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           channels: defaults
-
-      # https://github.com/drivendataorg/nbautoexport/issues/84
-      # - name: Python 3.6 workaround for setuptools and certifi
-      #   if: matrix.python-version == 3.6
-      #   run: |
-      #     conda config --add channels pkgs/main
-      #     conda config --add pinned_packages pkgs/main::setuptools
-      #     conda config --add pinned_packages pkgs/main::certifi
-      #     conda install "setuptools>=58" "certifi>=2021"
 
       - name: Install dependencies
         run: |
@@ -76,10 +67,21 @@ jobs:
       - name: Build distribution and test installation
         run: |
           make dist
-          python -m pip install dist/nbautoexport-*.whl --no-deps --force-reinstall
-          nbautoexport --version
-          python -m pip install dist/nbautoexport-*.tar.gz --no-deps --force-reinstall
-          nbautoexport --version
+          if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+            PYTHON_BIN=Scripts/python
+          else
+            PYTHON_BIN=bin/python
+          fi
+          echo "=== Testing wheel installation ==="
+          python -m venv .venv-whl
+          .venv-whl/$PYTHON_BIN -m pip install --upgrade pip
+          .venv-whl/$PYTHON_BIN -m pip install dist/nbautoexport-*.whl
+          .venv-whl/$PYTHON_BIN -m nbautoexport --version
+          echo "=== Testing source installation ==="
+          python -m venv .venv-sdist
+          .venv-sdist/$PYTHON_BIN -m pip install --upgrade pip
+          .venv-sdist/$PYTHON_BIN -m pip install dist/nbautoexport-*.tar.gz
+          .venv-sdist/$PYTHON_BIN -m nbautoexport --version
 
       - name: Test building documentation
         run: |
