@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://nbautoexport.drivendata.org/~latest/changelog/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.4">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.5">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.db9e7362.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.cdeb8541.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -459,6 +459,8 @@
       </a>
       
         
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -473,8 +475,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#040-unreleased" class="md-nav__link">
-    0.4.0 (unreleased)
+  <a href="#040-2021-10-29" class="md-nav__link">
+    0.4.0 (2021-10-29)
   </a>
   
 </li>
@@ -541,6 +543,8 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -555,8 +559,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#040-unreleased" class="md-nav__link">
-    0.4.0 (unreleased)
+  <a href="#040-2021-10-29" class="md-nav__link">
+    0.4.0 (2021-10-29)
   </a>
   
 </li>
@@ -621,7 +625,7 @@
                 
                 
                 <h1 id="history">History<a class="headerlink" href="#history" title="Permanent link">&para;</a></h1>
-<h2 id="040-unreleased">0.4.0 (unreleased)<a class="headerlink" href="#040-unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="040-2021-10-29">0.4.0 (2021-10-29)<a class="headerlink" href="#040-2021-10-29" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Logging improvements. (<a href="https://github.com/drivendataorg/nbautoexport/issues/74">Issue #74</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/80">PR #80</a>)</li>
 <li>Adds additional log statements during post-save hook initialization and execution to facilitate debugging.</li>
@@ -631,24 +635,24 @@
 </ul>
 <h2 id="031-2021-03-10">0.3.1 (2021-03-10)<a class="headerlink" href="#031-2021-03-10" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Remove extraneous dependency on <code>jupyter_contrib_nbextensions</code>. Add <code>traitlets</code>, <code>notebook</code>, <code>jupyter_core</code>, and <code>nbformat</code> as explicit dependencies; previously they were treated as transitive dependencies even though they are actually direct dependencies. <a href="https://github.com/drivendataorg/nbautoexport/issues/68">#68</a></li>
+<li>Remove extraneous dependency on <code>jupyter_contrib_nbextensions</code>. Add <code>traitlets</code>, <code>notebook</code>, <code>jupyter_core</code>, and <code>nbformat</code> as explicit dependencies; previously they were treated as transitive dependencies even though they are actually direct dependencies. (<a href="https://github.com/drivendataorg/nbautoexport/issues/68">Issue #68</a>)</li>
 </ul>
 <h2 id="030-2021-02-18">0.3.0 (2021-02-18)<a class="headerlink" href="#030-2021-02-18" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Explicitly set all input and output file encodings to UTF-8, which fixes a bug with HTML exports on Windows with <code>nbconvert</code> v6.0. This version removes the version ceiling on &lt;6.</li>
-<li>This is not expected to cause any backwards compatibility issues. However, in the <em>very</em> unlikely instance that your <code>jupyter_notebook_config.py</code> file or your <code>nbautoexport.json</code> config file is Windows-1252-encoded <em>and</em> contains non-ASCII characters, you will need to convert them to UTF-8. (<a href="https://github.com/drivendataorg/nbautoexport/issues/57">#57</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/61">#61</a>)</li>
+<li>This is not expected to cause any backwards compatibility issues. However, in the <em>very</em> unlikely instance that your <code>jupyter_notebook_config.py</code> file or your <code>nbautoexport.json</code> config file is Windows-1252-encoded <em>and</em> contains non-ASCII characters, you will need to convert them to UTF-8. (<a href="https://github.com/drivendataorg/nbautoexport/issues/57">Issue #57</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/61">PR #61</a>)</li>
 </ul>
 <h2 id="021-2020-09-18">0.2.1 (2020-09-18)<a class="headerlink" href="#021-2020-09-18" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>nbconvert</code> released version 6, which may break HTML exports on Windows. Pinning to <code>nbconvert&lt;6</code> until we can address <a href="https://github.com/drivendataorg/nbautoexport/issues/57">#57</a>.</li>
+<li><code>nbconvert</code> released version 6, which may break HTML exports on Windows. Pinning to <code>nbconvert&lt;6</code> until we can address <a href="https://github.com/drivendataorg/nbautoexport/issues/57">Issue #57</a>.</li>
 </ul>
 <h2 id="020-2020-09-04">0.2.0 (2020-09-04)<a class="headerlink" href="#020-2020-09-04" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Add option to specify glob-style patterns to exclude files from deletion when using <code>clean</code>. See <a href="../cleaning/#excluding-files">documentation</a> for more details. (<a href="https://github.com/drivendataorg/nbautoexport/issues/46">#46</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/54">#54</a>)</li>
+<li>Add option to specify glob-style patterns to exclude files from deletion when using <code>clean</code>. See <a href="../cleaning/#excluding-files">documentation</a> for more details. (<a href="https://github.com/drivendataorg/nbautoexport/issues/46">Issue #46</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/54">PR #54</a>)</li>
 </ul>
 <h2 id="011-2020-08-06">0.1.1 (2020-08-06)<a class="headerlink" href="#011-2020-08-06" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Fixes missing <code>requirements.txt</code> bug when installing from source distribution. (<a href="https://github.com/drivendataorg/nbautoexport/issues/50">#50</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/52">#52</a>)</li>
+<li>Fixes missing <code>requirements.txt</code> bug when installing from source distribution. (<a href="https://github.com/drivendataorg/nbautoexport/issues/50">Issue #50</a>, <a href="https://github.com/drivendataorg/nbautoexport/pull/52">PR #52</a>)</li>
 </ul>
 <h2 id="010-2020-08-05">0.1.0 (2020-08-05)<a class="headerlink" href="#010-2020-08-05" title="Permanent link">&para;</a></h2>
 <ul>
