@@ -1,6 +1,6 @@
 # History
 
-## 0.4.1 (Unreleased)
+## 0.4.1 (2022-02-15)
 
 This will be the last version of `nbautoexport` that will have been tested on and officially support Python 3.6.
 
