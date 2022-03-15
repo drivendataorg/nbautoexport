@@ -1,5 +1,11 @@
 # History
 
+## 0.4.1 (Unreleased)
+
+This will be the last version of `nbautoexport` that will have been tested on and officially support Python 3.6.
+
+- Adds dependency on `pywinpty` for Windows environments with a version ceiling on the last version that works with Python 3.6. ([Issue #90](https://github.com/drivendataorg/nbautoexport/issues/90), [PR #92](https://github.com/drivendataorg/nbautoexport/issues/92))
+
 ## 0.4.0 (2021-10-29)
 
 - Logging improvements. ([Issue #74](https://github.com/drivendataorg/nbautoexport/issues/74), [PR #80](https://github.com/drivendataorg/nbautoexport/pull/80))
