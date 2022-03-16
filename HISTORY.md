@@ -1,5 +1,10 @@
 # History
 
+## 0.5.0 (2022-02-16)
+
+- Removes support for Python 3.6.
+- Removes explicit dependency on `pywinpty` for Windows environments.
+
 ## 0.4.1 (2022-02-15)
 
 This will be the last version of `nbautoexport` that will have been tested on and officially support Python 3.6.

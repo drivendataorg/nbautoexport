@@ -4,6 +4,5 @@ nbformat
 notebook
 packaging
 pydantic
-pywinpty<=2.0.2; platform_system == 'Windows'
 traitlets
 typer>=0.3.0
