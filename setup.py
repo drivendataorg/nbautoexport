@@ -29,7 +29,7 @@ requirements = load_requirements(Path(__file__).parent / "requirements.txt")
 setup(
     author="DrivenData",
     author_email="info@drivendata.org",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     classifiers=[
         "Framework :: Jupyter",
         "Intended Audience :: Developers",
@@ -37,9 +37,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     description=(
         "Automatically export Jupyter notebooks to various file formats (.py, .html, and more) on "
