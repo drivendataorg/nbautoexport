@@ -8,7 +8,8 @@ from nbautoexport.utils import JupyterNotebook
 
 @pytest.fixture(autouse=True)
 def disable_typer_rich_colors(monkeypatch):
-    monkeypatch.setenv("_TYPER_FORCE_DISABLE_TERMINAL", "true")
+    # https://rich.readthedocs.io/en/stable/console.html#environment-variables
+    monkeypatch.setenv("NO_COLOR", "true")
 
 
 @pytest.fixture(scope="session")
