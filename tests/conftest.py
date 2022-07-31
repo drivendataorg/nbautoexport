@@ -6,6 +6,11 @@ import pytest
 from nbautoexport.utils import JupyterNotebook
 
 
+@pytest.fixture(autouse=True)
+def disable_typer_rich_colors(monkeypatch):
+    monkeypatch.setenv("_TYPER_FORCE_DISABLE_TERMINAL", "true")
+
+
 @pytest.fixture(scope="session")
 def notebook_asset():
     return JupyterNotebook.from_file(Path(__file__).parent / "assets" / "the_notebook.ipynb")
