@@ -206,7 +206,7 @@ def test_clean_abort(notebooks_dir):
 
     result = CliRunner().invoke(app, ["clean", str(notebooks_dir)], input="n")
     assert result.exit_code == 1
-    assert result.stdout.endswith("Aborted!\n")
+    assert result.stdout.strip().endswith("Aborted.")
 
     ending_files = set(notebooks_dir.glob("**/*"))
 
@@ -234,7 +234,8 @@ def test_clean_no_directory_error():
     result = CliRunner().invoke(app, ["clean"])
 
     assert result.exit_code == 2
-    assert "Error: Missing argument 'DIRECTORY'." in result.stdout
+    assert "Error" in result.stdout
+    assert "Missing argument 'DIRECTORY'." in result.stdout
 
 
 def test_clean_missing_config_error(notebooks_dir):
@@ -244,7 +245,8 @@ def test_clean_missing_config_error(notebooks_dir):
 
     result = CliRunner().invoke(app, ["clean", str(notebooks_dir)])
     assert result.exit_code == 1
-    assert "Error: Missing expected nbautoexport config file" in result.stdout
+    assert "Error" in result.stdout
+    assert "Missing expected nbautoexport config file" in result.stdout
     assert str(sentinel_path.resolve()) in result.stdout
 
     ending_files = set(notebooks_dir.glob("**/*"))

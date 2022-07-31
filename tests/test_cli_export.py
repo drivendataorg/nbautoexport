@@ -1,5 +1,6 @@
 from itertools import chain, product
 from pathlib import Path
+import re
 import shutil
 
 import pytest
@@ -225,11 +226,12 @@ def test_export_notebook_doesnt_exist_error(tmp_path):
     assert not nonexistent_notebook.exists()
     result = CliRunner().invoke(app, ["export", str(nonexistent_notebook)])
     assert result.exit_code == 2
-    assert "does not exist" in result.stdout
+    assert re.search("does[^a-zA-Z]+not[^a-zA-Z]+exist", result.stdout)
 
 
 def test_export_no_input_error():
     result = CliRunner().invoke(app, ["export"])
 
     assert result.exit_code == 2
-    assert "Error: Missing argument 'INPUT'." in result.stdout
+    assert "Error" in result.stdout
+    assert "Missing argument 'INPUT'." in result.stdout

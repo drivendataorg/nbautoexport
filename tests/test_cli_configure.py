@@ -64,7 +64,8 @@ def test_invalid_export_format():
     runner = CliRunner()
     result = runner.invoke(app, ["configure", "-f", "invalid-output-format"])
     assert result.exit_code == 2
-    assert "Error: Invalid value for '--export-format' / '-f'" in result.output
+    assert "Error" in result.output
+    assert "Invalid value for '--export-format' / '-f'" in result.output
     assert "invalid-output-format" in result.output
 
 
@@ -152,4 +153,5 @@ def test_configure_no_directory_error():
     result = CliRunner().invoke(app, ["configure"])
 
     assert result.exit_code == 2
-    assert "Error: Missing argument 'DIRECTORY'." in result.stdout
+    assert "Error" in result.stdout
+    assert "Missing argument 'DIRECTORY'." in result.stdout

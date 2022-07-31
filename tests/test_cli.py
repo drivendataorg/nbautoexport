@@ -13,7 +13,8 @@ def test_no_command():
     runner = CliRunner()
     result = runner.invoke(app)
     assert result.exit_code > 0
-    assert "Error: Missing command." in result.output
+    assert "Error" in result.output
+    assert "Missing command." in result.output
 
 
 def test_help():
@@ -41,7 +42,8 @@ def test_no_command_python_m():
         universal_newlines=True,
     )
     assert result.returncode > 0
-    assert "Error: Missing command." in result.stderr
+    assert "Error" in result.stderr
+    assert "Missing command." in result.stderr
     assert result.stderr.startswith("Usage: python -m nbautoexport")
     assert "Usage: __main__.py" not in result.stderr
 
