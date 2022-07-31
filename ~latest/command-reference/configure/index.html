@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://nbautoexport.drivendata.org/~latest/command-reference/configure/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.16">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
     
     
       
@@ -21,11 +21,12 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1c3799f8.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cc9b2e1e.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
         
+      
       
     
     
@@ -500,47 +501,62 @@
 <h1 id="configure-command">configure Command<a class="headerlink" href="#configure-command" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code>nbautoexport configure --help
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>Usage: nbautoexport configure [OPTIONS] DIRECTORY
+<div class="highlight"><pre><span></span><code>[1m                                                                                [0m
+[1m [0m[1;33mUsage: [0m[1mnbautoexport configure [OPTIONS] DIRECTORY[0m[1m                             [0m[1m [0m
+[1m                                                                                [0m
+ Create a .nbautoexport configuration file in a directory. If nbautoexport has  
+ been installed with the &#39;install&#39; command, then Jupyter will automatically     
+ export any notebooks on save that are in the same directory as the             
+ .nbautoexport file.                                                            
+ [2mAn .nbautoexport configuration file only applies to that directory, [0m           
+ [2mnonrecursively. You must independently configure other directories containing [0m 
+ [2mnotebooks.[0m                                                                     
 
-  Create a .nbautoexport configuration file in a directory. If nbautoexport
-  has been installed with the &#39;install&#39; command, then Jupyter will
-  automatically export any notebooks on save that are in the same directory as
-  the .nbautoexport file.
-
-  An .nbautoexport configuration file only applies to that directory,
-  nonrecursively. You must independently configure other directories
-  containing notebooks.
-
-Arguments:
-  DIRECTORY  Path to directory of notebook files to configure with
-             nbautoexport.  [required]
-
-Options:
-  -f, --export-format [asciidoc|html|latex|markdown|notebook|pdf|rst|script|slides]
-                                  File format(s) to save for each notebook.
-                                  Multiple formats should be provided using
-                                  multiple flags, e.g., &#39;-f script -f html -f
-                                  markdown&#39;.  [default: ExportFormat.script]
-  -b, --organize-by [notebook|extension]
-                                  Whether to save exported file(s) in a
-                                  subfolder per notebook or per export format.
-                                  [default: OrganizeBy.extension]
-  -e, --clean-exclude TEXT        Glob-style patterns that designate files to
-                                  exclude from deletion when running clean
-                                  command.
-  -o, --overwrite                 Overwrite existing configuration, if one is
-                                  detected.
-  -v, --verbose                   Use multiple times to set verbosity/log
-                                  level. [-v = INFO, -vv = DEBUG]
-  --help                          Show this message and exit.
+[2m╭─[0m[2m Arguments ─────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [31m*[0m    directory      [1;33mDIRECTORY[0m  Path to directory of notebook files to        [2m│[0m
+[2m│[0m                                configure with nbautoexport.                  [2m│[0m
+[2m│[0m                                [2m[default: None]                              [0m [2m│[0m
+[2m│[0m                                [2;31m[required]                                   [0m [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m Options ───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m-[0m[1;36m-export[0m[1;36m-format[0m  [1;32m-f[0m      [1;2;33m[[0m[1;33masciidoc[0m[1;2;33m|[0m[1;33mhtml[0m[1;2;33m|[0m[1;33mlatex[0m[1;2;33m|[0m[1;33mmar[0m  File format(s) to save    [2m│[0m
+[2m│[0m                          [1;33mkdown[0m[1;2;33m|[0m[1;33mnotebook[0m[1;2;33m|[0m[1;33mpdf[0m[1;2;33m|[0m[1;33mrst[0m[1;2;33m|[0m[1;33ms[0m  for each notebook.        [2m│[0m
+[2m│[0m                          [1;33mcript[0m[1;2;33m|[0m[1;33mslides[0m[1;2;33m][0m[1;33m           [0m  Multiple formats should   [2m│[0m
+[2m│[0m                                                    be provided using         [2m│[0m
+[2m│[0m                                                    multiple flags, e.g., &#39;[1;32m-f[0m [2m│[0m
+[2m│[0m                                                    script [1;32m-f[0m html [1;32m-f[0m         [2m│[0m
+[2m│[0m                                                    markdown&#39;.                [2m│[0m
+[2m│[0m                                                    [2m[default:                [0m [2m│[0m
+[2m│[0m                                                    [2mExportFormat.script]     [0m [2m│[0m
+[2m│[0m [1;36m-[0m[1;36m-organize[0m[1;36m-by[0m    [1;32m-b[0m      [1;2;33m[[0m[1;33mnotebook[0m[1;2;33m|[0m[1;33mextension[0m[1;2;33m][0m[1;33m    [0m  Whether to save exported  [2m│[0m
+[2m│[0m                                                    file(s) in a subfolder    [2m│[0m
+[2m│[0m                                                    per notebook or per       [2m│[0m
+[2m│[0m                                                    export format.            [2m│[0m
+[2m│[0m                                                    [2m[default:                [0m [2m│[0m
+[2m│[0m                                                    [2mOrganizeBy.extension]    [0m [2m│[0m
+[2m│[0m [1;36m-[0m[1;36m-clean[0m[1;36m-exclude[0m  [1;32m-e[0m      [1;33mTEXT                    [0m  Glob-style patterns that  [2m│[0m
+[2m│[0m                                                    designate files to        [2m│[0m
+[2m│[0m                                                    exclude from deletion     [2m│[0m
+[2m│[0m                                                    when running clean        [2m│[0m
+[2m│[0m                                                    command.                  [2m│[0m
+[2m│[0m [1;36m-[0m[1;36m-overwrite[0m      [1;32m-o[0m      [1;33m                        [0m  Overwrite existing        [2m│[0m
+[2m│[0m                                                    configuration, if one is  [2m│[0m
+[2m│[0m                                                    detected.                 [2m│[0m
+[2m│[0m [1;36m-[0m[1;36m-verbose[0m        [1;32m-v[0m      [1;33mINTEGER                 [0m  Use multiple times to set [2m│[0m
+[2m│[0m                                                    verbosity/log level. [[1;32m-v[0m  [2m│[0m
+[2m│[0m                                                    = INFO, [1;32m-vv[0m = DEBUG]      [2m│[0m
+[2m│[0m [1;36m-[0m[1;36m-help[0m                   [1;33m                        [0m  Show this message and     [2m│[0m
+[2m│[0m                                                    exit.                     [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
 </code></pre></div>
 
               
             </article>
+            
           </div>
         </div>
         
-          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
@@ -549,7 +565,8 @@ Options:
       
         <footer class="md-footer">
   
-    <nav class="md-footer__inner md-grid" aria-label="Footer">
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
         <a href="../clean/" class="md-footer__link md-footer__link--prev" aria-label="Previous: clean" rel="prev">
@@ -604,10 +621,10 @@ Options:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.3a4b43e5.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
       
     
   </body>
