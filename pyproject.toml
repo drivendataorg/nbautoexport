@@ -9,3 +9,11 @@ exclude = '''
 )/
 | nbautoexport/_version.py
 '''
+
+[build-system]
+requires = [
+    "setuptools<=63",
+    "versioneer",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
