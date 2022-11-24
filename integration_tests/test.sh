@@ -6,5 +6,6 @@ if grep -q "nbautoexport | Successfully registered post-save hook." output.log; 
   echo "nbautoexport post-save hook successfully registered"
 else
   echo "nbautoexport post-save hook failed to register"
+  cat output.log
   exit 1
 fi
