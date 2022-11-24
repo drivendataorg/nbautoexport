@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [lab] #[lab, nbclassic, notebook]
+        app: [lab, nbclassic, notebook]
     steps:
       - uses: actions/checkout@v2
 
