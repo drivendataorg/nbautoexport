@@ -136,7 +136,7 @@ jobs:
 
       - name: Install post-save hook
         run: |
-          nbautoexport install
+          nbautoexport install -vv
 
       - name: Run integration test
         run: bash integration_tests/test.sh ${{ matrix.app }}
