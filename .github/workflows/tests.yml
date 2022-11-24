@@ -114,6 +114,34 @@ jobs:
           fail_ci_if_error: true
         if: matrix.os == 'ubuntu-latest'
 
+  integration-tests:
+    name: Integration tests
+    # needs: tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [lab] #[lab, nbclassic, notebook]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          which python
+          python --version
+          python -m pip install -r integration_tests/requirements/${{ matrix.app }}.txt
+
+      - name: Install post-save hook
+        run: |
+          nbautoexport install
+
+      - name: Run integration test
+        run: integration_tests/test.sh
+
   notify:
     name: Notify failed build
     needs: [code-quality, tests]
