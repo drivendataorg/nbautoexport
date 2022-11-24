@@ -139,7 +139,7 @@ jobs:
           nbautoexport install
 
       - name: Run integration test
-        run: bash integration_tests/test.sh
+        run: bash integration_tests/test.sh ${{ matrix.app }}
 
   # notify:
   #   name: Notify failed build
