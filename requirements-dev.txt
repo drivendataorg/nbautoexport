@@ -1,7 +1,7 @@
 -e .
 
 black>=19.3b0
-coverage>=4.5.4,<7
+coverage>=4.5.4
 flake8>=3.7.8
 mike
 mkdocs>=1.2.2
