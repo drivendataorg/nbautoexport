@@ -104,7 +104,7 @@ def install_post_save_hook(config_path: Optional[Path] = None):
             existing_version = ""
             logger.debug("Existing post-save hook predates versioning.")
 
-        if parse_version(existing_version) < parse_version(__version__):
+        if existing_version == "" or parse_version(existing_version) < parse_version(__version__):
             logger.info(f"Updating nbautoexport post-save hook with version {__version__}...")
             with config_path.open("w", encoding="utf-8") as fp:
                 # Open as w replaces existing file. We're replacing entire config.
