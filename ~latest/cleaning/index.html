@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://nbautoexport.drivendata.org/~latest/cleaning/">
       
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../command-reference/clean/">
+      
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.12">
     
     
       
@@ -21,11 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.0d440cfe.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -58,7 +63,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
   
     
     
@@ -140,7 +145,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -233,7 +238,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
@@ -325,17 +330,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Command Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Command Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Command Reference
@@ -417,17 +423,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
           API Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="API Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           API Reference
@@ -606,10 +613,9 @@
                 
                   
 
-  <a href="https://github.com/drivendataorg/nbautoexport/edit/master/docs/cleaning.md" title="Edit this page" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
+
 
 
 <h1 id="cleaning-experimental">Cleaning (Experimental)<a class="headerlink" href="#cleaning-experimental" title="Permanent link">&para;</a></h1>
@@ -617,7 +623,7 @@
 <p><strong>WARNING: the <code>clean</code> command can delete files irreversibly. Please use with care.</strong></p>
 <h2 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>Let's say you have a project and keep your notebooks in a <code>notebooks/</code> subdirectory. You can clean it with:</p>
-<div class="highlight"><pre><span></span><code>nbautoexport clean notebooks/
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>clean<span class="w"> </span>notebooks/
 </code></pre></div>
 <p>Note that in order to use <code>clean</code>, this directory <em>must</em> be configured with <code>nbautoexport</code>, i.e., you have a <code>notebooks/.nbautoexport</code> configuration file.</p>
 <p>If you have some files that would be cleaned, you would see something that looks like this:</p>
@@ -643,12 +649,12 @@ Are you sure you want to delete these files? [y/N]: █
     └── Untitled.py
 </code></pre></div>
 <p>and you have the following <code>.nbautoexport</code> configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;export_formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;script&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;organize_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;export_formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;script&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;organize_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>We have some extra files that we want to clean up:</p>
 <ul>
@@ -701,23 +707,23 @@ Cleaning complete.
 <li><code>images/diagram.png</code></li>
 </ul>
 <p>We can specify <a href="https://docs.python.org/3/library/glob.html">glob-style patterns</a> to exclude from cleaning with the <code>--clean-exclude</code> flag in the <code>configure</code> command. Alternatively, we could also directly manually edit the <code>.nbautoexport</code> configuration file.</p>
-<div class="highlight"><pre><span></span><code>nbautoexport configure notebooks/ <span class="se">\</span>
-    --overwrite <span class="se">\</span>
-    --clean-exclude README.md <span class="se">\</span>
-    --clean-exclude images/*
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>configure<span class="w"> </span>notebooks/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--overwrite<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--clean-exclude<span class="w"> </span>README.md<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--clean-exclude<span class="w"> </span>images/*
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;export_formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;script&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;organize_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;clean&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;exclude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">      </span><span class="s2">&quot;README.md&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="s2">&quot;images/*&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">]</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;export_formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;script&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;organize_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;clean&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;exclude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="s2">&quot;README.md&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;images/*&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Then, running the <code>clean</code> command:</p>
 <div class="highlight"><pre><span></span><code>$ nbautoexport clean notebooks/
@@ -749,9 +755,9 @@ Cleaning complete.
 </code></pre></div>
 <h3 id="-exclude-flag"><code>--exclude</code> flag<a class="headerlink" href="#-exclude-flag" title="Permanent link">&para;</a></h3>
 <p>You can also provide patterns to exclude with the <code>--exclude</code> (<code>-e</code>) flag when calling <code>clean</code>.</p>
-<div class="highlight"><pre><span></span><code>nbautoexport clean notebooks/ <span class="se">\</span>
-    --exclude README.md <span class="se">\</span>
-    --exclude images/*
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>clean<span class="w"> </span>notebooks/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--exclude<span class="w"> </span>README.md<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--exclude<span class="w"> </span>images/*
 </code></pre></div>
 <p>Any patterns specified this way will be used <em>in addition</em> to the patterns in the <code>.nbautoexport</code> configuration.</p>
 <h2 id="experimental-status">Experimental status<a class="headerlink" href="#experimental-status" title="Permanent link">&para;</a></h2>
@@ -777,42 +783,6 @@ Cleaning complete.
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Home
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../command-reference/clean/" class="md-footer__link md-footer__link--next" aria-label="Next: clean" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              clean
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -834,12 +804,11 @@ Cleaning complete.
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top"], "search": "../assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../assets/javascripts/bundle.4b2c34cd.min.js"></script>
       
-    
     
   </body>
 </html>

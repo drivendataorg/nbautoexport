@@ -12,8 +12,12 @@
       
         <link rel="canonical" href="https://nbautoexport.drivendata.org/~latest/">
       
+      
+      
+        <link rel="next" href="cleaning/">
+      
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.12">
     
     
       
@@ -21,11 +25,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.0d440cfe.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.2505c338.min.css">
-        
       
       
 
@@ -58,7 +61,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
   
     
     
@@ -140,7 +143,7 @@
           <div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list" role="presentation"></ol>
         </div>
       </div>
     </div>
@@ -218,7 +221,7 @@
   
     <li class="md-nav__item md-nav__item--active">
       
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
@@ -332,17 +335,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
           Command Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Command Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Command Reference
@@ -424,17 +428,18 @@
     <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
       
       
       
-      
-        <label class="md-nav__link" for="__nav_4">
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
           API Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="API Reference" data-md-level="1">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           API Reference
@@ -620,10 +625,9 @@
                 
                   
 
-  <a href="https://github.com/drivendataorg/nbautoexport/edit/master/docs/index.md" title="Edit this page" class="md-content__button md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
-  </a>
+  
+  
+
 
 
 <h1 id="nbautoexport">nbautoexport<a class="headerlink" href="#nbautoexport" title="Permanent link">&para;</a></h1>
@@ -638,18 +642,18 @@
 <p><code>nbautoexport</code> automatically exports Jupyter notebooks to various file formats (.py, .html, and more) upon save while using Jupyter. One great use case is to automatically have script versions of your notebooks to <a href="https://www.drivendata.co/blog/nbautoexport-jupyter-code-review/">facilitate code review commenting</a>.</p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <p>First, you will need to install <code>nbautoexport</code>. This should be installed in the same environment you are running Jupyter Notebook or Jupyter Lab from. <code>nbautoexport</code> is available either from <a href="https://pypi.org/project/nbautoexport/">PyPI</a> via <code>pip</code> or from <a href="https://github.com/conda-forge/nbautoexport-feedstock">conda-forge</a> via <code>conda</code>.</p>
-<div class="highlight"><pre><span></span><code>pip install nbautoexport
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>nbautoexport
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>conda install nbautoexport --channel conda-forge
+<div class="highlight"><pre><span></span><code>conda<span class="w"> </span>install<span class="w"> </span>nbautoexport<span class="w"> </span>--channel<span class="w"> </span>conda-forge
 </code></pre></div>
 <p>Then, to register <code>nbautoexport</code> to run automatically while using Jupyter Notebook or Jupyter Lab, run:</p>
-<div class="highlight"><pre><span></span><code>nbautoexport install
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>install
 </code></pre></div>
 <p>If you already have a Jupyter server running, you will need to restart it for this to take effect.</p>
 <h2 id="simple-usage">Simple usage<a class="headerlink" href="#simple-usage" title="Permanent link">&para;</a></h2>
 <p>Let's say you have a project and keep your notebooks in a <code>notebooks/</code> subdirectory.</p>
 <p>To configure that directory for automatic exporting, run the following command:</p>
-<div class="highlight"><pre><span></span><code>nbautoexport configure notebooks
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>configure<span class="w"> </span>notebooks
 </code></pre></div>
 <p>This will create a configuration file <code>notebooks/.nbautoexport</code>.</p>
 <p>If you've set up <code>nbautoexport</code> to work with Jupyter (using the <code>install</code> command as detailed in the previous section), then any time you save a notebook in Jupyter, a hook will run that checks whether there is a <code>.nbautoexport</code> configuration file in the same directory as the notebook. If so, it will use the settings specified in that file to export your notebook. By default, it will generate a script version of your notebook named after the notebook (with the <code>.py</code> extension) and saved in the directory <code>notebooks/script</code>.</p>
@@ -663,12 +667,12 @@
 </code></pre></div>
 <h2 id="configuring-export-options">Configuring export options<a class="headerlink" href="#configuring-export-options" title="Permanent link">&para;</a></h2>
 <p>The default <code>.nbautoexport</code> configuration file looks like this:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;export_formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">    </span><span class="s2">&quot;script&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">],</span><span class="w"></span>
-<span class="w">  </span><span class="nt">&quot;organize_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;export_formats&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;script&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;organize_by&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension&quot;</span>
+<span class="p">}</span>
 </code></pre></div>
 <p>Upon save, this will lead to notebooks being exported to scripts which saved to the <code>notebooks/script</code> directory.</p>
 <div class="highlight"><pre><span></span><code>notebooks
@@ -679,7 +683,7 @@
     └── 0.2-ejm-feature-creation.py
 </code></pre></div>
 <p>An alternative way to organize exported files is to create a directory for each notebook. This can be handy for matching both the notebook and subdirectory when tab-completing and then globbing with <code>*</code> after the part that completed.</p>
-<div class="highlight"><pre><span></span><code>nbautoexport configure notebooks --organize-by notebook
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>configure<span class="w"> </span>notebooks<span class="w"> </span>--organize-by<span class="w"> </span>notebook
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>notebooks
 ├── 0.1-ejm-data-exploration
@@ -692,7 +696,7 @@
 <p>If you do not like the settings you selected, you can always change them by either 1) re-running the <code>nbautoexport</code> command with new arguments and the <code>--overwrite</code> flag, or 2) manually editing the <code>.nbautoexport</code> file.</p>
 <p>You can also specify as many export formats as you'd like. We support most of the export formats available from <a href="https://nbconvert.readthedocs.io/en/latest/"><code>nbconvert</code></a>, such as <code>html</code>, <code>md</code>, and <code>pdf</code>. To specify formats, use the <code>--export-format</code> for each format you want to include.</p>
 <h3 id="advanced-example">Advanced example<a class="headerlink" href="#advanced-example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>nbautoexport configure sprint_one_notebooks -f script -f html --organize-by extension
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>configure<span class="w"> </span>sprint_one_notebooks<span class="w"> </span>-f<span class="w"> </span>script<span class="w"> </span>-f<span class="w"> </span>html<span class="w"> </span>--organize-by<span class="w"> </span>extension
 </code></pre></div>
 <p>Upon save, this creates <code>.py</code> and <code>.html</code> versions of the Jupyter notebooks in <code>sprint_one_notebooks</code> folder and results in the following organization:</p>
 <div class="highlight"><pre><span></span><code>notebooks
@@ -713,7 +717,7 @@
 </ul>
 <p>Use the <code>--help</code> flag to see the documentation.</p>
 <h2 id="command-line-help">Command-line help<a class="headerlink" href="#command-line-help" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>nbautoexport --help
+<div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>--help
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Usage: nbautoexport [OPTIONS] COMMAND [ARGS]...
 
@@ -770,27 +774,6 @@ Commands:
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-      
-        
-        <a href="cleaning/" class="md-footer__link md-footer__link--next" aria-label="Next: Cleaning (Experimental)" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Cleaning (Experimental)
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -812,12 +795,11 @@ Commands:
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "navigation.top"], "search": "assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "navigation.top"], "search": "assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="assets/javascripts/bundle.4b2c34cd.min.js"></script>
       
-    
     
   </body>
 </html>
