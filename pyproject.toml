@@ -50,9 +50,6 @@ nbautoexport = "nbautoexport.nbautoexport:app"
 [tool.pdm]
 version = { source = "scm" }
 
-[tool.pdm.build]
-excludes = ["tests"]
-
 
 [tool.black]
 line-length = 99
