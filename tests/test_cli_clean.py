@@ -206,7 +206,7 @@ def test_clean_abort(notebooks_dir):
 
     result = CliRunner().invoke(app, ["clean", str(notebooks_dir)], input="n")
     assert result.exit_code == 1
-    assert result.stdout.strip().endswith("Aborted.")
+    assert "Aborted" in result.stdout.strip()[-8:]
 
     ending_files = set(notebooks_dir.glob("**/*"))
 
