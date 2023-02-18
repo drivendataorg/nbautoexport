@@ -2,7 +2,6 @@
 requires = ["pdm-pep517"]
 build-backend = "pdm.pep517.api"
 
-
 [project]
 name = "nbautoexport"
 dynamic = ["version"]
@@ -59,7 +58,6 @@ exclude = '''
     \.git
   | \.venv
 )/
-| nbautoexport/_version.py
 '''
 
 [tool.mypy]
@@ -79,4 +77,3 @@ source = ["nbautoexport"]
 
 [tool.coverage.report]
 include = ["nbautoexport/**/*.py"]
-omit = ["nbautoexport/_version.py"]
