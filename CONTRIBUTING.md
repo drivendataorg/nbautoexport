@@ -106,7 +106,7 @@ To release a new version of `nbautoexport`, create a new release using the [GitH
 
 On publishing of the release, the [`release`](https://github.com/drivendataorg/nbautoexport/blob/master/.github/workflows/release.yml) GitHub action workflow will be triggered. This workflow builds the package and publishes it to PyPI. You will be able to see the workflow status in the [Actions tab](https://github.com/drivendataorg/nbautoexport/actions?query=workflow%3Arelease).
 
-The built package for `nbautoexport` will automatically match the created git tag via [versioneer](https://github.com/warner/python-versioneer).
+The built package for `nbautoexport` will automatically match the created git tag via the [dynamic versioning](https://pdm.fming.dev/latest/pyproject/build/#dynamic-versioning) functionality of the build backend, [pdm-pep517](https://pdm.fming.dev/latest/pyproject/build/).
 
 ## Documentation Website (for maintainers)
 
