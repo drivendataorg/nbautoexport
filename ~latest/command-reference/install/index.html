@@ -508,30 +508,26 @@
 <h1 id="install-command">install Command<a class="headerlink" href="#install-command" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code>nbautoexport<span class="w"> </span>install<span class="w"> </span>--help
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>[1m                                                                                [0m
-[1m [0m[1;33mUsage: [0m[1mnbautoexport install [OPTIONS][0m[1m                                         [0m[1m [0m
-[1m                                                                                [0m
- Register nbautoexport post-save hook with Jupyter. Note that if you already    
- have a Jupyter server running, you will need to restart in order for it to     
- take effect. This is a one-time installation.                                  
- [2mThis works by adding an initialization block in your Jupyter config file that [0m 
- [2mwill register nbautoexport&#39;s post-save function. If an nbautoexport [0m           
- [2minitialization block already exists and is from an older version of [0m           
- [2mnbautoexport, this command will replace it with an updated version.[0m            
+<div class="highlight"><pre><span></span><code>Usage: nbautoexport install [OPTIONS]
 
-[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
-[2m│[0m [1;36m-[0m[1;36m-jupyter[0m[1;36m-config[0m          [1;33mFILE   [0m  Path to config file. If not specified     [2m│[0m
-[2m│[0m                                    (default), will determine appropriate     [2m│[0m
-[2m│[0m                                    path used by Jupyter. You should only     [2m│[0m
-[2m│[0m                                    specify this option if you use a          [2m│[0m
-[2m│[0m                                    nonstandard config file path that you     [2m│[0m
-[2m│[0m                                    explicitly pass to Jupyter with the       [2m│[0m
-[2m│[0m                                    [1;36m-[0m[1;36m-config[0m option at startup.               [2m│[0m
-[2m│[0m                                    [2m[default: None]                          [0m [2m│[0m
-[2m│[0m [1;36m-[0m[1;36m-verbose[0m         [1;32m-v[0m      [1;33mINTEGER[0m  Use multiple times to set verbosity/log   [2m│[0m
-[2m│[0m                                    level. [[1;32m-v[0m = INFO, [1;32m-vv[0m = DEBUG]           [2m│[0m
-[2m│[0m [1;36m-[0m[1;36m-help[0m                    [1;33m       [0m  Show this message and exit.               [2m│[0m
-[2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
+  Register nbautoexport post-save hook with Jupyter. Note that if you already
+  have a Jupyter server running, you will need to restart in order for it to
+  take effect. This is a one-time installation.
+
+  This works by adding an initialization block in your Jupyter config file
+  that will register nbautoexport&#39;s post-save function. If an nbautoexport
+  initialization block already exists and is from an older version of
+  nbautoexport, this command will replace it with an updated version.
+
+Options:
+  --jupyter-config FILE  Path to config file. If not specified (default), will
+                         determine appropriate path used by Jupyter. You
+                         should only specify this option if you use a
+                         nonstandard config file path that you explicitly pass
+                         to Jupyter with the --config option at startup.
+  -v, --verbose          Use multiple times to set verbosity/log level. [-v =
+                         INFO, -vv = DEBUG]
+  --help                 Show this message and exit.
 </code></pre></div>
 
 
