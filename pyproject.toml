@@ -1,19 +1,79 @@
+[build-system]
+requires = ["pdm-pep517"]
+build-backend = "pdm.pep517.api"
+
+[project]
+name = "nbautoexport"
+dynamic = ["version"]
+description = "Automatically export Jupyter notebooks to various file formats (.py, .html, and more) on save."
+readme = "README.md"
+authors = [{ name = "DrivenData", email = "info@drivendata.org" }]
+license = "MIT"
+keywords = ["nbautoexport", "jupyter", "nbconvert"]
+classifiers = [
+    "Framework :: Jupyter",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "importlib_metadata ; python_version < '3.8'",
+    "jupyter_core",
+    "nbconvert>=5.6.1",
+    "nbformat",
+    "notebook",
+    "packaging",
+    "pydantic",
+    "traitlets",
+    "typer>=0.3.0",
+]
+
+[project.scripts]
+nbautoexport = "nbautoexport.nbautoexport:app"
+
+[project.urls]
+"Homepage" = "https://github.com/drivendataorg/nbautoexport"
+"Repository" = "https://github.com/drivendataorg/nbautoexport"
+"Documentation" = "https://nbautoexport.drivendata.org/"
+"Bug Tracker" = "https://github.com/drivendataorg/nbautoexport/issues"
+"Changelog" = "https://nbautoexport.drivendata.org/stable/changelog/"
+
+[tool.pdm]
+version = { source = "scm" }
+
+
 [tool.black]
 line-length = 99
-target-version = ['py36', 'py37', 'py38']
 include = '\.pyi?$'
 exclude = '''
 /(
     \.git
   | \.venv
 )/
-| nbautoexport/_version.py
 '''
 
-[build-system]
-requires = [
-    "setuptools<=63",
-    "versioneer",
-    "wheel",
-]
-build-backend = "setuptools.build_meta"
+[tool.mypy]
+ignore_missing_imports = true
+allow_redefinition = true
+
+[tool.mypy-nbautoexport._version]
+ignore_errors = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=nbautoexport --cov-report=term --cov-report=html --cov-report=xml"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["nbautoexport"]
+
+[tool.coverage.report]
+include = ["nbautoexport/**/*.py"]

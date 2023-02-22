@@ -6,15 +6,18 @@ import sys
 from typing import List
 from warnings import warn
 
+if sys.version_info[:2] >= (3, 8):
+    import importlib.metadata as importlib_metadata
+else:
+    import importlib_metadata
+
 from pydantic import BaseModel
 from nbconvert.exporters import get_export_names, get_exporter
 import nbformat
 from jupyter_core.application import JupyterApp
 
-from nbautoexport._version import get_versions
 
-
-__version__ = get_versions()["version"]
+__version__ = importlib_metadata.version("nbautoexport")
 
 
 def get_logger():
