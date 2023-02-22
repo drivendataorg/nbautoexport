@@ -17,7 +17,7 @@ import nbformat
 from jupyter_core.application import JupyterApp
 
 
-__version__ = importlib_metadata.version(__name__.split(".", 1)[0])
+__version__ = importlib_metadata.version("nbautoexport")
 
 
 def get_logger():
