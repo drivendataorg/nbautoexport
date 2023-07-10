@@ -95,7 +95,9 @@ def test_force_overwrite(tmp_path):
     with (tmp_path / ".nbautoexport").open("r", encoding="utf-8") as fp:
         config = json.load(fp)
 
-    expected_config = NbAutoexportConfig(export_formats=["script", "html"], organize_by="notebook")
+    expected_config = NbAutoexportConfig(
+        export_formats=["script", "html"], organize_by="notebook"
+    ).dict()
     assert config == expected_config
 
 
