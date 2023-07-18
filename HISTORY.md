@@ -1,5 +1,9 @@
 # History
 
+## 0.5.1 (2023-07-18)
+
+- Add support for `pydantic>=2.0.0` ([PR #119](https://github.com/drivendataorg/nbautoexport/pull/119))
+
 ## 0.5.0 (2022-02-16)
 
 - Removes support for Python 3.6.

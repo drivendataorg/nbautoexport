@@ -50,6 +50,20 @@ class NbAutoexportConfig(BaseModel):
     class Config:
         extra = "forbid"
 
+    # deprecated in pydantic v2.0
+    def json(self, *args, **kwargs):
+        if hasattr(self, "model_dump_json"):
+            return self.model_dump_json(*args, **kwargs)
+        else:
+            return super().json(*args, **kwargs)
+
+    # deprecated in pydantic v2.0
+    def dict(self, *args, **kwargs):
+        if hasattr(self, "model_dump"):
+            return self.model_dump(*args, **kwargs)
+        else:
+            return super().dict(*args, **kwargs)
+
 
 def install_sentinel(directory: Path, config: NbAutoexportConfig, overwrite: bool):
     """Writes the configuration file to a specified directory."""

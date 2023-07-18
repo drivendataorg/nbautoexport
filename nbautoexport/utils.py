@@ -33,6 +33,10 @@ class JupyterNotebook(BaseModel):
     path: Path
     metadata: nbformat.notebooknode.NotebookNode
 
+    class Config:
+        # NotebookNode not pydantic v2 compatible
+        arbitrary_types_allowed = True
+
     def get_script_extension(self):
         # Match logic of nbconvert.exporters.script.ScriptExporter
         # Order of precedence is: nb_convert_exporter, language, file_extension, .txt
@@ -52,6 +56,13 @@ class JupyterNotebook(BaseModel):
         notebook = nbformat.read(path, as_version=nbformat.NO_CONVERT)
         nbformat.validate(notebook)
         return cls(path=path, metadata=notebook.metadata)
+
+    # deprecated in pydantic v2.0
+    def json(self, *args, **kwargs):
+        if hasattr(self, "model_dump_json"):
+            return self.model_dump_json(*args, **kwargs)
+        else:
+            return super().json(*args, **kwargs)
 
     def __hash__(self):
         return hash(self.json())
