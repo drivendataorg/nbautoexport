@@ -5,7 +5,7 @@ from pkg_resources.extern.packaging.version import Version
 import sys
 import textwrap
 
-from notebook.services.contents.filemanager import FileContentsManager
+from jupyter_server.services.contents.filemanager import FileContentsManager
 from traitlets.config.loader import Config
 
 from nbautoexport import __version__

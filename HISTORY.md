@@ -1,5 +1,9 @@
 # History
 
+## 0.5.2 (2023-07-28)
+
+- Fixes compatibility with Notebook 7. ([PR #122](https://github.com/drivendataorg/nbautoexport/pull/122))
+
 ## 0.5.1 (2023-07-18)
 
 - Add support for `pydantic>=2.0.0` ([PR #119](https://github.com/drivendataorg/nbautoexport/pull/119))

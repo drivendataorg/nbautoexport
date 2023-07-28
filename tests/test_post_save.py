@@ -3,7 +3,7 @@ import logging
 import shutil
 
 import nbformat
-from notebook.services.contents.filemanager import FileContentsManager
+from jupyter_server.services.contents.filemanager import FileContentsManager
 import pytest
 from traitlets.config import Config
 
