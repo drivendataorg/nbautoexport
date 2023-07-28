@@ -3,7 +3,7 @@ import re
 
 from nbconvert.nbconvertapp import NbConvertApp
 from nbconvert.postprocessors.base import PostProcessorBase
-from notebook.services.contents.filemanager import FileContentsManager
+from jupyter_server.services.contents.filemanager import FileContentsManager
 
 from nbautoexport.clean import FORMATS_WITH_IMAGE_DIR
 from nbautoexport.sentinel import (
