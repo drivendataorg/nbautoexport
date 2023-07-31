@@ -19,7 +19,7 @@ def test_parse_version():
     sortable when we compare against previously installed initialize blocks.
     """
     version = parse_version(__version__)
-    assert type(version) == Version
+    assert isinstance(version, Version)
 
 
 def test_initialize_block_content():
